@@ -1,0 +1,29 @@
+name: Validate Domeneshop MCP Repository
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate repository structure and secret placeholders
+        run: python scripts/validate_repository_structure.py
+
+      - name: Confirm write mode is paused in template
+        run: |
+          grep -q '^WRITE_TOOLS_ENABLED=false$' config/domeneshop-mcp.env.example
+          grep -q '^DRY_RUN_DEFAULT=true$' config/domeneshop-mcp.env.example
