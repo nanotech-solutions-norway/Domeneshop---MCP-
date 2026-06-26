@@ -40,9 +40,20 @@ jobs:
           mkdir -p artifacts
           python scripts/dry_run_plan.py --source-root . --target-root /www --output artifacts/phase5-dry-run-report.json
 
-      - name: Upload Phase 5 dry-run report artifact
+      - name: Generate Phase 6 recovery planning reports
+        run: |
+          python scripts/recovery_plan.py \
+            --dry-run-report artifacts/phase5-dry-run-report.json \
+            --backup-root /www/backups/dry-run \
+            --backup-output artifacts/phase6-backup-evidence-report.json \
+            --restore-output artifacts/phase6-restore-preview-report.json
+
+      - name: Upload Phase 5 and Phase 6 planning artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: phase5-dry-run-report
-          path: artifacts/phase5-dry-run-report.json
+          name: deployment-planning-reports
+          path: |
+            artifacts/phase5-dry-run-report.json
+            artifacts/phase6-backup-evidence-report.json
+            artifacts/phase6-restore-preview-report.json
           if-no-files-found: error
