@@ -1,4 +1,4 @@
-# Domeneshop MCP Tool Catalog — 22:34, 25.06.2026
+# Domeneshop MCP Tool Catalog — 12:15, 26.06.2026
 
 ## Tool registration model
 
@@ -7,7 +7,7 @@ Tools must be registered in tiers.
 ```text
 Tier 1: Safe read tools
 Tier 2: Controlled diagnostics
-Tier 3: Dry-run deployment tools
+Tier 3: Read-only hosted-file inspection and dry-run planning
 Tier 4: Approval-gated write tools
 Tier 5: Emergency rollback tools
 ```
@@ -32,9 +32,8 @@ Tier 5: Emergency rollback tools
 | `http_check_endpoint` | HTTP status check | None |
 | `http_check_json_health` | JSON health endpoint check | None |
 | `http_check_tls` | TLS availability check | None |
-| `deployment_compare_manifest` | Compare intended files with remote metadata | None |
 
-## Tier 3 — SFTP/SCP read and dry-run tools
+## Tier 3 — Hosted-file read and dry-run planning tools
 
 | Tool | Purpose | Write risk |
 |---|---|---:|
@@ -42,8 +41,8 @@ Tier 5: Emergency rollback tools
 | `sftp_list_files` | List files inside allowed root | None |
 | `sftp_get_file_metadata` | Size, modified time, hash | None |
 | `sftp_read_text_file` | Read limited text files | None |
-| `sftp_prepare_deploy_manifest` | Prepare upload manifest | None |
-| `sftp_deploy_dry_run` | Simulate upload | None |
+| `deployment_build_local_manifest` | Build local file manifest | None |
+| `deployment_compare_manifest` | Compare local manifest with supplied remote metadata | None |
 
 ## Tier 4 — Approval-gated write tools
 
