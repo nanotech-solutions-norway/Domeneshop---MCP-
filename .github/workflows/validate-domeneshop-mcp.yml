@@ -32,5 +32,17 @@ jobs:
       - name: Install package with test dependencies
         run: python -m pip install -e ".[test]"
 
-      - name: Run mocked Phase 2 tests
+      - name: Run mocked tests
         run: pytest -q
+
+      - name: Generate Phase 5 dry-run report
+        run: |
+          mkdir -p artifacts
+          python scripts/dry_run_plan.py --source-root . --target-root /www --output artifacts/phase5-dry-run-report.json
+
+      - name: Upload Phase 5 dry-run report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase5-dry-run-report
+          path: artifacts/phase5-dry-run-report.json
+          if-no-files-found: error
