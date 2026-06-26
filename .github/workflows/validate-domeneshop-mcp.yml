@@ -20,10 +20,17 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Validate repository structure and secret placeholders
+      - name: Validate repository structure and placeholder values
         run: python scripts/validate_repository_structure.py
 
-      - name: Confirm write mode is paused in template
+      - name: Confirm controlled defaults
         run: |
           grep -q '^WRITE_TOOLS_ENABLED=false$' config/domeneshop-mcp.env.example
           grep -q '^DRY_RUN_DEFAULT=true$' config/domeneshop-mcp.env.example
+          grep -q '^REQUIRE_OPERATOR_APPROVAL=true$' config/domeneshop-mcp.env.example
+
+      - name: Install package with test dependencies
+        run: python -m pip install -e ".[test]"
+
+      - name: Run mocked Phase 2 tests
+        run: pytest -q
