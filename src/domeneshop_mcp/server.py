@@ -99,5 +99,8 @@ def control_evaluate_change_preflight(request_payload: dict, config_payload: dic
 def control_build_audit_event(event_type: str, actor: str, target: str, decision_summary: dict) -> dict:
     return tools_change_control.control_build_audit_event(event_type, actor, target, decision_summary)
 
-if __name__ == "__main__":
+def main() -> None:
     mcp.run()
+
+if __name__ == "__main__":
+    main()
