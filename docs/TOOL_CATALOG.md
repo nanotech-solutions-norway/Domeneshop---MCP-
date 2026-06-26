@@ -1,4 +1,4 @@
-# Domeneshop MCP Tool Catalog — 23:40, 26.06.2026
+# Domeneshop MCP Tool Catalog — 00:10, 27.06.2026
 
 ## Tool registration model
 
@@ -9,7 +9,8 @@ Tier 1: Safe read tools
 Tier 2: Controlled diagnostics
 Tier 3: Read-only hosted-file inspection and dry-run planning
 Tier 4: Recovery planning tools
-Tier 5: Approval-gated change tools
+Tier 5: Control-plane approval and audit tools
+Tier 6: Approval-gated future change tools
 ```
 
 ## Tier 1 — Domeneshop API read tools
@@ -51,7 +52,14 @@ Tier 5: Approval-gated change tools
 | `recovery_build_backup_manifest` | Build backup evidence manifest from a dry-run plan | None |
 | `recovery_build_restore_preview` | Build recovery preview from backup evidence manifest | None |
 
-## Tier 5 — Approval-gated future change tools
+## Tier 5 — Control-plane approval and audit tools
+
+| Tool | Purpose | Change risk |
+|---|---|---:|
+| `control_evaluate_change_preflight` | Evaluate approval, evidence, and risk controls | None |
+| `control_build_audit_event` | Build hashed audit-event model | None |
+
+## Tier 6 — Approval-gated future change tools
 
 These tools must not be registered while change mode is paused.
 
