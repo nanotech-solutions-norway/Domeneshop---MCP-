@@ -1,0 +1,18 @@
+services:
+  domeneshop-mcp:
+    build:
+      context: ../..
+      dockerfile: deploy/container/Dockerfile.example
+    environment:
+      DOMENESHOP_API_BASE_URL: "https://api.domeneshop.no/v0"
+      DOMENESHOP_SFTP_HOST: "sftp.domeneshop.no"
+      DOMENESHOP_SFTP_PORT: "22"
+      DOMENESHOP_REMOTE_ROOT: "/www"
+      ALLOWED_REMOTE_ROOTS: "/www,/www/solarex_forms,/www/atlas_control,/www/atlas_pip2"
+      MAX_READ_FILE_BYTES: "262144"
+      WRITE_TOOLS_ENABLED: "false"
+      DRY_RUN_DEFAULT: "true"
+      REQUIRE_OPERATOR_APPROVAL: "true"
+      REQUIRE_BACKUP_EVIDENCE: "true"
+      REQUIRE_PREFLIGHT_REPORT: "true"
+    restart: unless-stopped
