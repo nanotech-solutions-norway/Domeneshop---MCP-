@@ -48,7 +48,18 @@ jobs:
             --backup-output artifacts/phase6-backup-evidence-report.json \
             --restore-output artifacts/phase6-restore-preview-report.json
 
-      - name: Upload Phase 5 and Phase 6 planning artifacts
+      - name: Generate Phase 7 change-control preflight report
+        run: |
+          python scripts/change_preflight.py \
+            --action sftp_upload_file \
+            --target /www/index.html \
+            --risk-level medium \
+            --operator ci-validation \
+            --backup-evidence-reference artifacts/phase6-backup-evidence-report.json \
+            --preflight-reference artifacts/phase5-dry-run-report.json \
+            --output artifacts/phase7-change-preflight-report.json
+
+      - name: Upload planning and control artifacts
         uses: actions/upload-artifact@v4
         with:
           name: deployment-planning-reports
@@ -56,4 +67,5 @@ jobs:
             artifacts/phase5-dry-run-report.json
             artifacts/phase6-backup-evidence-report.json
             artifacts/phase6-restore-preview-report.json
+            artifacts/phase7-change-preflight-report.json
           if-no-files-found: error
