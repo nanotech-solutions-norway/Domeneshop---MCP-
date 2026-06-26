@@ -1,4 +1,4 @@
-"""MCP server entrypoint for Domeneshop read tools."""
+"""MCP server entrypoint for Domeneshop read and planning tools."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ from .client import DomeneshopReadClient
 from .config import DomeneshopConfig
 from .health import HealthDiagnostics
 from .sftp_read import SftpReadClient, SftpReadConfig
-from . import tools_dry_run, tools_health, tools_read, tools_recovery_plan, tools_sftp_read
+from . import tools_change_control, tools_dry_run, tools_health, tools_read, tools_recovery_plan, tools_sftp_read
 
 mcp = FastMCP("domeneshop-mcp")
 api_client = DomeneshopReadClient(DomeneshopConfig.from_env())
@@ -90,6 +90,14 @@ def recovery_build_backup_manifest(plan_payload: dict, remote_metadata: list[dic
 @mcp.tool()
 def recovery_build_restore_preview(manifest_payload: dict, allowed_roots: list[str]) -> dict:
     return tools_recovery_plan.build_restore_preview_from_manifest(manifest_payload, allowed_roots)
+
+@mcp.tool()
+def control_evaluate_change_preflight(request_payload: dict, config_payload: dict | None = None) -> dict:
+    return tools_change_control.control_evaluate_change_preflight(request_payload, config_payload)
+
+@mcp.tool()
+def control_build_audit_event(event_type: str, actor: str, target: str, decision_summary: dict) -> dict:
+    return tools_change_control.control_build_audit_event(event_type, actor, target, decision_summary)
 
 if __name__ == "__main__":
     mcp.run()
