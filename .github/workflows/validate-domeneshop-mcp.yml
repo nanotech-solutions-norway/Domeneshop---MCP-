@@ -65,6 +65,10 @@ jobs:
         run: |
           python scripts/readiness_preflight.py --output artifacts/phase8-readiness-preflight-report.json
 
+      - name: Generate Phase 9 runtime deployment report
+        run: |
+          python scripts/runtime_deployment_validate.py --repo-root . --output artifacts/phase9-runtime-deployment-validation-report.json
+
       - name: Upload planning and control artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -75,4 +79,5 @@ jobs:
             artifacts/phase6-restore-preview-report.json
             artifacts/phase7-change-preflight-report.json
             artifacts/phase8-readiness-preflight-report.json
+            artifacts/phase9-runtime-deployment-validation-report.json
           if-no-files-found: error
