@@ -1,4 +1,4 @@
-"""MCP server entrypoint for Domeneshop Phase 2 read tools."""
+"""MCP server entrypoint for Domeneshop read tools."""
 
 from __future__ import annotations
 
@@ -6,53 +6,60 @@ from mcp.server.fastmcp import FastMCP
 
 from .client import DomeneshopReadClient
 from .config import DomeneshopConfig
-from . import tools_read
-
+from .sftp_read import SftpReadClient, SftpReadConfig
+from . import tools_read, tools_sftp_read
 
 mcp = FastMCP("domeneshop-mcp")
-_config = DomeneshopConfig.from_env()
-_client = DomeneshopReadClient(_config)
-
+api_client = DomeneshopReadClient(DomeneshopConfig.from_env())
+remote_client = SftpReadClient(SftpReadConfig.from_env())
 
 @mcp.tool()
 def domeneshop_list_domains(domain: str | None = None) -> dict:
-    return tools_read.list_domains(_client, domain=domain)
-
+    return tools_read.list_domains(api_client, domain=domain)
 
 @mcp.tool()
 def domeneshop_get_domain(domain_id: int) -> dict:
-    return tools_read.get_domain(_client, domain_id=domain_id)
-
+    return tools_read.get_domain(api_client, domain_id=domain_id)
 
 @mcp.tool()
 def domeneshop_list_dns_records(domain_id: int, host: str | None = None, record_type: str | None = None) -> dict:
-    return tools_read.list_dns_records(_client, domain_id=domain_id, host=host, record_type=record_type)
-
+    return tools_read.list_dns_records(api_client, domain_id=domain_id, host=host, record_type=record_type)
 
 @mcp.tool()
 def domeneshop_get_dns_record(domain_id: int, record_id: int) -> dict:
-    return tools_read.get_dns_record(_client, domain_id=domain_id, record_id=record_id)
-
+    return tools_read.get_dns_record(api_client, domain_id=domain_id, record_id=record_id)
 
 @mcp.tool()
 def domeneshop_list_http_forwards(domain_id: int) -> dict:
-    return tools_read.list_http_forwards(_client, domain_id=domain_id)
-
+    return tools_read.list_http_forwards(api_client, domain_id=domain_id)
 
 @mcp.tool()
 def domeneshop_get_http_forward(domain_id: int, host: str) -> dict:
-    return tools_read.get_http_forward(_client, domain_id=domain_id, host=host)
-
+    return tools_read.get_http_forward(api_client, domain_id=domain_id, host=host)
 
 @mcp.tool()
 def domeneshop_list_invoices(status: str | None = None) -> dict:
-    return tools_read.list_invoices(_client, status=status)
-
+    return tools_read.list_invoices(api_client, status=status)
 
 @mcp.tool()
 def domeneshop_get_invoice(invoice_id: int) -> dict:
-    return tools_read.get_invoice(_client, invoice_id=invoice_id)
+    return tools_read.get_invoice(api_client, invoice_id=invoice_id)
 
+@mcp.tool()
+def sftp_list_allowed_roots() -> dict:
+    return tools_sftp_read.sftp_list_allowed_roots(remote_client)
+
+@mcp.tool()
+def sftp_list_files(remote_path: str) -> dict:
+    return tools_sftp_read.sftp_list_files(remote_client, remote_path=remote_path)
+
+@mcp.tool()
+def sftp_get_file_metadata(remote_path: str) -> dict:
+    return tools_sftp_read.sftp_get_file_metadata(remote_client, remote_path=remote_path)
+
+@mcp.tool()
+def sftp_read_text_file(remote_path: str) -> dict:
+    return tools_sftp_read.sftp_read_text_file(remote_client, remote_path=remote_path)
 
 if __name__ == "__main__":
     mcp.run()
