@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "domeneshop-mcp"
-version = "0.3.0"
+version = "0.8.0"
 description = "Controlled read-first MCP bridge for Domeneshop API and deployment governance."
 requires-python = ">=3.11"
 dependencies = [
@@ -22,6 +22,9 @@ sftp = [
 test = [
   "pytest>=8.0.0"
 ]
+
+[project.scripts]
+domeneshop-mcp-server = "domeneshop_mcp.server:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
