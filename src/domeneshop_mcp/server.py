@@ -6,12 +6,14 @@ from mcp.server.fastmcp import FastMCP
 
 from .client import DomeneshopReadClient
 from .config import DomeneshopConfig
+from .health import HealthDiagnostics
 from .sftp_read import SftpReadClient, SftpReadConfig
-from . import tools_read, tools_sftp_read
+from . import tools_health, tools_read, tools_sftp_read
 
 mcp = FastMCP("domeneshop-mcp")
 api_client = DomeneshopReadClient(DomeneshopConfig.from_env())
 remote_client = SftpReadClient(SftpReadConfig.from_env())
+health_client = HealthDiagnostics()
 
 @mcp.tool()
 def domeneshop_list_domains(domain: str | None = None) -> dict:
@@ -60,6 +62,18 @@ def sftp_get_file_metadata(remote_path: str) -> dict:
 @mcp.tool()
 def sftp_read_text_file(remote_path: str) -> dict:
     return tools_sftp_read.sftp_read_text_file(remote_client, remote_path=remote_path)
+
+@mcp.tool()
+def http_check_endpoint(url: str) -> dict:
+    return tools_health.http_check_endpoint(health_client, url=url)
+
+@mcp.tool()
+def http_check_json_health(url: str) -> dict:
+    return tools_health.http_check_json_health(health_client, url=url)
+
+@mcp.tool()
+def http_check_tls(url: str) -> dict:
+    return tools_health.http_check_tls(health_client, url=url)
 
 if __name__ == "__main__":
     mcp.run()
