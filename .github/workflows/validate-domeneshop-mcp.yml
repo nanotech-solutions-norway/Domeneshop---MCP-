@@ -28,6 +28,8 @@ jobs:
           grep -q '^WRITE_TOOLS_ENABLED=false$' config/domeneshop-mcp.env.example
           grep -q '^DRY_RUN_DEFAULT=true$' config/domeneshop-mcp.env.example
           grep -q '^REQUIRE_OPERATOR_APPROVAL=true$' config/domeneshop-mcp.env.example
+          grep -q '^REQUIRE_BACKUP_EVIDENCE=true$' config/domeneshop-mcp.env.example
+          grep -q '^REQUIRE_PREFLIGHT_REPORT=true$' config/domeneshop-mcp.env.example
 
       - name: Install package with test dependencies
         run: python -m pip install -e ".[test]"
@@ -48,16 +50,20 @@ jobs:
             --backup-output artifacts/phase6-backup-evidence-report.json \
             --restore-output artifacts/phase6-restore-preview-report.json
 
-      - name: Generate Phase 7 change-control preflight report
+      - name: Generate Phase 7 control report
         run: |
           python scripts/change_preflight.py \
-            --action sftp_upload_file \
+            --action planned_file_transfer \
             --target /www/index.html \
             --risk-level medium \
             --operator ci-validation \
             --backup-evidence-reference artifacts/phase6-backup-evidence-report.json \
             --preflight-reference artifacts/phase5-dry-run-report.json \
             --output artifacts/phase7-change-preflight-report.json
+
+      - name: Generate Phase 8 readiness report
+        run: |
+          python scripts/readiness_preflight.py --output artifacts/phase8-readiness-preflight-report.json
 
       - name: Upload planning and control artifacts
         uses: actions/upload-artifact@v4
@@ -68,4 +74,5 @@ jobs:
             artifacts/phase6-backup-evidence-report.json
             artifacts/phase6-restore-preview-report.json
             artifacts/phase7-change-preflight-report.json
+            artifacts/phase8-readiness-preflight-report.json
           if-no-files-found: error
