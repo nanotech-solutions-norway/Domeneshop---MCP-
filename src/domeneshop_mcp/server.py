@@ -8,7 +8,7 @@ from .client import DomeneshopReadClient
 from .config import DomeneshopConfig
 from .health import HealthDiagnostics
 from .sftp_read import SftpReadClient, SftpReadConfig
-from . import tools_dry_run, tools_health, tools_read, tools_sftp_read
+from . import tools_dry_run, tools_health, tools_read, tools_recovery_plan, tools_sftp_read
 
 mcp = FastMCP("domeneshop-mcp")
 api_client = DomeneshopReadClient(DomeneshopConfig.from_env())
@@ -82,6 +82,14 @@ def deployment_build_local_manifest(source_root: str) -> dict:
 @mcp.tool()
 def deployment_compare_manifest(source_root: str, target_root: str, allowed_roots: list[str], remote_metadata: list[dict]) -> dict:
     return tools_dry_run.compare_plan(source_root, target_root, tuple(allowed_roots), remote_metadata)
+
+@mcp.tool()
+def recovery_build_backup_manifest(plan_payload: dict, remote_metadata: list[dict], backup_root: str, allowed_roots: list[str]) -> dict:
+    return tools_recovery_plan.build_backup_manifest_from_plan(plan_payload, remote_metadata, backup_root, allowed_roots)
+
+@mcp.tool()
+def recovery_build_restore_preview(manifest_payload: dict, allowed_roots: list[str]) -> dict:
+    return tools_recovery_plan.build_restore_preview_from_manifest(manifest_payload, allowed_roots)
 
 if __name__ == "__main__":
     mcp.run()
