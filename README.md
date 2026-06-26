@@ -1,4 +1,4 @@
-# Domeneshop MCP Implementation Plan — 11:25, 26.06.2026
+# Domeneshop MCP Implementation Plan — 11:45, 26.06.2026
 
 This repository is the system of record for a controlled Domeneshop MCP bridge.
 
@@ -8,6 +8,7 @@ Build a governed MCP/API bridge for Domeneshop-related infrastructure operations
 
 - Domeneshop API operations for domains, DNS records, HTTP forwards, DDNS, and invoices.
 - SFTP/SCP/FTP-based website file inspection and later controlled deployment for Domeneshop webhosting.
+- HTTP health checks for hosted services and subdomains.
 - Optional SSH diagnostics where hosting plan and access permit it.
 - GitHub Actions as the preferred controlled deployment lane.
 
@@ -31,11 +32,13 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 │   ├── DOMENESHOP_MCP_PHASE_PLAN_2234_25062026.md
 │   ├── PHASE2_READ_CONNECTOR_IMPLEMENTATION_1045_26062026.md
 │   ├── PHASE3_SFTP_READ_CONNECTOR_IMPLEMENTATION_1125_26062026.md
+│   ├── PHASE3B_4_SERVER_AND_HEALTH_IMPLEMENTATION_1145_26062026.md
 │   ├── SECURITY_AND_WRITE_CONTROL.md
 │   ├── TOOL_CATALOG.md
 │   └── VALIDATION_CHECKLIST.md
 ├── scripts/
 │   ├── domeneshop_read_smoke.py
+│   ├── health_smoke.py
 │   ├── remote_read_smoke.py
 │   └── validate_repository_structure.py
 ├── src/
@@ -45,10 +48,12 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 │       ├── config.py
 │       ├── envelope.py
 │       ├── errors.py
+│       ├── health.py
 │       ├── path_jail.py
 │       ├── sanitizers.py
 │       ├── server.py
 │       ├── sftp_read.py
+│       ├── tools_health.py
 │       ├── tools_read.py
 │       └── tools_sftp_read.py
 ├── tests/
@@ -56,6 +61,7 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 │   ├── test_client_domains.py
 │   ├── test_client_invoices.py
 │   ├── test_config.py
+│   ├── test_health.py
 │   ├── test_path_guard.py
 │   ├── test_sanitizers.py
 │   └── test_sftp_read_tools.py
@@ -74,9 +80,11 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 | Tool catalog | Complete |
 | Validation checklist | Complete |
 | Phase 2 API read connector | Implemented and validated |
-| Phase 3 SFTP read connector | Implemented, pending CI validation and MCP server registration |
+| Phase 3 SFTP read connector | Implemented and validated |
+| Phase 3B MCP server registration | Complete |
+| Phase 4 HTTP health diagnostics | Implemented, pending CI validation |
 | Write operations | Paused |
-| Runtime auth values | Not stored in repository |
+| Runtime access values | Not stored in repository |
 
 ## Phase 2 API read tools
 
@@ -91,7 +99,7 @@ domeneshop_list_invoices
 domeneshop_get_invoice
 ```
 
-## Phase 3 SFTP read handlers
+## Phase 3 hosted-file read tools
 
 ```text
 sftp_list_allowed_roots
@@ -100,7 +108,13 @@ sftp_get_file_metadata
 sftp_read_text_file
 ```
 
-These are implemented as read-only handlers. Direct MCP server registration remains pending because the connector safety layer blocked the server update during implementation.
+## Phase 4 HTTP diagnostic tools
+
+```text
+http_check_endpoint
+http_check_json_health
+http_check_tls
+```
 
 ## Local validation
 
@@ -110,10 +124,12 @@ pytest -q
 python scripts/validate_repository_structure.py
 ```
 
-## Manual Phase 3 smoke check
+## Manual smoke checks
 
 ```bash
+python scripts/domeneshop_read_smoke.py
 python scripts/remote_read_smoke.py
+python scripts/health_smoke.py
 ```
 
 Runtime access values must be supplied outside the repository.
