@@ -1,4 +1,4 @@
-# Domeneshop MCP Implementation Plan — 22:34, 25.06.2026
+# Domeneshop MCP Implementation Plan — 10:45, 26.06.2026
 
 This repository is the system of record for a controlled Domeneshop MCP bridge.
 
@@ -24,15 +24,34 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 ```text
 .
 ├── README.md
+├── pyproject.toml
 ├── config/
 │   └── domeneshop-mcp.env.example
 ├── docs/
 │   ├── DOMENESHOP_MCP_PHASE_PLAN_2234_25062026.md
+│   ├── PHASE2_READ_CONNECTOR_IMPLEMENTATION_1045_26062026.md
 │   ├── SECURITY_AND_WRITE_CONTROL.md
 │   ├── TOOL_CATALOG.md
 │   └── VALIDATION_CHECKLIST.md
 ├── scripts/
+│   ├── domeneshop_read_smoke.py
 │   └── validate_repository_structure.py
+├── src/
+│   └── domeneshop_mcp/
+│       ├── __init__.py
+│       ├── client.py
+│       ├── config.py
+│       ├── envelope.py
+│       ├── errors.py
+│       ├── sanitizers.py
+│       ├── server.py
+│       └── tools_read.py
+├── tests/
+│   ├── test_client_dns.py
+│   ├── test_client_domains.py
+│   ├── test_client_invoices.py
+│   ├── test_config.py
+│   └── test_sanitizers.py
 └── .github/
     └── workflows/
         └── validate-domeneshop-mcp.yml
@@ -42,13 +61,35 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 
 | Area | Status |
 |---|---|
-| Repository baseline | Prepared |
-| Phase plan | Prepared |
-| Security model | Prepared |
-| Tool catalog | Prepared |
-| Validation checklist | Prepared |
+| Repository baseline | Complete |
+| Phase plan | Complete |
+| Security model | Complete |
+| Tool catalog | Complete |
+| Validation checklist | Complete |
+| Phase 2 read connector | Implemented, pending CI validation |
 | Write operations | Paused |
-| Credentials | Not stored in repository |
+| Runtime auth values | Not stored in repository |
+
+## Phase 2 read tools
+
+```text
+domeneshop_list_domains
+domeneshop_get_domain
+domeneshop_list_dns_records
+domeneshop_get_dns_record
+domeneshop_list_http_forwards
+domeneshop_get_http_forward
+domeneshop_list_invoices
+domeneshop_get_invoice
+```
+
+## Local validation
+
+```bash
+python -m pip install -e ".[test]"
+pytest -q
+python scripts/validate_repository_structure.py
+```
 
 ## Recommended implementation route
 
