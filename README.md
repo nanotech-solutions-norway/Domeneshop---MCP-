@@ -1,4 +1,4 @@
-# Domeneshop MCP Implementation Plan — 00:10, 27.06.2026
+# Domeneshop MCP Implementation Plan — 00:35, 27.06.2026
 
 This repository is the system of record for a controlled Domeneshop MCP bridge.
 
@@ -12,6 +12,7 @@ Build a governed MCP/API bridge for Domeneshop-related infrastructure operations
 - Dry-run deployment planning through GitHub Actions.
 - Planning-only recovery evidence for future controlled deployment.
 - Approval-gated change-control preflight before any future live operation.
+- MCP server packaging and deployment readiness preflight.
 - Optional SSH diagnostics where hosting plan and access permit it.
 - GitHub Actions as the preferred controlled deployment lane.
 
@@ -30,9 +31,11 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 ├── README.md
 ├── pyproject.toml
 ├── config/
-│   └── domeneshop-mcp.env.example
+│   ├── domeneshop-mcp.env.example
+│   └── mcp-client.example.json
 ├── docs/
 │   ├── DOMENESHOP_MCP_PHASE_PLAN_2234_25062026.md
+│   ├── MCP_CLIENT_CONFIGURATION_EXAMPLES.md
 │   ├── PHASE2_READ_CONNECTOR_IMPLEMENTATION_1045_26062026.md
 │   ├── PHASE3_SFTP_READ_CONNECTOR_IMPLEMENTATION_1125_26062026.md
 │   ├── PHASE3B_4_SERVER_AND_HEALTH_IMPLEMENTATION_1145_26062026.md
@@ -40,6 +43,8 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 │   ├── PHASE5_VALIDATION_ERROR_FIX_2320_26062026.md
 │   ├── PHASE6_BACKUP_RECOVERY_PLANNING_2340_26062026.md
 │   ├── PHASE7_APPROVAL_GATED_CHANGE_CONTROL_0010_27062026.md
+│   ├── PHASE8_MCP_PACKAGING_DEPLOYMENT_SCAFFOLD_0035_27062026.md
+│   ├── PRODUCTION_DEPLOYMENT_RUNBOOK.md
 │   ├── SECURITY_AND_WRITE_CONTROL.md
 │   ├── TOOL_CATALOG.md
 │   └── VALIDATION_CHECKLIST.md
@@ -48,6 +53,7 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 │   ├── domeneshop_read_smoke.py
 │   ├── dry_run_plan.py
 │   ├── health_smoke.py
+│   ├── readiness_preflight.py
 │   ├── recovery_plan.py
 │   ├── remote_read_smoke.py
 │   └── validate_repository_structure.py
@@ -63,6 +69,7 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 │       ├── errors.py
 │       ├── health.py
 │       ├── path_jail.py
+│       ├── readiness.py
 │       ├── recovery_plan.py
 │       ├── sanitizers.py
 │       ├── server.py
@@ -81,7 +88,9 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 │   ├── test_config.py
 │   ├── test_deploy_plan.py
 │   ├── test_health.py
+│   ├── test_packaging.py
 │   ├── test_path_guard.py
+│   ├── test_readiness.py
 │   ├── test_recovery_plan.py
 │   ├── test_sanitizers.py
 │   └── test_sftp_read_tools.py
@@ -105,9 +114,17 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 | Phase 4 HTTP health diagnostics | Implemented and validated |
 | Phase 5 dry-run deployment lane | Implemented and validated |
 | Phase 6 recovery planning | Implemented and validated |
-| Phase 7 change-control scaffold | Implemented, pending CI validation |
+| Phase 7 change-control scaffold | Implemented and validated |
+| Phase 8 packaging and readiness scaffold | Implemented, pending CI validation |
 | Live change operations | Not registered |
 | Runtime access values | Not stored in repository |
+
+## Server entrypoints
+
+```bash
+domeneshop-mcp-server
+python -m domeneshop_mcp.server
+```
 
 ## Phase 2 API read tools
 
@@ -175,6 +192,7 @@ python scripts/validate_repository_structure.py
 python scripts/dry_run_plan.py --source-root . --target-root /www --output phase5-dry-run-report.json
 python scripts/recovery_plan.py --dry-run-report phase5-dry-run-report.json --backup-root /www/backups/dry-run --backup-output phase6-backup-evidence-report.json --restore-output phase6-restore-preview-report.json
 python scripts/change_preflight.py --output phase7-change-preflight-report.json
+python scripts/readiness_preflight.py --output phase8-readiness-preflight-report.json
 ```
 
 ## Manual smoke checks
