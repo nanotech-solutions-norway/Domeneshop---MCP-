@@ -8,7 +8,7 @@ from .client import DomeneshopReadClient
 from .config import DomeneshopConfig
 from .health import HealthDiagnostics
 from .sftp_read import SftpReadClient, SftpReadConfig
-from . import tools_health, tools_read, tools_sftp_read
+from . import tools_dry_run, tools_health, tools_read, tools_sftp_read
 
 mcp = FastMCP("domeneshop-mcp")
 api_client = DomeneshopReadClient(DomeneshopConfig.from_env())
@@ -74,6 +74,14 @@ def http_check_json_health(url: str) -> dict:
 @mcp.tool()
 def http_check_tls(url: str) -> dict:
     return tools_health.http_check_tls(health_client, url=url)
+
+@mcp.tool()
+def deployment_build_local_manifest(source_root: str) -> dict:
+    return tools_dry_run.build_manifest(source_root)
+
+@mcp.tool()
+def deployment_compare_manifest(source_root: str, target_root: str, allowed_roots: list[str], remote_metadata: list[dict]) -> dict:
+    return tools_dry_run.compare_plan(source_root, target_root, tuple(allowed_roots), remote_metadata)
 
 if __name__ == "__main__":
     mcp.run()
