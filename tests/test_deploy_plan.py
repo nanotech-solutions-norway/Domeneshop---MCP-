@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import pytest
+
 from domeneshop_mcp.deploy_plan import (
     LocalManifestEntry,
     RemoteManifestEntry,
@@ -40,10 +42,10 @@ def test_compare_manifest_classifies_new_changed_unchanged():
     assert summary["will_write"] is False
 
 
-def test_compare_manifest_blocks_outside_root():
+def test_compare_manifest_rejects_outside_target_root():
     local_entries = [LocalManifestEntry("index.html", 3, "aaa")]
-    plan = compare_manifest(local_entries, {}, target_root="/private", allowed_roots=("/www",))
-    assert plan.summary()["blocked_count"] == 0  # target root validation raises before plan build
+    with pytest.raises(ValueError):
+        compare_manifest(local_entries, {}, target_root="/private", allowed_roots=("/www",))
 
 
 def test_compare_plan_tool_returns_envelope(tmp_path: Path):
