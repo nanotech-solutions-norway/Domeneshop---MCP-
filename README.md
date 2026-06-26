@@ -1,4 +1,4 @@
-# Domeneshop MCP Implementation Plan — 11:45, 26.06.2026
+# Domeneshop MCP Implementation Plan — 12:15, 26.06.2026
 
 This repository is the system of record for a controlled Domeneshop MCP bridge.
 
@@ -9,6 +9,7 @@ Build a governed MCP/API bridge for Domeneshop-related infrastructure operations
 - Domeneshop API operations for domains, DNS records, HTTP forwards, DDNS, and invoices.
 - SFTP/SCP/FTP-based website file inspection and later controlled deployment for Domeneshop webhosting.
 - HTTP health checks for hosted services and subdomains.
+- Dry-run deployment planning through GitHub Actions.
 - Optional SSH diagnostics where hosting plan and access permit it.
 - GitHub Actions as the preferred controlled deployment lane.
 
@@ -33,11 +34,13 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 │   ├── PHASE2_READ_CONNECTOR_IMPLEMENTATION_1045_26062026.md
 │   ├── PHASE3_SFTP_READ_CONNECTOR_IMPLEMENTATION_1125_26062026.md
 │   ├── PHASE3B_4_SERVER_AND_HEALTH_IMPLEMENTATION_1145_26062026.md
+│   ├── PHASE5_DRY_RUN_DEPLOYMENT_LANE_1215_26062026.md
 │   ├── SECURITY_AND_WRITE_CONTROL.md
 │   ├── TOOL_CATALOG.md
 │   └── VALIDATION_CHECKLIST.md
 ├── scripts/
 │   ├── domeneshop_read_smoke.py
+│   ├── dry_run_plan.py
 │   ├── health_smoke.py
 │   ├── remote_read_smoke.py
 │   └── validate_repository_structure.py
@@ -46,6 +49,7 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 │       ├── __init__.py
 │       ├── client.py
 │       ├── config.py
+│       ├── deploy_plan.py
 │       ├── envelope.py
 │       ├── errors.py
 │       ├── health.py
@@ -53,6 +57,7 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 │       ├── sanitizers.py
 │       ├── server.py
 │       ├── sftp_read.py
+│       ├── tools_dry_run.py
 │       ├── tools_health.py
 │       ├── tools_read.py
 │       └── tools_sftp_read.py
@@ -61,6 +66,7 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 │   ├── test_client_domains.py
 │   ├── test_client_invoices.py
 │   ├── test_config.py
+│   ├── test_deploy_plan.py
 │   ├── test_health.py
 │   ├── test_path_guard.py
 │   ├── test_sanitizers.py
@@ -82,7 +88,8 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 | Phase 2 API read connector | Implemented and validated |
 | Phase 3 SFTP read connector | Implemented and validated |
 | Phase 3B MCP server registration | Complete |
-| Phase 4 HTTP health diagnostics | Implemented, pending CI validation |
+| Phase 4 HTTP health diagnostics | Implemented and validated |
+| Phase 5 dry-run deployment lane | Implemented, pending CI validation |
 | Write operations | Paused |
 | Runtime access values | Not stored in repository |
 
@@ -116,12 +123,26 @@ http_check_json_health
 http_check_tls
 ```
 
+## Phase 5 dry-run planning tools
+
+```text
+deployment_build_local_manifest
+deployment_compare_manifest
+```
+
+The Phase 5 lane produces a report artifact named:
+
+```text
+phase5-dry-run-report
+```
+
 ## Local validation
 
 ```bash
 python -m pip install -e ".[test]"
 pytest -q
 python scripts/validate_repository_structure.py
+python scripts/dry_run_plan.py --source-root . --target-root /www --output phase5-dry-run-report.json
 ```
 
 ## Manual smoke checks
