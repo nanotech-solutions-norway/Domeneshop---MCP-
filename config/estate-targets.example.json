@@ -1,0 +1,44 @@
+{
+  "estate": "Atlas/SolarEX/Domeneshop service registry",
+  "mode": "read_and_plan_only",
+  "services": [
+    {
+      "name": "SolarEX Forms API",
+      "domain": "forms.nanotech-solutions.com",
+      "health_url": "https://forms.nanotech-solutions.com/solarex_forms/health.php",
+      "remote_root": "/www/solarex_forms",
+      "category": "forms_backend",
+      "owner": "SolarEX"
+    },
+    {
+      "name": "SolarEX Admin",
+      "domain": "forms.nanotech-solutions.com",
+      "health_url": "https://forms.nanotech-solutions.com/solarex_admin/",
+      "remote_root": "/www/solarex_forms",
+      "category": "admin_portal",
+      "owner": "SolarEX"
+    },
+    {
+      "name": "Atlas Monitor",
+      "domain": "monitor.atlas-ai.no",
+      "health_url": "https://monitor.atlas-ai.no/login.php",
+      "remote_root": "/www/atlas_control",
+      "category": "control_panel",
+      "owner": "Atlas"
+    },
+    {
+      "name": "Atlas PIP",
+      "domain": "pip.atlas-ai.no",
+      "health_url": "https://pip.atlas-ai.no/health.php",
+      "remote_root": "/www/atlas_pip2",
+      "category": "prediction_service",
+      "owner": "Atlas"
+    }
+  ],
+  "allowed_roots": [
+    "/www",
+    "/www/solarex_forms",
+    "/www/atlas_control",
+    "/www/atlas_pip2"
+  ]
+}
