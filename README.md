@@ -1,4 +1,4 @@
-# Domeneshop MCP Implementation Plan — 14:42, 27.06.2026
+# Domeneshop MCP Implementation Plan — 14:50, 27.06.2026
 
 This repository is the system of record for the Domeneshop MCP bridge.
 
@@ -17,42 +17,43 @@ Runtime access values: outside repository
 | Phase 13 through Phase 34 control chain | Implemented |
 | Phase 35 release closure | Implemented as release-closure-only control layer |
 | Phase 36 write scope definition | Implemented as scope-definition-only control layer |
+| Phase 37 credential readiness | Implemented as credential-readiness-only control layer |
 | Runtime access values | Not stored in repository |
 | Live changes | Still held |
 
-## Phase 36 files
+## Phase 37 files
 
 ```text
-docs/PHASE36_WRITE_SCOPE_DEFINITION.md
-scripts/phase36_write_scope_validate.py
+docs/PHASE37_CREDENTIAL_READINESS.md
+scripts/phase37_credential_readiness_validate.py
 ```
 
-## Future allowlist
+## Credential repository rule
 
 ```text
-SCOPE_DNS_RECORD_REVIEW
-SCOPE_DNS_RECORD_CREATE
-SCOPE_DNS_RECORD_UPDATE
-SCOPE_DNS_RECORD_DELETE
-SCOPE_DNS_TTL_UPDATE
-SCOPE_ZONE_EXPORT_REVIEW
+NO_CREDENTIAL_VALUES_IN_REPOSITORY
+PLACEHOLDERS_ONLY_IN_EXAMPLES
+RUNTIME_VALUES_SUPPLIED_EXTERNALLY
+ROTATION_REQUIRED_BEFORE_PRODUCTION_USE
+AUDIT_REQUIRED_FOR_CREDENTIAL_ACCESS
 ```
 
-## Denylist
+## Required runtime references
 
 ```text
-NO_DOMAIN_TRANSFER
-NO_REGISTRANT_CHANGE
-NO_NAMESERVER_CHANGE_WITHOUT_SEPARATE_APPROVAL
-NO_EMAIL_ROUTING_CHANGE_WITHOUT_SEPARATE_APPROVAL
-NO_BULK_DELETE_WITHOUT_SEPARATE_APPROVAL
-NO_AUTONOMOUS_LIVE_CHANGE
+DOMENESHOP_API_TOKEN_REF
+DOMENESHOP_API_SECRET_REF
+DOMENESHOP_ACCOUNT_REF
+APPROVED_DOMAIN_REGISTRY_REF
+OPERATOR_APPROVAL_CHANNEL_REF
+BACKUP_STORAGE_REF
 ```
+
+The entries above are references only. Actual values remain outside the repository.
 
 ## Remaining write-readiness sequence
 
 ```text
-Phase 37: Secret readiness
 Phase 38: Backup and recovery evidence
 Phase 39: Write preflight and dry-run
 Phase 40: Operator approval gate
@@ -66,7 +67,7 @@ Phase 42: Production use validation
 deployment-planning-reports
 ```
 
-Phase 13 through Phase 36 validation reports are included together with the read-only release manifest report.
+Phase 13 through Phase 37 validation reports are included together with the read-only release manifest report.
 
 ## Local validation
 
@@ -74,7 +75,7 @@ Phase 13 through Phase 36 validation reports are included together with the read
 python -m pip install -e ".[test]"
 pytest -q
 python scripts/validate_repository_structure.py
-python scripts/phase36_write_scope_validate.py --repo-root . --output phase36-write-scope-validation-report.json
+python scripts/phase37_credential_readiness_validate.py --repo-root . --output phase37-credential-readiness-validation-report.json
 python scripts/release_manifest_validate.py --manifest config/read-only-release-manifest.example.json --output read-only-release-manifest-validation-report.json
 ```
 
@@ -83,7 +84,7 @@ python scripts/release_manifest_validate.py --manifest config/read-only-release-
 ```text
 APPROVE_READ_ONLY_RUNTIME
 HOLD_LIVE_CHANGE_ACTIVATION
-HOLD_PHASE36_WRITE_SCOPE_DEFINITION_ONLY
+HOLD_PHASE37_CREDENTIAL_READINESS_ONLY
 ```
 
 ## Repository target
