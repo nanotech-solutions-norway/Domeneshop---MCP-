@@ -12,8 +12,10 @@ required_files = [
     "docs/VALIDATION_CHECKLIST.md",
     "docs/PHASE13_RISK_REGISTER_AND_SCOPE.md",
     "docs/PHASE14_ACTIVATION_READINESS_GATE.md",
+    "docs/PHASE15_CONTROL_BLUEPRINT.md",
     "scripts/phase13_disabled_default_validate.py",
     "scripts/phase14_activation_readiness_validate.py",
+    "scripts/phase15_control_blueprint_validate.py",
     "config/domeneshop-mcp.env.example",
     ".github/workflows/validate-domeneshop-mcp.yml",
 ]
