@@ -1,0 +1,24 @@
+{
+  "release_name": "Domeneshop MCP Read-Only Runtime",
+  "release_type": "read_only_runtime",
+  "release_date": "2026-06-27",
+  "decision": "APPROVE_READ_ONLY_RUNTIME",
+  "artifact_package": "deployment-planning-reports",
+  "required_reports": [
+    "phase5-dry-run-report.json",
+    "phase6-backup-evidence-report.json",
+    "phase6-restore-preview-report.json",
+    "phase7-change-preflight-report.json",
+    "phase8-readiness-preflight-report.json",
+    "phase9-runtime-deployment-validation-report.json",
+    "phase10-operations-validation-report.json",
+    "phase11-estate-validation-report.json",
+    "phase12-final-release-gate-report.json"
+  ],
+  "runtime_boundary": {
+    "live_change_operations_registered": false,
+    "runtime_values_in_repository": false,
+    "read_only_tools_allowed": true,
+    "planning_tools_allowed": true
+  }
+}
