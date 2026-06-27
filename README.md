@@ -1,4 +1,4 @@
-# Domeneshop MCP Implementation Plan — 12:58, 27.06.2026
+# Domeneshop MCP Implementation Plan — 13:06, 27.06.2026
 
 This repository is the system of record for a controlled Domeneshop MCP bridge.
 
@@ -46,6 +46,7 @@ Runtime access values: outside repository
 | Phase 21 review closure gate | Implemented as closure-only control layer |
 | Phase 22 maintenance baseline gate | Implemented as baseline-only control layer |
 | Phase 23 archive index gate | Implemented as archive-index-only control layer |
+| Phase 24 retention index gate | Implemented as retention-index-only control layer |
 | Read-only runtime release package | Implemented, pending CI validation |
 | Runtime access values | Not stored in repository |
 
@@ -63,6 +64,7 @@ docs/PHASE20_HANDOFF_PACKAGE_GATE.md
 docs/PHASE21_REVIEW_CLOSURE_GATE.md
 docs/PHASE22_MAINTENANCE_BASELINE_GATE.md
 docs/PHASE23_ARCHIVE_INDEX_GATE.md
+docs/PHASE24_RETENTION_INDEX_GATE.md
 ```
 
 ## Validation scripts
@@ -79,6 +81,7 @@ scripts/phase20_handoff_package_validate.py
 scripts/phase21_review_closure_validate.py
 scripts/phase22_maintenance_baseline_validate.py
 scripts/phase23_archive_index_validate.py
+scripts/phase24_retention_index_validate.py
 ```
 
 ## CI artifact package
@@ -89,7 +92,7 @@ The workflow produces a report artifact package named:
 deployment-planning-reports
 ```
 
-Phase 13 through Phase 23 validation reports are included in that package together with the read-only release manifest report.
+Phase 13 through Phase 24 validation reports are included in that package together with the read-only release manifest report.
 
 ## Local validation
 
@@ -108,6 +111,7 @@ python scripts/phase20_handoff_package_validate.py --repo-root . --output phase2
 python scripts/phase21_review_closure_validate.py --repo-root . --output phase21-review-closure-validation-report.json
 python scripts/phase22_maintenance_baseline_validate.py --repo-root . --output phase22-maintenance-baseline-validation-report.json
 python scripts/phase23_archive_index_validate.py --repo-root . --output phase23-archive-index-validation-report.json
+python scripts/phase24_retention_index_validate.py --repo-root . --output phase24-retention-index-validation-report.json
 python scripts/release_manifest_validate.py --manifest config/read-only-release-manifest.example.json --output read-only-release-manifest-validation-report.json
 ```
 
@@ -127,6 +131,7 @@ HOLD_PHASE20_HANDOFF_PACKAGE_ONLY
 HOLD_PHASE21_REVIEW_CLOSURE_ONLY
 HOLD_PHASE22_MAINTENANCE_BASELINE_ONLY
 HOLD_PHASE23_ARCHIVE_INDEX_ONLY
+HOLD_PHASE24_RETENTION_INDEX_ONLY
 ```
 
 ## Repository target
