@@ -28,6 +28,7 @@ phase_docs = {
     34: "PHASE34_CHECKPOINT.md",
     35: "PHASE35_RELEASE_CLOSURE.md",
     36: "PHASE36_WRITE_SCOPE_DEFINITION.md",
+    37: "PHASE37_CREDENTIAL_READINESS.md",
 }
 phase_validators = {
     13: "phase13_disabled_default_validate.py",
@@ -54,6 +55,7 @@ phase_validators = {
     34: "phase34_checkpoint_validate.py",
     35: "phase35_release_closure_validate.py",
     36: "phase36_write_scope_validate.py",
+    37: "phase37_credential_readiness_validate.py",
 }
 required_files = [
     "README.md",
