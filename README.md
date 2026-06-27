@@ -22,6 +22,7 @@ Build a governed MCP/API bridge for Domeneshop-related infrastructure operations
 - Phase 13 risk register and disabled-default guard for future live-change scope control.
 - Phase 14 activation-readiness gate for approval/evidence control without activation.
 - Phase 15 control blueprint for future release governance without runtime activation.
+- Phase 16 continuity evidence gate for non-executing recovery governance.
 - GitHub Actions as the preferred controlled deployment lane.
 
 ## Core rule
@@ -65,6 +66,7 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 │   ├── PHASE13_RISK_REGISTER_AND_SCOPE.md
 │   ├── PHASE14_ACTIVATION_READINESS_GATE.md
 │   ├── PHASE15_CONTROL_BLUEPRINT.md
+│   ├── PHASE16_CONTINUITY_EVIDENCE_GATE.md
 │   ├── PHASE2_READ_CONNECTOR_IMPLEMENTATION_1045_26062026.md
 │   ├── PHASE3_SFTP_READ_CONNECTOR_IMPLEMENTATION_1125_26062026.md
 │   ├── PHASE3B_4_SERVER_AND_HEALTH_IMPLEMENTATION_1145_26062026.md
@@ -91,6 +93,7 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 │   ├── phase13_disabled_default_validate.py
 │   ├── phase14_activation_readiness_validate.py
 │   ├── phase15_control_blueprint_validate.py
+│   ├── phase16_continuity_evidence_validate.py
 │   ├── readiness_preflight.py
 │   ├── recovery_plan.py
 │   ├── release_manifest_validate.py
@@ -176,6 +179,8 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 | Phase 14 live activation | Held / not authorized |
 | Phase 15 control blueprint | Implemented as blueprint-only control layer |
 | Phase 15 live activation | Held / not authorized |
+| Phase 16 continuity evidence gate | Implemented as evidence-only control layer |
+| Phase 16 live activation | Held / not authorized |
 | Read-only runtime release package | Implemented, pending CI validation |
 | Live change operations | Not registered |
 | Runtime access values | Not stored in repository |
@@ -206,6 +211,7 @@ docs/DOMENESHOP_MCP_FINAL_TRANSFER_REPORT_0245_27062026.md
 docs/PHASE13_RISK_REGISTER_AND_SCOPE.md
 docs/PHASE14_ACTIVATION_READINESS_GATE.md
 docs/PHASE15_CONTROL_BLUEPRINT.md
+docs/PHASE16_CONTINUITY_EVIDENCE_GATE.md
 ```
 
 ## Estate registry and release manifest
@@ -229,6 +235,7 @@ Phase 12: final release gate tooling
 Phase 13: disabled-default risk/scope validation
 Phase 14: activation-readiness gate validation
 Phase 15: control blueprint validation
+Phase 16: continuity evidence validation
 Read-only release package: release manifest validation
 ```
 
@@ -255,6 +262,7 @@ python scripts/final_release_gate.py --repo-root . --output phase12-final-releas
 python scripts/phase13_disabled_default_validate.py --repo-root . --output phase13-disabled-default-validation-report.json
 python scripts/phase14_activation_readiness_validate.py --repo-root . --output phase14-activation-readiness-validation-report.json
 python scripts/phase15_control_blueprint_validate.py --repo-root . --output phase15-control-blueprint-validation-report.json
+python scripts/phase16_continuity_evidence_validate.py --repo-root . --output phase16-continuity-evidence-validation-report.json
 python scripts/release_manifest_validate.py --manifest config/read-only-release-manifest.example.json --output read-only-release-manifest-validation-report.json
 ```
 
@@ -276,6 +284,7 @@ HOLD_LIVE_CHANGE_ACTIVATION
 HOLD_PHASE13_ACTIVATION
 HOLD_PHASE14_ACTIVATION_READINESS_ONLY
 HOLD_PHASE15_CONTROL_BLUEPRINT_ONLY
+HOLD_PHASE16_CONTINUITY_EVIDENCE_ONLY
 ```
 
 ## Recommended implementation route
