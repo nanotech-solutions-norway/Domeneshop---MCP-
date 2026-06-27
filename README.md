@@ -24,6 +24,7 @@ Build a governed MCP/API bridge for Domeneshop-related infrastructure operations
 - Phase 15 control blueprint for future release governance without runtime activation.
 - Phase 16 continuity evidence gate for non-executing recovery governance.
 - Phase 17 traceability gate for audit report continuity.
+- Phase 18 repository snapshot gate for controlled release-state indexing.
 - GitHub Actions as the preferred controlled deployment lane.
 
 ## Core rule
@@ -69,6 +70,7 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 │   ├── PHASE15_CONTROL_BLUEPRINT.md
 │   ├── PHASE16_CONTINUITY_EVIDENCE_GATE.md
 │   ├── PHASE17_TRACEABILITY.md
+│   ├── PHASE18_REPOSITORY_SNAPSHOT.md
 │   ├── PHASE2_READ_CONNECTOR_IMPLEMENTATION_1045_26062026.md
 │   ├── PHASE3_SFTP_READ_CONNECTOR_IMPLEMENTATION_1125_26062026.md
 │   ├── PHASE3B_4_SERVER_AND_HEALTH_IMPLEMENTATION_1145_26062026.md
@@ -97,6 +99,7 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 │   ├── phase15_control_blueprint_validate.py
 │   ├── phase16_continuity_evidence_validate.py
 │   ├── phase17_traceability_validate.py
+│   ├── phase18_repository_snapshot_validate.py
 │   ├── readiness_preflight.py
 │   ├── recovery_plan.py
 │   ├── release_manifest_validate.py
@@ -186,6 +189,8 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 | Phase 16 live activation | Held / not authorized |
 | Phase 17 traceability gate | Implemented as traceability-only control layer |
 | Phase 17 live activation | Held / not authorized |
+| Phase 18 repository snapshot gate | Implemented as snapshot-only control layer |
+| Phase 18 live activation | Held / not authorized |
 | Read-only runtime release package | Implemented, pending CI validation |
 | Live change operations | Not registered |
 | Runtime access values | Not stored in repository |
@@ -218,6 +223,7 @@ docs/PHASE14_ACTIVATION_READINESS_GATE.md
 docs/PHASE15_CONTROL_BLUEPRINT.md
 docs/PHASE16_CONTINUITY_EVIDENCE_GATE.md
 docs/PHASE17_TRACEABILITY.md
+docs/PHASE18_REPOSITORY_SNAPSHOT.md
 ```
 
 ## Estate registry and release manifest
@@ -243,6 +249,7 @@ Phase 14: activation-readiness gate validation
 Phase 15: control blueprint validation
 Phase 16: continuity evidence validation
 Phase 17: traceability validation
+Phase 18: repository snapshot validation
 Read-only release package: release manifest validation
 ```
 
@@ -271,6 +278,7 @@ python scripts/phase14_activation_readiness_validate.py --repo-root . --output p
 python scripts/phase15_control_blueprint_validate.py --repo-root . --output phase15-control-blueprint-validation-report.json
 python scripts/phase16_continuity_evidence_validate.py --repo-root . --output phase16-continuity-evidence-validation-report.json
 python scripts/phase17_traceability_validate.py --repo-root . --output phase17-traceability-validation-report.json
+python scripts/phase18_repository_snapshot_validate.py --repo-root . --output phase18-repository-snapshot-validation-report.json
 python scripts/release_manifest_validate.py --manifest config/read-only-release-manifest.example.json --output read-only-release-manifest-validation-report.json
 ```
 
@@ -294,6 +302,7 @@ HOLD_PHASE14_ACTIVATION_READINESS_ONLY
 HOLD_PHASE15_CONTROL_BLUEPRINT_ONLY
 HOLD_PHASE16_CONTINUITY_EVIDENCE_ONLY
 HOLD_PHASE17_TRACEABILITY_ONLY
+HOLD_PHASE18_REPOSITORY_SNAPSHOT_ONLY
 ```
 
 ## Recommended implementation route
