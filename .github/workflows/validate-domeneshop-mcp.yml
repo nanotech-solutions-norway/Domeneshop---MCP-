@@ -20,11 +20,9 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install package with test dependencies
-        run: python -m pip install -e ".[test]"
-
-      - name: Validate repository and tests
+      - name: Install and validate baseline
         run: |
+          python -m pip install -e ".[test]"
           python scripts/validate_repository_structure.py
           grep -q '^WRITE_TOOLS_ENABLED=false$' config/domeneshop-mcp.env.example
           grep -q '^DRY_RUN_DEFAULT=true$' config/domeneshop-mcp.env.example
@@ -33,7 +31,7 @@ jobs:
           grep -q '^REQUIRE_PREFLIGHT_REPORT=true$' config/domeneshop-mcp.env.example
           pytest -q
 
-      - name: Generate planning reports
+      - name: Generate phase reports
         run: |
           mkdir -p artifacts
           python scripts/dry_run_plan.py --source-root . --target-root /www --output artifacts/phase5-dry-run-report.json
@@ -44,9 +42,6 @@ jobs:
           python scripts/operations_validate.py --repo-root . --output artifacts/phase10-operations-validation-report.json
           python scripts/estate_validate.py --registry config/estate-targets.example.json --output artifacts/phase11-estate-validation-report.json
           python scripts/final_release_gate.py --repo-root . --output artifacts/phase12-final-release-gate-report.json
-
-      - name: Generate governance reports
-        run: |
           python scripts/phase13_disabled_default_validate.py --repo-root . --output artifacts/phase13-disabled-default-validation-report.json
           python scripts/phase14_activation_readiness_validate.py --repo-root . --output artifacts/phase14-activation-readiness-validation-report.json
           python scripts/phase15_control_blueprint_validate.py --repo-root . --output artifacts/phase15-control-blueprint-validation-report.json
@@ -62,6 +57,7 @@ jobs:
           python scripts/phase25_chain_index_validate.py --repo-root . --output artifacts/phase25-chain-index-validation-report.json
           python scripts/phase26_continuity_index_validate.py --repo-root . --output artifacts/phase26-continuity-index-validation-report.json
           python scripts/phase27_review_index_validate.py --repo-root . --output artifacts/phase27-review-index-validation-report.json
+          python scripts/phase28_inventory_index_validate.py --repo-root . --output artifacts/phase28-inventory-index-validation-report.json
           python scripts/release_manifest_validate.py --manifest config/read-only-release-manifest.example.json --output artifacts/read-only-release-manifest-validation-report.json
 
       - name: Upload planning and control artifacts
@@ -69,29 +65,5 @@ jobs:
         with:
           name: deployment-planning-reports
           path: |
-            artifacts/phase5-dry-run-report.json
-            artifacts/phase6-backup-evidence-report.json
-            artifacts/phase6-restore-preview-report.json
-            artifacts/phase7-change-preflight-report.json
-            artifacts/phase8-readiness-preflight-report.json
-            artifacts/phase9-runtime-deployment-validation-report.json
-            artifacts/phase10-operations-validation-report.json
-            artifacts/phase11-estate-validation-report.json
-            artifacts/phase12-final-release-gate-report.json
-            artifacts/phase13-disabled-default-validation-report.json
-            artifacts/phase14-activation-readiness-validation-report.json
-            artifacts/phase15-control-blueprint-validation-report.json
-            artifacts/phase16-continuity-evidence-validation-report.json
-            artifacts/phase17-traceability-validation-report.json
-            artifacts/phase18-repository-snapshot-validation-report.json
-            artifacts/phase19-release-freeze-validation-report.json
-            artifacts/phase20-handoff-package-validation-report.json
-            artifacts/phase21-review-closure-validation-report.json
-            artifacts/phase22-maintenance-baseline-validation-report.json
-            artifacts/phase23-archive-index-validation-report.json
-            artifacts/phase24-retention-index-validation-report.json
-            artifacts/phase25-chain-index-validation-report.json
-            artifacts/phase26-continuity-index-validation-report.json
-            artifacts/phase27-review-index-validation-report.json
-            artifacts/read-only-release-manifest-validation-report.json
+            artifacts/*.json
           if-no-files-found: error
