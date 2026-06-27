@@ -24,6 +24,7 @@ required_files = [
     "docs/PHASE24_RETENTION_INDEX_GATE.md",
     "docs/PHASE25_CHAIN_INDEX_GATE.md",
     "docs/PHASE26_CONTINUITY_INDEX_GATE.md",
+    "docs/PHASE27_REVIEW_INDEX_GATE.md",
     "scripts/phase13_disabled_default_validate.py",
     "scripts/phase14_activation_readiness_validate.py",
     "scripts/phase15_control_blueprint_validate.py",
@@ -38,6 +39,7 @@ required_files = [
     "scripts/phase24_retention_index_validate.py",
     "scripts/phase25_chain_index_validate.py",
     "scripts/phase26_continuity_index_validate.py",
+    "scripts/phase27_review_index_validate.py",
     "config/domeneshop-mcp.env.example",
     ".github/workflows/validate-domeneshop-mcp.yml",
 ]
