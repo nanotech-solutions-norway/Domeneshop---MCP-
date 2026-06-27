@@ -59,6 +59,7 @@ jobs:
           python scripts/phase27_review_index_validate.py --repo-root . --output artifacts/phase27-review-index-validation-report.json
           python scripts/phase28_inventory_index_validate.py --repo-root . --output artifacts/phase28-inventory-index-validation-report.json
           python scripts/phase29_catalog_index_validate.py --repo-root . --output artifacts/phase29-catalog-index-validation-report.json
+          python scripts/phase30_checkpoint_validate.py --repo-root . --output artifacts/phase30-checkpoint-validation-report.json
           python scripts/release_manifest_validate.py --manifest config/read-only-release-manifest.example.json --output artifacts/read-only-release-manifest-validation-report.json
 
       - name: Upload planning and control artifacts
