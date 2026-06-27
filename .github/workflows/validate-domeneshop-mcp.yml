@@ -105,6 +105,10 @@ jobs:
         run: |
           python scripts/phase18_repository_snapshot_validate.py --repo-root . --output artifacts/phase18-repository-snapshot-validation-report.json
 
+      - name: Generate Phase 19 release freeze report
+        run: |
+          python scripts/phase19_release_freeze_validate.py --repo-root . --output artifacts/phase19-release-freeze-validation-report.json
+
       - name: Generate read-only release manifest report
         run: |
           python scripts/release_manifest_validate.py --manifest config/read-only-release-manifest.example.json --output artifacts/read-only-release-manifest-validation-report.json
@@ -129,5 +133,6 @@ jobs:
             artifacts/phase16-continuity-evidence-validation-report.json
             artifacts/phase17-traceability-validation-report.json
             artifacts/phase18-repository-snapshot-validation-report.json
+            artifacts/phase19-release-freeze-validation-report.json
             artifacts/read-only-release-manifest-validation-report.json
           if-no-files-found: error
