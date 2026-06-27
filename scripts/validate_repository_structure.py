@@ -17,6 +17,7 @@ required_files = [
     "docs/PHASE17_TRACEABILITY.md",
     "docs/PHASE18_REPOSITORY_SNAPSHOT.md",
     "docs/PHASE19_RELEASE_FREEZE_GATE.md",
+    "docs/PHASE20_HANDOFF_PACKAGE_GATE.md",
     "scripts/phase13_disabled_default_validate.py",
     "scripts/phase14_activation_readiness_validate.py",
     "scripts/phase15_control_blueprint_validate.py",
@@ -24,6 +25,7 @@ required_files = [
     "scripts/phase17_traceability_validate.py",
     "scripts/phase18_repository_snapshot_validate.py",
     "scripts/phase19_release_freeze_validate.py",
+    "scripts/phase20_handoff_package_validate.py",
     "config/domeneshop-mcp.env.example",
     ".github/workflows/validate-domeneshop-mcp.yml",
 ]
