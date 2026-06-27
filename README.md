@@ -1,4 +1,4 @@
-# Domeneshop MCP Implementation Plan — 13:46, 27.06.2026
+# Domeneshop MCP Implementation Plan — 13:54, 27.06.2026
 
 This repository is the system of record for the Domeneshop MCP bridge.
 
@@ -31,6 +31,7 @@ Runtime access values: outside repository
 | Phase 27 review index gate | Implemented as review-index-only control layer |
 | Phase 28 inventory index gate | Implemented as inventory-index-only control layer |
 | Phase 29 catalog index gate | Implemented as catalog-index-only control layer |
+| Phase 30 checkpoint | Implemented as checkpoint-only control layer |
 | Runtime access values | Not stored in repository |
 
 ## Governance documents
@@ -53,6 +54,7 @@ docs/PHASE26_CONTINUITY_INDEX_GATE.md
 docs/PHASE27_REVIEW_INDEX_GATE.md
 docs/PHASE28_INVENTORY_INDEX_GATE.md
 docs/PHASE29_CATALOG_INDEX_GATE.md
+docs/PHASE30_CHECKPOINT.md
 ```
 
 ## Validation scripts
@@ -75,6 +77,7 @@ scripts/phase26_continuity_index_validate.py
 scripts/phase27_review_index_validate.py
 scripts/phase28_inventory_index_validate.py
 scripts/phase29_catalog_index_validate.py
+scripts/phase30_checkpoint_validate.py
 ```
 
 ## CI artifact package
@@ -83,7 +86,7 @@ scripts/phase29_catalog_index_validate.py
 deployment-planning-reports
 ```
 
-Phase 13 through Phase 29 validation reports are included together with the read-only release manifest report.
+Phase 13 through Phase 30 validation reports are included together with the read-only release manifest report.
 
 ## Local validation
 
@@ -91,7 +94,7 @@ Phase 13 through Phase 29 validation reports are included together with the read
 python -m pip install -e ".[test]"
 pytest -q
 python scripts/validate_repository_structure.py
-python scripts/phase29_catalog_index_validate.py --repo-root . --output phase29-catalog-index-validation-report.json
+python scripts/phase30_checkpoint_validate.py --repo-root . --output phase30-checkpoint-validation-report.json
 python scripts/release_manifest_validate.py --manifest config/read-only-release-manifest.example.json --output read-only-release-manifest-validation-report.json
 ```
 
@@ -117,6 +120,7 @@ HOLD_PHASE26_CONTINUITY_INDEX_ONLY
 HOLD_PHASE27_REVIEW_INDEX_ONLY
 HOLD_PHASE28_INVENTORY_INDEX_ONLY
 HOLD_PHASE29_CATALOG_INDEX_ONLY
+HOLD_PHASE30_CHECKPOINT_ONLY
 ```
 
 ## Repository target
