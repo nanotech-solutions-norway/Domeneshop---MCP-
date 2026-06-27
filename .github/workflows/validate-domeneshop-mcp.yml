@@ -97,6 +97,10 @@ jobs:
         run: |
           python scripts/phase16_continuity_evidence_validate.py --repo-root . --output artifacts/phase16-continuity-evidence-validation-report.json
 
+      - name: Generate Phase 17 traceability report
+        run: |
+          python scripts/phase17_traceability_validate.py --repo-root . --output artifacts/phase17-traceability-validation-report.json
+
       - name: Generate read-only release manifest report
         run: |
           python scripts/release_manifest_validate.py --manifest config/read-only-release-manifest.example.json --output artifacts/read-only-release-manifest-validation-report.json
@@ -119,5 +123,6 @@ jobs:
             artifacts/phase14-activation-readiness-validation-report.json
             artifacts/phase15-control-blueprint-validation-report.json
             artifacts/phase16-continuity-evidence-validation-report.json
+            artifacts/phase17-traceability-validation-report.json
             artifacts/read-only-release-manifest-validation-report.json
           if-no-files-found: error
