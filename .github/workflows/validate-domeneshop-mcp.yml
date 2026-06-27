@@ -73,6 +73,10 @@ jobs:
         run: |
           python scripts/operations_validate.py --repo-root . --output artifacts/phase10-operations-validation-report.json
 
+      - name: Generate Phase 11 estate report
+        run: |
+          python scripts/estate_validate.py --registry config/estate-targets.example.json --output artifacts/phase11-estate-validation-report.json
+
       - name: Upload planning and control artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -85,4 +89,5 @@ jobs:
             artifacts/phase8-readiness-preflight-report.json
             artifacts/phase9-runtime-deployment-validation-report.json
             artifacts/phase10-operations-validation-report.json
+            artifacts/phase11-estate-validation-report.json
           if-no-files-found: error
