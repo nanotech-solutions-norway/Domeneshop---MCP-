@@ -81,6 +81,10 @@ jobs:
         run: |
           python scripts/final_release_gate.py --repo-root . --output artifacts/phase12-final-release-gate-report.json
 
+      - name: Generate Phase 13 disabled-default report
+        run: |
+          python scripts/phase13_disabled_default_validate.py --repo-root . --output artifacts/phase13-disabled-default-validation-report.json
+
       - name: Generate read-only release manifest report
         run: |
           python scripts/release_manifest_validate.py --manifest config/read-only-release-manifest.example.json --output artifacts/read-only-release-manifest-validation-report.json
@@ -99,5 +103,6 @@ jobs:
             artifacts/phase10-operations-validation-report.json
             artifacts/phase11-estate-validation-report.json
             artifacts/phase12-final-release-gate-report.json
+            artifacts/phase13-disabled-default-validation-report.json
             artifacts/read-only-release-manifest-validation-report.json
           if-no-files-found: error
