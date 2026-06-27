@@ -20,6 +20,7 @@ Build a governed MCP/API bridge for Domeneshop-related infrastructure operations
 - Read-only runtime release package.
 - Optional SSH diagnostics where hosting plan and access permit it.
 - Phase 13 risk register and disabled-default guard for future live-change scope control.
+- Phase 14 activation-readiness gate for approval/evidence control without activation.
 - GitHub Actions as the preferred controlled deployment lane.
 
 ## Core rule
@@ -61,6 +62,7 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 │   ├── PHASE11_ESTATE_INTEGRATION_0210_27062026.md
 │   ├── PHASE12_FINAL_VALIDATION_RELEASE_GATE_0245_27062026.md
 │   ├── PHASE13_RISK_REGISTER_AND_SCOPE.md
+│   ├── PHASE14_ACTIVATION_READINESS_GATE.md
 │   ├── PHASE2_READ_CONNECTOR_IMPLEMENTATION_1045_26062026.md
 │   ├── PHASE3_SFTP_READ_CONNECTOR_IMPLEMENTATION_1125_26062026.md
 │   ├── PHASE3B_4_SERVER_AND_HEALTH_IMPLEMENTATION_1145_26062026.md
@@ -85,6 +87,7 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 │   ├── health_smoke.py
 │   ├── operations_validate.py
 │   ├── phase13_disabled_default_validate.py
+│   ├── phase14_activation_readiness_validate.py
 │   ├── readiness_preflight.py
 │   ├── recovery_plan.py
 │   ├── release_manifest_validate.py
@@ -166,6 +169,8 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 | Phase 12 final validation and release gate | Implemented and validated |
 | Phase 13 risk register and scope | Implemented as disabled-default control layer |
 | Phase 13 live activation | Held / not authorized |
+| Phase 14 activation-readiness gate | Implemented as readiness-only control layer |
+| Phase 14 live activation | Held / not authorized |
 | Read-only runtime release package | Implemented, pending CI validation |
 | Live change operations | Not registered |
 | Runtime access values | Not stored in repository |
@@ -194,6 +199,7 @@ docs/RELEASE_APPROVAL_CHECKLIST.md
 docs/FINAL_RELEASE_GATE_CHECKLIST.md
 docs/DOMENESHOP_MCP_FINAL_TRANSFER_REPORT_0245_27062026.md
 docs/PHASE13_RISK_REGISTER_AND_SCOPE.md
+docs/PHASE14_ACTIVATION_READINESS_GATE.md
 ```
 
 ## Estate registry and release manifest
@@ -215,6 +221,7 @@ Phase 7: control-plane tools
 Phase 11: estate validation tooling
 Phase 12: final release gate tooling
 Phase 13: disabled-default risk/scope validation
+Phase 14: activation-readiness gate validation
 Read-only release package: release manifest validation
 ```
 
@@ -239,6 +246,7 @@ python scripts/operations_validate.py --repo-root . --output phase10-operations-
 python scripts/estate_validate.py --registry config/estate-targets.example.json --output phase11-estate-validation-report.json
 python scripts/final_release_gate.py --repo-root . --output phase12-final-release-gate-report.json
 python scripts/phase13_disabled_default_validate.py --repo-root . --output phase13-disabled-default-validation-report.json
+python scripts/phase14_activation_readiness_validate.py --repo-root . --output phase14-activation-readiness-validation-report.json
 python scripts/release_manifest_validate.py --manifest config/read-only-release-manifest.example.json --output read-only-release-manifest-validation-report.json
 ```
 
@@ -258,6 +266,7 @@ Runtime access values must be supplied outside the repository.
 APPROVE_READ_ONLY_RUNTIME
 HOLD_LIVE_CHANGE_ACTIVATION
 HOLD_PHASE13_ACTIVATION
+HOLD_PHASE14_ACTIVATION_READINESS_ONLY
 ```
 
 ## Recommended implementation route
