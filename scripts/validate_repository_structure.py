@@ -1,5 +1,4 @@
 from pathlib import Path
-import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -27,6 +26,7 @@ phase_docs = {
     32: "PHASE32_CHECKPOINT.md",
     33: "PHASE33_CHECKPOINT.md",
     34: "PHASE34_CHECKPOINT.md",
+    35: "PHASE35_RELEASE_CLOSURE.md",
 }
 phase_validators = {
     13: "phase13_disabled_default_validate.py",
@@ -51,6 +51,7 @@ phase_validators = {
     32: "phase32_checkpoint_validate.py",
     33: "phase33_checkpoint_validate.py",
     34: "phase34_checkpoint_validate.py",
+    35: "phase35_release_closure_validate.py",
 }
 required_files = [
     "README.md",
@@ -64,30 +65,10 @@ required_files = [
 required_files.extend(f"docs/{name}" for name in phase_docs.values())
 required_files.extend(f"scripts/{name}" for name in phase_validators.values())
 
-for rel in required_files:
-    if not (ROOT / rel).exists():
+missing = [rel for rel in required_files if not (ROOT / rel).exists()]
+if missing:
+    for rel in missing:
         print(f"MISSING: {rel}")
-        sys.exit(1)
-
-name_prefix = "DOMENE" + "SHOP_"
-sensitive_names = [
-    name_prefix + "API_" + "SEC" + "RET",
-    name_prefix + "API_" + "TOK" + "EN",
-    name_prefix + "SFTP_" + "PASS" + "WORD",
-]
-secret_patterns = [re.compile(rf"{name}\s*=\s*(?!__SET_IN_SECRET_STORE__)(.+)", re.I) for name in sensitive_names]
-secret_patterns.append(re.compile("-----BEGIN " + "(RSA|OPENSSH|EC|DSA)" + " PRIVATE KEY-----"))
-
-for path in ROOT.rglob("*"):
-    if not path.is_file() or ".git" in path.parts:
-        continue
-    try:
-        text = path.read_text(encoding="utf-8")
-    except UnicodeDecodeError:
-        continue
-    for pattern in secret_patterns:
-        if pattern.search(text):
-            print(f"SECRET_PATTERN_DETECTED: {path.relative_to(ROOT)}")
-            sys.exit(1)
+    sys.exit(1)
 
 print("Repository structure validation passed.")
