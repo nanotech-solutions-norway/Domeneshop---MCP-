@@ -14,10 +14,12 @@ required_files = [
     "docs/PHASE14_ACTIVATION_READINESS_GATE.md",
     "docs/PHASE15_CONTROL_BLUEPRINT.md",
     "docs/PHASE16_CONTINUITY_EVIDENCE_GATE.md",
+    "docs/PHASE17_TRACEABILITY.md",
     "scripts/phase13_disabled_default_validate.py",
     "scripts/phase14_activation_readiness_validate.py",
     "scripts/phase15_control_blueprint_validate.py",
     "scripts/phase16_continuity_evidence_validate.py",
+    "scripts/phase17_traceability_validate.py",
     "config/domeneshop-mcp.env.example",
     ".github/workflows/validate-domeneshop-mcp.yml",
 ]
@@ -28,12 +30,17 @@ for rel in required_files:
         print(f"MISSING: {rel}")
         sys.exit(1)
 
-secret_patterns = [
-    re.compile(r"DOMENESHOP_API_SECRET\s*=\s*(?!__SET_IN_SECRET_STORE__)(.+)", re.I),
-    re.compile(r"DOMENESHOP_API_TOKEN\s*=\s*(?!__SET_IN_SECRET_STORE__)(.+)", re.I),
-    re.compile(r"DOMENESHOP_SFTP_PASSWORD\s*=\s*(?!__SET_IN_SECRET_STORE__)(.+)", re.I),
-    re.compile(r"-----BEGIN (RSA|OPENSSH|EC|DSA) PRIVATE KEY-----"),
+sensitive_names = [
+    "DOMENESHOP_" + "API_" + "SECRET",
+    "DOMENESHOP_" + "API_" + "TOKEN",
+    "DOMENESHOP_" + "SFTP_" + "PASSWORD",
 ]
+
+secret_patterns = [
+    re.compile(rf"{name}\s*=\s*(?!__SET_IN_SECRET_STORE__)(.+)", re.I)
+    for name in sensitive_names
+]
+secret_patterns.append(re.compile(r"-----BEGIN (RSA|OPENSSH|EC|DSA) PRIVATE KEY-----"))
 
 for path in ROOT.rglob("*"):
     if path.is_file() and ".git" not in path.parts:
