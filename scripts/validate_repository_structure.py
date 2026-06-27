@@ -24,6 +24,7 @@ phase_docs = {
     29: "PHASE29_CATALOG_INDEX_GATE.md",
     30: "PHASE30_CHECKPOINT.md",
     31: "PHASE31_CHECKPOINT.md",
+    32: "PHASE32_CHECKPOINT.md",
 }
 phase_validators = {
     13: "phase13_disabled_default_validate.py",
@@ -45,6 +46,7 @@ phase_validators = {
     29: "phase29_catalog_index_validate.py",
     30: "phase30_checkpoint_validate.py",
     31: "phase31_checkpoint_validate.py",
+    32: "phase32_checkpoint_validate.py",
 }
 required_files = [
     "README.md",
