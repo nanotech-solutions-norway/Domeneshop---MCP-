@@ -25,6 +25,7 @@ Build a governed MCP/API bridge for Domeneshop-related infrastructure operations
 - Phase 16 continuity evidence gate for non-executing recovery governance.
 - Phase 17 traceability gate for audit report continuity.
 - Phase 18 repository snapshot gate for controlled release-state indexing.
+- Phase 19 release freeze gate for review-state lockup.
 - GitHub Actions as the preferred controlled deployment lane.
 
 ## Core rule
@@ -71,6 +72,7 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 │   ├── PHASE16_CONTINUITY_EVIDENCE_GATE.md
 │   ├── PHASE17_TRACEABILITY.md
 │   ├── PHASE18_REPOSITORY_SNAPSHOT.md
+│   ├── PHASE19_RELEASE_FREEZE_GATE.md
 │   ├── PHASE2_READ_CONNECTOR_IMPLEMENTATION_1045_26062026.md
 │   ├── PHASE3_SFTP_READ_CONNECTOR_IMPLEMENTATION_1125_26062026.md
 │   ├── PHASE3B_4_SERVER_AND_HEALTH_IMPLEMENTATION_1145_26062026.md
@@ -100,6 +102,7 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 │   ├── phase16_continuity_evidence_validate.py
 │   ├── phase17_traceability_validate.py
 │   ├── phase18_repository_snapshot_validate.py
+│   ├── phase19_release_freeze_validate.py
 │   ├── readiness_preflight.py
 │   ├── recovery_plan.py
 │   ├── release_manifest_validate.py
@@ -191,6 +194,8 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 | Phase 17 live activation | Held / not authorized |
 | Phase 18 repository snapshot gate | Implemented as snapshot-only control layer |
 | Phase 18 live activation | Held / not authorized |
+| Phase 19 release freeze gate | Implemented as freeze-only control layer |
+| Phase 19 live activation | Held / not authorized |
 | Read-only runtime release package | Implemented, pending CI validation |
 | Live change operations | Not registered |
 | Runtime access values | Not stored in repository |
@@ -224,6 +229,7 @@ docs/PHASE15_CONTROL_BLUEPRINT.md
 docs/PHASE16_CONTINUITY_EVIDENCE_GATE.md
 docs/PHASE17_TRACEABILITY.md
 docs/PHASE18_REPOSITORY_SNAPSHOT.md
+docs/PHASE19_RELEASE_FREEZE_GATE.md
 ```
 
 ## Estate registry and release manifest
@@ -250,6 +256,7 @@ Phase 15: control blueprint validation
 Phase 16: continuity evidence validation
 Phase 17: traceability validation
 Phase 18: repository snapshot validation
+Phase 19: release freeze validation
 Read-only release package: release manifest validation
 ```
 
@@ -279,6 +286,7 @@ python scripts/phase15_control_blueprint_validate.py --repo-root . --output phas
 python scripts/phase16_continuity_evidence_validate.py --repo-root . --output phase16-continuity-evidence-validation-report.json
 python scripts/phase17_traceability_validate.py --repo-root . --output phase17-traceability-validation-report.json
 python scripts/phase18_repository_snapshot_validate.py --repo-root . --output phase18-repository-snapshot-validation-report.json
+python scripts/phase19_release_freeze_validate.py --repo-root . --output phase19-release-freeze-validation-report.json
 python scripts/release_manifest_validate.py --manifest config/read-only-release-manifest.example.json --output read-only-release-manifest-validation-report.json
 ```
 
@@ -303,6 +311,7 @@ HOLD_PHASE15_CONTROL_BLUEPRINT_ONLY
 HOLD_PHASE16_CONTINUITY_EVIDENCE_ONLY
 HOLD_PHASE17_TRACEABILITY_ONLY
 HOLD_PHASE18_REPOSITORY_SNAPSHOT_ONLY
+HOLD_PHASE19_RELEASE_FREEZE_ONLY
 ```
 
 ## Recommended implementation route
