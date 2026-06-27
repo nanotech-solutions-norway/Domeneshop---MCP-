@@ -1,4 +1,4 @@
-# Domeneshop MCP Implementation Plan — 13:14, 27.06.2026
+# Domeneshop MCP Implementation Plan — 13:22, 27.06.2026
 
 This repository is the system of record for a controlled Domeneshop MCP bridge.
 
@@ -48,6 +48,7 @@ Runtime access values: outside repository
 | Phase 23 archive index gate | Implemented as archive-index-only control layer |
 | Phase 24 retention index gate | Implemented as retention-index-only control layer |
 | Phase 25 chain index gate | Implemented as chain-index-only control layer |
+| Phase 26 continuity index gate | Implemented as continuity-index-only control layer |
 | Read-only runtime release package | Implemented, pending CI validation |
 | Runtime access values | Not stored in repository |
 
@@ -67,6 +68,7 @@ docs/PHASE22_MAINTENANCE_BASELINE_GATE.md
 docs/PHASE23_ARCHIVE_INDEX_GATE.md
 docs/PHASE24_RETENTION_INDEX_GATE.md
 docs/PHASE25_CHAIN_INDEX_GATE.md
+docs/PHASE26_CONTINUITY_INDEX_GATE.md
 ```
 
 ## Validation scripts
@@ -85,6 +87,7 @@ scripts/phase22_maintenance_baseline_validate.py
 scripts/phase23_archive_index_validate.py
 scripts/phase24_retention_index_validate.py
 scripts/phase25_chain_index_validate.py
+scripts/phase26_continuity_index_validate.py
 ```
 
 ## CI artifact package
@@ -95,7 +98,7 @@ The workflow produces a report artifact package named:
 deployment-planning-reports
 ```
 
-Phase 13 through Phase 25 validation reports are included in that package together with the read-only release manifest report.
+Phase 13 through Phase 26 validation reports are included in that package together with the read-only release manifest report.
 
 ## Local validation
 
@@ -116,6 +119,7 @@ python scripts/phase22_maintenance_baseline_validate.py --repo-root . --output p
 python scripts/phase23_archive_index_validate.py --repo-root . --output phase23-archive-index-validation-report.json
 python scripts/phase24_retention_index_validate.py --repo-root . --output phase24-retention-index-validation-report.json
 python scripts/phase25_chain_index_validate.py --repo-root . --output phase25-chain-index-validation-report.json
+python scripts/phase26_continuity_index_validate.py --repo-root . --output phase26-continuity-index-validation-report.json
 python scripts/release_manifest_validate.py --manifest config/read-only-release-manifest.example.json --output read-only-release-manifest-validation-report.json
 ```
 
@@ -137,6 +141,7 @@ HOLD_PHASE22_MAINTENANCE_BASELINE_ONLY
 HOLD_PHASE23_ARCHIVE_INDEX_ONLY
 HOLD_PHASE24_RETENTION_INDEX_ONLY
 HOLD_PHASE25_CHAIN_INDEX_ONLY
+HOLD_PHASE26_CONTINUITY_INDEX_ONLY
 ```
 
 ## Repository target
