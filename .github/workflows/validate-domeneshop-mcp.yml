@@ -118,6 +118,10 @@ jobs:
         run: |
           python scripts/phase23_archive_index_validate.py --repo-root . --output artifacts/phase23-archive-index-validation-report.json
 
+      - name: Generate Phase 24 retention index report
+        run: |
+          python scripts/phase24_retention_index_validate.py --repo-root . --output artifacts/phase24-retention-index-validation-report.json
+
       - name: Generate read-only release manifest report
         run: |
           python scripts/release_manifest_validate.py --manifest config/read-only-release-manifest.example.json --output artifacts/read-only-release-manifest-validation-report.json
@@ -147,5 +151,6 @@ jobs:
             artifacts/phase21-review-closure-validation-report.json
             artifacts/phase22-maintenance-baseline-validation-report.json
             artifacts/phase23-archive-index-validation-report.json
+            artifacts/phase24-retention-index-validation-report.json
             artifacts/read-only-release-manifest-validation-report.json
           if-no-files-found: error
