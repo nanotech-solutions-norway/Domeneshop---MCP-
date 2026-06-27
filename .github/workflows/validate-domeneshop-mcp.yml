@@ -56,6 +56,7 @@ jobs:
           python scripts/phase32_checkpoint_validate.py --repo-root . --output artifacts/phase32-checkpoint-validation-report.json
           python scripts/phase33_checkpoint_validate.py --repo-root . --output artifacts/phase33-checkpoint-validation-report.json
           python scripts/phase34_checkpoint_validate.py --repo-root . --output artifacts/phase34-checkpoint-validation-report.json
+          python scripts/phase35_release_closure_validate.py --repo-root . --output artifacts/phase35-release-closure-validation-report.json
           python scripts/release_manifest_validate.py --manifest config/read-only-release-manifest.example.json --output artifacts/read-only-release-manifest-validation-report.json
 
       - name: Upload planning and control artifacts
