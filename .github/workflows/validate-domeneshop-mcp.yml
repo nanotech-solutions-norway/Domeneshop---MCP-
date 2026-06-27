@@ -42,7 +42,7 @@ jobs:
           mkdir -p artifacts
           python scripts/dry_run_plan.py --source-root . --target-root /www --output artifacts/phase5-dry-run-report.json
 
-      - name: Generate Phase 6 recovery planning reports
+      - name: Generate Phase 6 planning reports
         run: |
           python scripts/recovery_plan.py \
             --dry-run-report artifacts/phase5-dry-run-report.json \
@@ -65,9 +65,13 @@ jobs:
         run: |
           python scripts/readiness_preflight.py --output artifacts/phase8-readiness-preflight-report.json
 
-      - name: Generate Phase 9 runtime deployment report
+      - name: Generate Phase 9 runtime report
         run: |
           python scripts/runtime_deployment_validate.py --repo-root . --output artifacts/phase9-runtime-deployment-validation-report.json
+
+      - name: Generate Phase 10 ops report
+        run: |
+          python scripts/operations_validate.py --repo-root . --output artifacts/phase10-operations-validation-report.json
 
       - name: Upload planning and control artifacts
         uses: actions/upload-artifact@v4
@@ -80,4 +84,5 @@ jobs:
             artifacts/phase7-change-preflight-report.json
             artifacts/phase8-readiness-preflight-report.json
             artifacts/phase9-runtime-deployment-validation-report.json
+            artifacts/phase10-operations-validation-report.json
           if-no-files-found: error
