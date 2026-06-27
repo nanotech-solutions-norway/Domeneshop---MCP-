@@ -1,4 +1,4 @@
-# Domeneshop MCP Implementation Plan — 01:05, 27.06.2026
+# Domeneshop MCP Implementation Plan — 01:35, 27.06.2026
 
 This repository is the system of record for a controlled Domeneshop MCP bridge.
 
@@ -14,6 +14,7 @@ Build a governed MCP/API bridge for Domeneshop-related infrastructure operations
 - Approval-gated change-control preflight before any future live operation.
 - MCP server packaging and deployment readiness preflight.
 - Production runtime deployment scaffold.
+- Operational runbook and incident procedures.
 - Optional SSH diagnostics where hosting plan and access permit it.
 - GitHub Actions as the preferred controlled deployment lane.
 
@@ -43,7 +44,10 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 │       └── domeneshop-mcp.service.example
 ├── docs/
 │   ├── DOMENESHOP_MCP_PHASE_PLAN_2234_25062026.md
+│   ├── INCIDENT_RESPONSE_PROCEDURES.md
 │   ├── MCP_CLIENT_CONFIGURATION_EXAMPLES.md
+│   ├── OPERATIONAL_RUNBOOK.md
+│   ├── PHASE10_OPERATIONAL_RUNBOOK_INCIDENTS_0135_27062026.md
 │   ├── PHASE2_READ_CONNECTOR_IMPLEMENTATION_1045_26062026.md
 │   ├── PHASE3_SFTP_READ_CONNECTOR_IMPLEMENTATION_1125_26062026.md
 │   ├── PHASE3B_4_SERVER_AND_HEALTH_IMPLEMENTATION_1145_26062026.md
@@ -54,6 +58,7 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 │   ├── PHASE8_MCP_PACKAGING_DEPLOYMENT_SCAFFOLD_0035_27062026.md
 │   ├── PHASE9_PRODUCTION_DEPLOYMENT_SCAFFOLD_0105_27062026.md
 │   ├── PRODUCTION_DEPLOYMENT_RUNBOOK.md
+│   ├── RELEASE_APPROVAL_CHECKLIST.md
 │   ├── SECURITY_AND_WRITE_CONTROL.md
 │   ├── TOOL_CATALOG.md
 │   └── VALIDATION_CHECKLIST.md
@@ -62,6 +67,7 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 │   ├── domeneshop_read_smoke.py
 │   ├── dry_run_plan.py
 │   ├── health_smoke.py
+│   ├── operations_validate.py
 │   ├── readiness_preflight.py
 │   ├── recovery_plan.py
 │   ├── remote_read_smoke.py
@@ -78,6 +84,7 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 │       ├── envelope.py
 │       ├── errors.py
 │       ├── health.py
+│       ├── operations_validation.py
 │       ├── path_jail.py
 │       ├── readiness.py
 │       ├── recovery_plan.py
@@ -99,6 +106,7 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 │   ├── test_config.py
 │   ├── test_deploy_plan.py
 │   ├── test_health.py
+│   ├── test_operations_validation.py
 │   ├── test_packaging.py
 │   ├── test_path_guard.py
 │   ├── test_readiness.py
@@ -128,7 +136,8 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 | Phase 6 recovery planning | Implemented and validated |
 | Phase 7 change-control scaffold | Implemented and validated |
 | Phase 8 packaging and readiness scaffold | Implemented and validated |
-| Phase 9 production deployment scaffold | Implemented, pending CI validation |
+| Phase 9 production deployment scaffold | Implemented and validated |
+| Phase 10 operational runbook and incidents | Implemented, pending CI validation |
 | Live change operations | Not registered |
 | Runtime access values | Not stored in repository |
 
@@ -145,6 +154,14 @@ python -m domeneshop_mcp.server
 deploy/container/Dockerfile.example
 deploy/compose/compose.readonly.example.yml
 deploy/systemd/domeneshop-mcp.service.example
+```
+
+## Operations documents
+
+```text
+docs/OPERATIONAL_RUNBOOK.md
+docs/INCIDENT_RESPONSE_PROCEDURES.md
+docs/RELEASE_APPROVAL_CHECKLIST.md
 ```
 
 ## Tool groups
@@ -175,6 +192,7 @@ python scripts/recovery_plan.py --dry-run-report phase5-dry-run-report.json --ba
 python scripts/change_preflight.py --output phase7-change-preflight-report.json
 python scripts/readiness_preflight.py --output phase8-readiness-preflight-report.json
 python scripts/runtime_deployment_validate.py --repo-root . --output phase9-runtime-deployment-validation-report.json
+python scripts/operations_validate.py --repo-root . --output phase10-operations-validation-report.json
 ```
 
 ## Manual smoke checks
