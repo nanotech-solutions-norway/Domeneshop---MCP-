@@ -1,4 +1,4 @@
-# Domeneshop MCP Implementation Plan — 14:26, 27.06.2026
+# Domeneshop MCP Implementation Plan — 14:34, 27.06.2026
 
 This repository is the system of record for the Domeneshop MCP bridge.
 
@@ -10,23 +10,32 @@ Activation posture: HOLD_LIVE_CHANGE_ACTIVATION
 Runtime access values: outside repository
 ```
 
-## Current checkpoint
+## Current closure
 
 | Area | Status |
 |---|---|
-| Phase 13 through Phase 29 index layers | Implemented |
-| Phase 30 checkpoint | Implemented as checkpoint-only control layer |
-| Phase 31 checkpoint | Implemented as checkpoint-only control layer |
-| Phase 32 checkpoint | Implemented as checkpoint-only control layer |
-| Phase 33 checkpoint | Implemented as checkpoint-only control layer |
-| Phase 34 checkpoint | Implemented as checkpoint-only control layer |
+| Phase 13 through Phase 34 control chain | Implemented |
+| Phase 35 release closure | Implemented as release-closure-only control layer |
 | Runtime access values | Not stored in repository |
+| Live changes | Still held |
 
-## Phase 34 files
+## Phase 35 files
 
 ```text
-docs/PHASE34_CHECKPOINT.md
-scripts/phase34_checkpoint_validate.py
+docs/PHASE35_RELEASE_CLOSURE.md
+scripts/phase35_release_closure_validate.py
+```
+
+## Next write-readiness sequence
+
+```text
+Phase 36: Write scope definition
+Phase 37: Secret readiness
+Phase 38: Backup and recovery evidence
+Phase 39: Write preflight and dry-run
+Phase 40: Operator approval gate
+Phase 41: Staged write activation
+Phase 42: Production use validation
 ```
 
 ## CI artifact package
@@ -35,7 +44,7 @@ scripts/phase34_checkpoint_validate.py
 deployment-planning-reports
 ```
 
-Phase 13 through Phase 34 validation reports are included together with the read-only release manifest report.
+Phase 13 through Phase 35 validation reports are included together with the read-only release manifest report.
 
 ## Local validation
 
@@ -43,7 +52,7 @@ Phase 13 through Phase 34 validation reports are included together with the read
 python -m pip install -e ".[test]"
 pytest -q
 python scripts/validate_repository_structure.py
-python scripts/phase34_checkpoint_validate.py --repo-root . --output phase34-checkpoint-validation-report.json
+python scripts/phase35_release_closure_validate.py --repo-root . --output phase35-release-closure-validation-report.json
 python scripts/release_manifest_validate.py --manifest config/read-only-release-manifest.example.json --output read-only-release-manifest-validation-report.json
 ```
 
@@ -52,7 +61,7 @@ python scripts/release_manifest_validate.py --manifest config/read-only-release-
 ```text
 APPROVE_READ_ONLY_RUNTIME
 HOLD_LIVE_CHANGE_ACTIVATION
-HOLD_PHASE34_CHECKPOINT_ONLY
+HOLD_PHASE35_RELEASE_CLOSURE_ONLY
 ```
 
 ## Repository target
