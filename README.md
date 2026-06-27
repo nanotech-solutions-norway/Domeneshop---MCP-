@@ -1,4 +1,4 @@
-# Domeneshop MCP Implementation Plan — 02:45, 27.06.2026
+# Domeneshop MCP Implementation Plan — 03:10, 27.06.2026
 
 This repository is the system of record for a controlled Domeneshop MCP bridge.
 
@@ -17,6 +17,7 @@ Build a governed MCP/API bridge for Domeneshop-related infrastructure operations
 - Operational runbook and incident procedures.
 - Atlas/SolarEX/Domeneshop estate inventory and validation.
 - Final release gate for read-only runtime acceptance.
+- Read-only runtime release package.
 - Optional SSH diagnostics where hosting plan and access permit it.
 - GitHub Actions as the preferred controlled deployment lane.
 
@@ -37,7 +38,8 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 ├── config/
 │   ├── domeneshop-mcp.env.example
 │   ├── estate-targets.example.json
-│   └── mcp-client.example.json
+│   ├── mcp-client.example.json
+│   └── read-only-release-manifest.example.json
 ├── deploy/
 │   ├── compose/
 │   │   └── compose.readonly.example.yml
@@ -67,6 +69,7 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 │   ├── PHASE8_MCP_PACKAGING_DEPLOYMENT_SCAFFOLD_0035_27062026.md
 │   ├── PHASE9_PRODUCTION_DEPLOYMENT_SCAFFOLD_0105_27062026.md
 │   ├── PRODUCTION_DEPLOYMENT_RUNBOOK.md
+│   ├── READ_ONLY_RUNTIME_RELEASE_PACKAGE_0310_27062026.md
 │   ├── RELEASE_APPROVAL_CHECKLIST.md
 │   ├── SECURITY_AND_WRITE_CONTROL.md
 │   ├── TOOL_CATALOG.md
@@ -81,6 +84,7 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 │   ├── operations_validate.py
 │   ├── readiness_preflight.py
 │   ├── recovery_plan.py
+│   ├── release_manifest_validate.py
 │   ├── remote_read_smoke.py
 │   ├── runtime_deployment_validate.py
 │   └── validate_repository_structure.py
@@ -101,6 +105,7 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 │       ├── readiness.py
 │       ├── recovery_plan.py
 │       ├── release_gate.py
+│       ├── release_manifest.py
 │       ├── runtime_validation.py
 │       ├── sanitizers.py
 │       ├── server.py
@@ -126,6 +131,7 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 │   ├── test_path_guard.py
 │   ├── test_readiness.py
 │   ├── test_recovery_plan.py
+│   ├── test_release_manifest.py
 │   ├── test_runtime_deployment.py
 │   ├── test_sanitizers.py
 │   └── test_sftp_read_tools.py
@@ -154,7 +160,8 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 | Phase 9 production deployment scaffold | Implemented and validated |
 | Phase 10 operational runbook and incidents | Implemented and validated |
 | Phase 11 estate integration | Implemented and validated |
-| Phase 12 final validation and release gate | Implemented, pending CI validation |
+| Phase 12 final validation and release gate | Implemented and validated |
+| Read-only runtime release package | Implemented, pending CI validation |
 | Live change operations | Not registered |
 | Runtime access values | Not stored in repository |
 
@@ -183,10 +190,11 @@ docs/FINAL_RELEASE_GATE_CHECKLIST.md
 docs/DOMENESHOP_MCP_FINAL_TRANSFER_REPORT_0245_27062026.md
 ```
 
-## Estate registry
+## Estate registry and release manifest
 
 ```text
 config/estate-targets.example.json
+config/read-only-release-manifest.example.json
 ```
 
 ## Tool groups
@@ -200,6 +208,7 @@ Phase 6: recovery planning tools
 Phase 7: control-plane tools
 Phase 11: estate validation tooling
 Phase 12: final release gate tooling
+Read-only release package: release manifest validation
 ```
 
 The workflow produces a report artifact package named:
@@ -222,6 +231,7 @@ python scripts/runtime_deployment_validate.py --repo-root . --output phase9-runt
 python scripts/operations_validate.py --repo-root . --output phase10-operations-validation-report.json
 python scripts/estate_validate.py --registry config/estate-targets.example.json --output phase11-estate-validation-report.json
 python scripts/final_release_gate.py --repo-root . --output phase12-final-release-gate-report.json
+python scripts/release_manifest_validate.py --manifest config/read-only-release-manifest.example.json --output read-only-release-manifest-validation-report.json
 ```
 
 ## Manual smoke checks
