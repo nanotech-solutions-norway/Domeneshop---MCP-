@@ -20,6 +20,7 @@ required_files = [
     "docs/PHASE20_HANDOFF_PACKAGE_GATE.md",
     "docs/PHASE21_REVIEW_CLOSURE_GATE.md",
     "docs/PHASE22_MAINTENANCE_BASELINE_GATE.md",
+    "docs/PHASE23_ARCHIVE_INDEX_GATE.md",
     "scripts/phase13_disabled_default_validate.py",
     "scripts/phase14_activation_readiness_validate.py",
     "scripts/phase15_control_blueprint_validate.py",
@@ -30,6 +31,7 @@ required_files = [
     "scripts/phase20_handoff_package_validate.py",
     "scripts/phase21_review_closure_validate.py",
     "scripts/phase22_maintenance_baseline_validate.py",
+    "scripts/phase23_archive_index_validate.py",
     "config/domeneshop-mcp.env.example",
     ".github/workflows/validate-domeneshop-mcp.yml",
 ]
