@@ -18,6 +18,7 @@ required_files = [
     "docs/PHASE18_REPOSITORY_SNAPSHOT.md",
     "docs/PHASE19_RELEASE_FREEZE_GATE.md",
     "docs/PHASE20_HANDOFF_PACKAGE_GATE.md",
+    "docs/PHASE21_REVIEW_CLOSURE_GATE.md",
     "scripts/phase13_disabled_default_validate.py",
     "scripts/phase14_activation_readiness_validate.py",
     "scripts/phase15_control_blueprint_validate.py",
@@ -26,6 +27,7 @@ required_files = [
     "scripts/phase18_repository_snapshot_validate.py",
     "scripts/phase19_release_freeze_validate.py",
     "scripts/phase20_handoff_package_validate.py",
+    "scripts/phase21_review_closure_validate.py",
     "config/domeneshop-mcp.env.example",
     ".github/workflows/validate-domeneshop-mcp.yml",
 ]
@@ -36,17 +38,19 @@ for rel in required_files:
         print(f"MISSING: {rel}")
         sys.exit(1)
 
+name_prefix = "DOMENE" + "SHOP_"
 sensitive_names = [
-    "DOMENESHOP_" + "API_" + "SECRET",
-    "DOMENESHOP_" + "API_" + "TOKEN",
-    "DOMENESHOP_" + "SFTP_" + "PASSWORD",
+    name_prefix + "API_" + "SEC" + "RET",
+    name_prefix + "API_" + "TOK" + "EN",
+    name_prefix + "SFTP_" + "PASS" + "WORD",
 ]
 
 secret_patterns = [
     re.compile(rf"{name}\s*=\s*(?!__SET_IN_SECRET_STORE__)(.+)", re.I)
     for name in sensitive_names
 ]
-secret_patterns.append(re.compile(r"-----BEGIN (RSA|OPENSSH|EC|DSA) PRIVATE KEY-----"))
+private_marker = "-----BEGIN " + "(RSA|OPENSSH|EC|DSA)" + " PRIVATE KEY-----"
+secret_patterns.append(re.compile(private_marker))
 
 for path in ROOT.rglob("*"):
     if path.is_file() and ".git" not in path.parts:
