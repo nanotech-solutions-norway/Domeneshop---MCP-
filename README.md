@@ -1,4 +1,4 @@
-# Domeneshop MCP Implementation Plan — 14:50, 27.06.2026
+# Domeneshop MCP Implementation Plan — 00:47, 28.06.2026
 
 This repository is the system of record for the Domeneshop MCP bridge.
 
@@ -18,43 +18,45 @@ Runtime access values: outside repository
 | Phase 35 release closure | Implemented as release-closure-only control layer |
 | Phase 36 write scope definition | Implemented as scope-definition-only control layer |
 | Phase 37 credential readiness | Implemented as credential-readiness-only control layer |
+| Phase 38 recovery evidence | Implemented as recovery-evidence-only control layer |
 | Runtime access values | Not stored in repository |
 | Live changes | Still held |
 
-## Phase 37 files
+## Phase 38 files
 
 ```text
-docs/PHASE37_CREDENTIAL_READINESS.md
-scripts/phase37_credential_readiness_validate.py
+docs/PHASE38_RECOVERY_EVIDENCE.md
+scripts/phase38_recovery_evidence_validate.py
 ```
 
-## Credential repository rule
+## Required evidence references
 
 ```text
-NO_CREDENTIAL_VALUES_IN_REPOSITORY
-PLACEHOLDERS_ONLY_IN_EXAMPLES
-RUNTIME_VALUES_SUPPLIED_EXTERNALLY
-ROTATION_REQUIRED_BEFORE_PRODUCTION_USE
-AUDIT_REQUIRED_FOR_CREDENTIAL_ACCESS
+APPROVED_DOMAIN_REF
+REQUESTED_OPERATION_ID
+PRE_OPERATION_ZONE_SNAPSHOT_REF
+ZONE_EXPORT_REF
+RECOVERY_PLAN_REF
+RESTORE_PREVIEW_REF
+EVIDENCE_STORAGE_REF
+OPERATOR_APPROVAL_REF
 ```
 
-## Required runtime references
+The entries above are references only. Actual backup files and runtime values remain outside the repository unless explicitly safe for documentation.
+
+## Minimum evidence checks
 
 ```text
-DOMENESHOP_API_TOKEN_REF
-DOMENESHOP_API_SECRET_REF
-DOMENESHOP_ACCOUNT_REF
-APPROVED_DOMAIN_REGISTRY_REF
-OPERATOR_APPROVAL_CHANNEL_REF
-BACKUP_STORAGE_REF
+VERIFY_ZONE_SNAPSHOT_EXISTS
+VERIFY_RECOVERY_PLAN_DEFINED
+VERIFY_RESTORE_PREVIEW_AVAILABLE
+VERIFY_OPERATOR_APPROVAL_REFERENCE_PRESENT
+VERIFY_HELD_ACTIVATION_POSTURE
 ```
-
-The entries above are references only. Actual values remain outside the repository.
 
 ## Remaining write-readiness sequence
 
 ```text
-Phase 38: Backup and recovery evidence
 Phase 39: Write preflight and dry-run
 Phase 40: Operator approval gate
 Phase 41: Staged write activation
@@ -67,7 +69,7 @@ Phase 42: Production use validation
 deployment-planning-reports
 ```
 
-Phase 13 through Phase 37 validation reports are included together with the read-only release manifest report.
+Phase 13 through Phase 38 validation reports are included together with the read-only release manifest report.
 
 ## Local validation
 
@@ -75,7 +77,7 @@ Phase 13 through Phase 37 validation reports are included together with the read
 python -m pip install -e ".[test]"
 pytest -q
 python scripts/validate_repository_structure.py
-python scripts/phase37_credential_readiness_validate.py --repo-root . --output phase37-credential-readiness-validation-report.json
+python scripts/phase38_recovery_evidence_validate.py --repo-root . --output phase38-recovery-evidence-validation-report.json
 python scripts/release_manifest_validate.py --manifest config/read-only-release-manifest.example.json --output read-only-release-manifest-validation-report.json
 ```
 
@@ -84,7 +86,7 @@ python scripts/release_manifest_validate.py --manifest config/read-only-release-
 ```text
 APPROVE_READ_ONLY_RUNTIME
 HOLD_LIVE_CHANGE_ACTIVATION
-HOLD_PHASE37_CREDENTIAL_READINESS_ONLY
+HOLD_PHASE38_RECOVERY_EVIDENCE_ONLY
 ```
 
 ## Repository target
