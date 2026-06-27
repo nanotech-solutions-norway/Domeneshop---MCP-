@@ -1,4 +1,4 @@
-# Domeneshop MCP Implementation Plan — 01:35, 27.06.2026
+# Domeneshop MCP Implementation Plan — 02:10, 27.06.2026
 
 This repository is the system of record for a controlled Domeneshop MCP bridge.
 
@@ -15,6 +15,7 @@ Build a governed MCP/API bridge for Domeneshop-related infrastructure operations
 - MCP server packaging and deployment readiness preflight.
 - Production runtime deployment scaffold.
 - Operational runbook and incident procedures.
+- Atlas/SolarEX/Domeneshop estate inventory and validation.
 - Optional SSH diagnostics where hosting plan and access permit it.
 - GitHub Actions as the preferred controlled deployment lane.
 
@@ -34,6 +35,7 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 ├── pyproject.toml
 ├── config/
 │   ├── domeneshop-mcp.env.example
+│   ├── estate-targets.example.json
 │   └── mcp-client.example.json
 ├── deploy/
 │   ├── compose/
@@ -43,11 +45,14 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 │   └── systemd/
 │       └── domeneshop-mcp.service.example
 ├── docs/
+│   ├── ATLAS_SOLAREX_DOMENESHOP_INTEGRATION_NOTES.md
 │   ├── DOMENESHOP_MCP_PHASE_PLAN_2234_25062026.md
+│   ├── ESTATE_SERVICE_INVENTORY.md
 │   ├── INCIDENT_RESPONSE_PROCEDURES.md
 │   ├── MCP_CLIENT_CONFIGURATION_EXAMPLES.md
 │   ├── OPERATIONAL_RUNBOOK.md
 │   ├── PHASE10_OPERATIONAL_RUNBOOK_INCIDENTS_0135_27062026.md
+│   ├── PHASE11_ESTATE_INTEGRATION_0210_27062026.md
 │   ├── PHASE2_READ_CONNECTOR_IMPLEMENTATION_1045_26062026.md
 │   ├── PHASE3_SFTP_READ_CONNECTOR_IMPLEMENTATION_1125_26062026.md
 │   ├── PHASE3B_4_SERVER_AND_HEALTH_IMPLEMENTATION_1145_26062026.md
@@ -66,6 +71,7 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 │   ├── change_preflight.py
 │   ├── domeneshop_read_smoke.py
 │   ├── dry_run_plan.py
+│   ├── estate_validate.py
 │   ├── health_smoke.py
 │   ├── operations_validate.py
 │   ├── readiness_preflight.py
@@ -83,6 +89,7 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 │       ├── deploy_plan.py
 │       ├── envelope.py
 │       ├── errors.py
+│       ├── estate_validation.py
 │       ├── health.py
 │       ├── operations_validation.py
 │       ├── path_jail.py
@@ -105,6 +112,7 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 │   ├── test_client_invoices.py
 │   ├── test_config.py
 │   ├── test_deploy_plan.py
+│   ├── test_estate_validation.py
 │   ├── test_health.py
 │   ├── test_operations_validation.py
 │   ├── test_packaging.py
@@ -137,7 +145,8 @@ Domeneshop REST API is not a general file-upload API. It is used for domain/DNS/
 | Phase 7 change-control scaffold | Implemented and validated |
 | Phase 8 packaging and readiness scaffold | Implemented and validated |
 | Phase 9 production deployment scaffold | Implemented and validated |
-| Phase 10 operational runbook and incidents | Implemented, pending CI validation |
+| Phase 10 operational runbook and incidents | Implemented and validated |
+| Phase 11 estate integration | Implemented, pending CI validation |
 | Live change operations | Not registered |
 | Runtime access values | Not stored in repository |
 
@@ -164,6 +173,12 @@ docs/INCIDENT_RESPONSE_PROCEDURES.md
 docs/RELEASE_APPROVAL_CHECKLIST.md
 ```
 
+## Estate registry
+
+```text
+config/estate-targets.example.json
+```
+
 ## Tool groups
 
 ```text
@@ -173,6 +188,7 @@ Phase 4: HTTP diagnostic tools
 Phase 5: dry-run planning tools
 Phase 6: recovery planning tools
 Phase 7: control-plane tools
+Phase 11: estate validation tooling
 ```
 
 The workflow produces a report artifact package named:
@@ -193,6 +209,7 @@ python scripts/change_preflight.py --output phase7-change-preflight-report.json
 python scripts/readiness_preflight.py --output phase8-readiness-preflight-report.json
 python scripts/runtime_deployment_validate.py --repo-root . --output phase9-runtime-deployment-validation-report.json
 python scripts/operations_validate.py --repo-root . --output phase10-operations-validation-report.json
+python scripts/estate_validate.py --registry config/estate-targets.example.json --output phase11-estate-validation-report.json
 ```
 
 ## Manual smoke checks
