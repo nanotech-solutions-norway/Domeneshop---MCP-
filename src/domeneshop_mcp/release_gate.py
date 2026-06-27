@@ -18,6 +18,7 @@ REQUIRED_PHASE_DOCS = (
     "docs/PHASE9_PRODUCTION_DEPLOYMENT_SCAFFOLD_0105_27062026.md",
     "docs/PHASE10_OPERATIONAL_RUNBOOK_INCIDENTS_0135_27062026.md",
     "docs/PHASE11_ESTATE_INTEGRATION_0210_27062026.md",
+    "docs/PHASE12_FINAL_VALIDATION_RELEASE_GATE_0245_27062026.md",
 )
 
 REQUIRED_CONTROL_DOCS = (
@@ -27,7 +28,9 @@ REQUIRED_CONTROL_DOCS = (
     "docs/OPERATIONAL_RUNBOOK.md",
     "docs/INCIDENT_RESPONSE_PROCEDURES.md",
     "docs/RELEASE_APPROVAL_CHECKLIST.md",
+    "docs/FINAL_RELEASE_GATE_CHECKLIST.md",
     "docs/ESTATE_SERVICE_INVENTORY.md",
+    "docs/DOMENESHOP_MCP_FINAL_TRANSFER_REPORT_0245_27062026.md",
 )
 
 REQUIRED_SCRIPTS = (
@@ -39,6 +42,7 @@ REQUIRED_SCRIPTS = (
     "scripts/runtime_deployment_validate.py",
     "scripts/operations_validate.py",
     "scripts/estate_validate.py",
+    "scripts/final_release_gate.py",
 )
 
 REQUIRED_ENV_MARKERS = (
@@ -98,8 +102,10 @@ def validate_release_gate(repo_root: str | Path = ".") -> ReleaseGateValidation:
         checks.append({"name": f"server_marker_absent:{marker}", "passed": marker not in server_text})
 
     checklist_text = _read(root / "docs" / "RELEASE_APPROVAL_CHECKLIST.md")
+    final_checklist_text = _read(root / "docs" / "FINAL_RELEASE_GATE_CHECKLIST.md")
     checks.append({"name": "release_checklist_read_only_decision", "passed": "APPROVE_READ_ONLY_RUNTIME" in checklist_text})
     checks.append({"name": "release_checklist_holds_live_change", "passed": "REJECT_LIVE_CHANGE_ACTIVATION" in checklist_text})
+    checks.append({"name": "final_checklist_read_only_decision", "passed": "APPROVE_READ_ONLY_RUNTIME" in final_checklist_text})
 
     passed = all(item["passed"] for item in checks)
     return ReleaseGateValidation(
