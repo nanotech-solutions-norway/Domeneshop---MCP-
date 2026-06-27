@@ -20,110 +20,46 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Validate repository structure and placeholder values
-        run: python scripts/validate_repository_structure.py
+      - name: Install package with test dependencies
+        run: python -m pip install -e ".[test]"
 
-      - name: Confirm controlled defaults
+      - name: Validate repository and tests
         run: |
+          python scripts/validate_repository_structure.py
           grep -q '^WRITE_TOOLS_ENABLED=false$' config/domeneshop-mcp.env.example
           grep -q '^DRY_RUN_DEFAULT=true$' config/domeneshop-mcp.env.example
           grep -q '^REQUIRE_OPERATOR_APPROVAL=true$' config/domeneshop-mcp.env.example
           grep -q '^REQUIRE_BACKUP_EVIDENCE=true$' config/domeneshop-mcp.env.example
           grep -q '^REQUIRE_PREFLIGHT_REPORT=true$' config/domeneshop-mcp.env.example
+          pytest -q
 
-      - name: Install package with test dependencies
-        run: python -m pip install -e ".[test]"
-
-      - name: Run mocked tests
-        run: pytest -q
-
-      - name: Generate Phase 5 dry-run report
+      - name: Generate planning reports
         run: |
           mkdir -p artifacts
           python scripts/dry_run_plan.py --source-root . --target-root /www --output artifacts/phase5-dry-run-report.json
-
-      - name: Generate Phase 6 planning reports
-        run: |
-          python scripts/recovery_plan.py \
-            --dry-run-report artifacts/phase5-dry-run-report.json \
-            --backup-root /www/backups/dry-run \
-            --backup-output artifacts/phase6-backup-evidence-report.json \
-            --restore-output artifacts/phase6-restore-preview-report.json
-
-      - name: Generate Phase 7 control report
-        run: |
+          python scripts/recovery_plan.py --dry-run-report artifacts/phase5-dry-run-report.json --backup-root /www/backups/dry-run --backup-output artifacts/phase6-backup-evidence-report.json --restore-output artifacts/phase6-restore-preview-report.json
           python scripts/change_preflight.py --output artifacts/phase7-change-preflight-report.json
-
-      - name: Generate Phase 8 readiness report
-        run: |
           python scripts/readiness_preflight.py --output artifacts/phase8-readiness-preflight-report.json
-
-      - name: Generate Phase 9 runtime report
-        run: |
           python scripts/runtime_deployment_validate.py --repo-root . --output artifacts/phase9-runtime-deployment-validation-report.json
-
-      - name: Generate Phase 10 ops report
-        run: |
           python scripts/operations_validate.py --repo-root . --output artifacts/phase10-operations-validation-report.json
-
-      - name: Generate Phase 11 estate report
-        run: |
           python scripts/estate_validate.py --registry config/estate-targets.example.json --output artifacts/phase11-estate-validation-report.json
-
-      - name: Generate Phase 12 final gate report
-        run: |
           python scripts/final_release_gate.py --repo-root . --output artifacts/phase12-final-release-gate-report.json
 
-      - name: Generate Phase 13 disabled-default report
+      - name: Generate governance reports
         run: |
           python scripts/phase13_disabled_default_validate.py --repo-root . --output artifacts/phase13-disabled-default-validation-report.json
-
-      - name: Generate Phase 14 activation-readiness report
-        run: |
           python scripts/phase14_activation_readiness_validate.py --repo-root . --output artifacts/phase14-activation-readiness-validation-report.json
-
-      - name: Generate Phase 15 control blueprint report
-        run: |
           python scripts/phase15_control_blueprint_validate.py --repo-root . --output artifacts/phase15-control-blueprint-validation-report.json
-
-      - name: Generate Phase 16 continuity evidence report
-        run: |
           python scripts/phase16_continuity_evidence_validate.py --repo-root . --output artifacts/phase16-continuity-evidence-validation-report.json
-
-      - name: Generate Phase 17 traceability report
-        run: |
           python scripts/phase17_traceability_validate.py --repo-root . --output artifacts/phase17-traceability-validation-report.json
-
-      - name: Generate Phase 18 repository snapshot report
-        run: |
           python scripts/phase18_repository_snapshot_validate.py --repo-root . --output artifacts/phase18-repository-snapshot-validation-report.json
-
-      - name: Generate Phase 19 release freeze report
-        run: |
           python scripts/phase19_release_freeze_validate.py --repo-root . --output artifacts/phase19-release-freeze-validation-report.json
-
-      - name: Generate Phase 20 handoff package report
-        run: |
           python scripts/phase20_handoff_package_validate.py --repo-root . --output artifacts/phase20-handoff-package-validation-report.json
-
-      - name: Generate Phase 21 review closure report
-        run: |
           python scripts/phase21_review_closure_validate.py --repo-root . --output artifacts/phase21-review-closure-validation-report.json
-
-      - name: Generate Phase 22 maintenance baseline report
-        run: |
           python scripts/phase22_maintenance_baseline_validate.py --repo-root . --output artifacts/phase22-maintenance-baseline-validation-report.json
-
-      - name: Generate Phase 23 archive index report
-        run: |
           python scripts/phase23_archive_index_validate.py --repo-root . --output artifacts/phase23-archive-index-validation-report.json
-
-      - name: Generate Phase 24 retention index report
-        run: |
           python scripts/phase24_retention_index_validate.py --repo-root . --output artifacts/phase24-retention-index-validation-report.json
-
-      - name: Generate read-only release manifest report
-        run: |
+          python scripts/phase25_chain_index_validate.py --repo-root . --output artifacts/phase25-chain-index-validation-report.json
           python scripts/release_manifest_validate.py --manifest config/read-only-release-manifest.example.json --output artifacts/read-only-release-manifest-validation-report.json
 
       - name: Upload planning and control artifacts
@@ -152,5 +88,6 @@ jobs:
             artifacts/phase22-maintenance-baseline-validation-report.json
             artifacts/phase23-archive-index-validation-report.json
             artifacts/phase24-retention-index-validation-report.json
+            artifacts/phase25-chain-index-validation-report.json
             artifacts/read-only-release-manifest-validation-report.json
           if-no-files-found: error
