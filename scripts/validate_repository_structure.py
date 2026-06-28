@@ -71,11 +71,13 @@ extra_docs = [
     "EXTERNAL_" + "VALIDATION_" + "EVIDENCE_TEMPLATE.md",
     "CONTROLLED_" + "USE_" + "ACCEPTANCE_INDEX.md",
     "FINAL_" + "RELEASE_" + "HANDOFF_INDEX.md",
+    "FINAL_" + "REPOSITORY_" + "ARCHIVE_INDEX.md",
 ]
 extra_scripts = [
     "external_validation_pack_validate.py",
     "controlled_" + "use_" + "acceptance_validate.py",
     "final_" + "release_" + "handoff_validate.py",
+    "final_" + "repository_" + "archive_validate.py",
 ]
 required_files = [
     "README.md",
