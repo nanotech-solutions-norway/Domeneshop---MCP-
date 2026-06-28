@@ -1,4 +1,4 @@
-# Domeneshop MCP Implementation Plan — 01:18, 28.06.2026
+# Domeneshop MCP Implementation Plan — 01:30, 28.06.2026
 
 This repository is the system of record for the Domeneshop MCP bridge.
 
@@ -15,55 +15,70 @@ Runtime access values: outside repository
 | Area | Status |
 |---|---|
 | Phase 13 through Phase 34 control chain | Implemented |
-| Phase 35 release closure | Implemented as release-closure-only control layer |
-| Phase 36 write scope definition | Implemented as scope-definition-only control layer |
-| Phase 37 credential readiness | Implemented as credential-readiness-only control layer |
-| Phase 38 recovery evidence | Implemented as recovery-evidence-only control layer |
-| Phase 39 write preflight and dry run | Implemented as preflight-and-dry-run-only control layer |
-| Phase 40 operator approval gate | Implemented as operator-approval-only control layer |
-| Phase 41 staged gate | Implemented as staged-gate-only control layer |
+| Phase 35 release closure | Implemented |
+| Phase 36 write scope definition | Implemented |
+| Phase 37 credential readiness | Implemented |
+| Phase 38 recovery evidence | Implemented |
+| Phase 39 write preflight and dry run | Implemented |
+| Phase 40 operator approval gate | Implemented |
+| Phase 41 staged gate | Implemented |
+| Phase 42 production use validation | Implemented |
 | Runtime access values | Not stored in repository |
-| Live changes | Still held |
+| Live changes | Still held in repository posture |
 
-## Phase 41 files
+## Phase 42 files
 
 ```text
-docs/PHASE41_STAGED_WRITE_ACTIVATION.md
+docs/PHASE42_PRODUCTION_USE_VALIDATION.md
+scripts/phase42_production_use_validate.py
 ```
 
-## Required staged gate references
+## Required final evidence references
 
 ```text
 APPROVED_DOMAIN_REF
-REQUESTED_OPERATION_ID
-STAGED_TARGET_REF
-STAGED_SCOPE_REF
-APPROVAL_DECISION_REF
+PRODUCTION_VALIDATION_RUN_ID
+WRITE_SCOPE_REF
+CREDENTIAL_READINESS_REF
+RECOVERY_EVIDENCE_REF
 PREFLIGHT_REPORT_REF
 DRY_RUN_REPORT_REF
-RECOVERY_EVIDENCE_REF
-STAGED_RUNBOOK_REF
-POST_STAGE_VERIFICATION_REF
+OPERATOR_APPROVAL_REF
+STAGED_GATE_REF
+POST_CHANGE_VERIFICATION_REF
+AUDIT_LOG_REF
+FINAL_OPERATOR_SIGNOFF_REF
 ```
 
-## Required staged gate checks
+## Required final checks
 
 ```text
-VERIFY_STAGED_TARGET_IS_APPROVED
-VERIFY_STAGED_SCOPE_IS_LIMITED
-VERIFY_APPROVAL_DECISION_PRESENT
-VERIFY_PREFLIGHT_REPORT_LINKED
-VERIFY_DRY_RUN_REPORT_LINKED
+VERIFY_SCOPE_APPROVED
+VERIFY_CREDENTIAL_REFERENCES_EXTERNAL
 VERIFY_RECOVERY_EVIDENCE_LINKED
-VERIFY_POST_STAGE_VERIFICATION_DEFINED
+VERIFY_PREFLIGHT_AND_DRY_RUN_LINKED
+VERIFY_OPERATOR_APPROVAL_LINKED
+VERIFY_STAGED_GATE_LINKED
+VERIFY_POST_CHANGE_VERIFICATION_DEFINED
+VERIFY_AUDIT_LOG_DEFINED
+VERIFY_FINAL_OPERATOR_SIGNOFF_REQUIRED
 VERIFY_NO_AUTONOMOUS_LIVE_CHANGE
-VERIFY_PRODUCTION_USE_STILL_HELD
 ```
 
-## Remaining write-readiness sequence
+## Repository-side closure decision
 
 ```text
-Phase 42: Production use validation
+WRITE_READINESS_SEQUENCE_COMPLETE
+READY_FOR_EXTERNAL_CONTROLLED_VALIDATION
+NO_AUTONOMOUS_LIVE_CHANGE
+RUNTIME_VALUES_OUTSIDE_REPOSITORY
+HOLD_LIVE_CHANGE_ACTIVATION
+```
+
+## Remaining planned phases
+
+```text
+None. Phase 42 closes the planned Phase 35 through Phase 42 write-readiness sequence.
 ```
 
 ## CI artifact package
@@ -72,7 +87,7 @@ Phase 42: Production use validation
 deployment-planning-reports
 ```
 
-Phase 13 through Phase 41 validation reports are included together with the read-only release manifest report.
+Phase 13 through Phase 42 validation reports are included together with the read-only release manifest report.
 
 ## Local validation
 
@@ -80,6 +95,7 @@ Phase 13 through Phase 41 validation reports are included together with the read
 python -m pip install -e ".[test]"
 pytest -q
 python scripts/validate_repository_structure.py
+python scripts/phase42_production_use_validate.py --repo-root . --output phase42-production-use-validation-report.json
 python scripts/release_manifest_validate.py --manifest config/read-only-release-manifest.example.json --output read-only-release-manifest-validation-report.json
 ```
 
@@ -88,7 +104,8 @@ python scripts/release_manifest_validate.py --manifest config/read-only-release-
 ```text
 APPROVE_READ_ONLY_RUNTIME
 HOLD_LIVE_CHANGE_ACTIVATION
-HOLD_PHASE41_STAGED_WRITE_ACTIVATION_GATE_ONLY
+WRITE_READINESS_SEQUENCE_COMPLETE
+READY_FOR_EXTERNAL_CONTROLLED_VALIDATION
 ```
 
 ## Repository target
