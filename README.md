@@ -1,4 +1,4 @@
-# Domeneshop MCP Implementation Plan — 02:08, 28.06.2026
+# Domeneshop MCP Implementation Plan — 02:20, 28.06.2026
 
 This repository is the system of record for the Domeneshop MCP bridge.
 
@@ -26,15 +26,18 @@ Runtime access values: outside repository
 | External controlled validation handoff pack | Implemented |
 | Controlled use acceptance index | Implemented |
 | Final release handoff index | Implemented |
+| Final repository archive index | Implemented |
 | Runtime access values | Not stored in repository |
 | Live changes | Still held in repository posture |
 
 ## Final repository state
 
 ```text
+REPOSITORY_ARCHIVE_BASELINE_READY
+FINAL_RELEASE_HANDOFF_INDEX_READY
+CONTROLLED_USE_ACCEPTANCE_INDEX_READY
+EXTERNAL_CONTROLLED_VALIDATION_HANDOFF_READY
 PHASE_35_TO_42_COMPLETE
-EXTERNAL_VALIDATION_HANDOFF_COMPLETE
-CONTROLLED_USE_ACCEPTANCE_INDEX_COMPLETE
 REPOSITORY_SIDE_READINESS_COMPLETE
 READY_FOR_EXTERNAL_CONTROLLED_VALIDATION
 NO_AUTONOMOUS_LIVE_CHANGE
@@ -42,9 +45,11 @@ RUNTIME_VALUES_OUTSIDE_REPOSITORY
 HOLD_LIVE_CHANGE_ACTIVATION
 ```
 
-## Final handoff files
+## Final archive files
 
 ```text
+docs/FINAL_REPOSITORY_ARCHIVE_INDEX.md
+scripts/final_repository_archive_validate.py
 docs/FINAL_RELEASE_HANDOFF_INDEX.md
 scripts/final_release_handoff_validate.py
 docs/CONTROLLED_USE_ACCEPTANCE_INDEX.md
@@ -75,7 +80,7 @@ None. Phase 42 closes the planned Phase 35 through Phase 42 write-readiness sequ
 deployment-planning-reports
 ```
 
-Phase 13 through Phase 42 validation reports, external validation pack report, controlled use acceptance report, final release handoff report, and read-only release manifest report are included.
+Phase 13 through Phase 42 validation reports, external validation pack report, controlled use acceptance report, final release handoff report, final repository archive report, and read-only release manifest report are included.
 
 ## Local validation
 
@@ -87,6 +92,7 @@ python scripts/phase42_production_use_validate.py --repo-root . --output phase42
 python scripts/external_validation_pack_validate.py --repo-root . --output external-validation-pack-report.json
 python scripts/controlled_use_acceptance_validate.py --repo-root . --output controlled-use-acceptance-report.json
 python scripts/final_release_handoff_validate.py --repo-root . --output final-release-handoff-report.json
+python scripts/final_repository_archive_validate.py --repo-root . --output final-repository-archive-report.json
 python scripts/release_manifest_validate.py --manifest config/read-only-release-manifest.example.json --output read-only-release-manifest-validation-report.json
 ```
 
@@ -100,6 +106,7 @@ READY_FOR_EXTERNAL_CONTROLLED_VALIDATION
 EXTERNAL_CONTROLLED_VALIDATION_HANDOFF_READY
 CONTROLLED_USE_ACCEPTANCE_INDEX_READY
 FINAL_RELEASE_HANDOFF_INDEX_READY
+REPOSITORY_ARCHIVE_BASELINE_READY
 ```
 
 ## Repository target
