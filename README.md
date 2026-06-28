@@ -1,4 +1,4 @@
-# Domeneshop MCP Implementation Plan — 13:32, 28.06.2026
+# Domeneshop MCP Implementation Plan — 13:44, 28.06.2026
 
 This repository is the system of record for the Domeneshop MCP bridge.
 
@@ -24,6 +24,7 @@ Runtime access values: outside repository
 | Phase 44 validation reference intake | Implemented |
 | Phase 45 review reference gate | Implemented |
 | Phase 46 review closure reference | Implemented |
+| Phase 47 reference chain summary | Implemented |
 | Runtime access values | Not stored in repository |
 | Live changes | Still held in repository posture |
 
@@ -38,22 +39,23 @@ PHASE43_DEPLOYMENT_OPERATIONS_BASELINE_READY
 PHASE44_VALIDATION_REFERENCE_INTAKE_READY
 PHASE45_REVIEW_REFERENCE_GATE_READY
 PHASE46_REVIEW_CLOSURE_REFERENCE_READY
+PHASE47_REFERENCE_CHAIN_SUMMARY_READY
 NO_AUTONOMOUS_LIVE_CHANGE
 RUNTIME_VALUES_OUTSIDE_REPOSITORY
 HOLD_LIVE_CHANGE_ACTIVATION
 ```
 
-## Phase 46 files
+## Phase 47 files
 
 ```text
-docs/PHASE46_REVIEW_CLOSURE_REFERENCE.md
-scripts/phase46_review_closure_reference_validate.py
+docs/PHASE47_REFERENCE_CHAIN_SUMMARY.md
+scripts/phase47_reference_chain_validate.py
 ```
 
-## Review closure boundary
+## Reference chain boundary
 
 ```text
-Repository stores closure references only.
+Repository stores summary references only.
 Repository posture remains unchanged.
 ```
 
@@ -63,7 +65,7 @@ Repository posture remains unchanged.
 deployment-planning-reports
 ```
 
-Phase 13 through Phase 46 validation reports, external validation pack report, controlled use acceptance report, final release handoff report, final repository archive report, and read-only release manifest report are included.
+Phase 13 through Phase 47 validation reports, external validation pack report, controlled use acceptance report, final release handoff report, final repository archive report, and read-only release manifest report are included.
 
 ## Local validation
 
@@ -71,6 +73,7 @@ Phase 13 through Phase 46 validation reports, external validation pack report, c
 python -m pip install -e ".[test]"
 pytest -q
 python scripts/validate_repository_structure.py
+python scripts/phase47_reference_chain_validate.py --repo-root . --output phase47-reference-chain-report.json
 python scripts/phase46_review_closure_reference_validate.py --repo-root . --output phase46-review-closure-reference-report.json
 python scripts/phase45_review_reference_validate.py --repo-root . --output phase45-review-reference-report.json
 python scripts/phase44_validation_reference_validate.py --repo-root . --output phase44-validation-reference-report.json
@@ -98,6 +101,7 @@ HOLD_PHASE43_DEPLOYMENT_OPERATIONS_BASELINE_ONLY
 HOLD_PHASE44_VALIDATION_REFERENCE_INTAKE_ONLY
 HOLD_PHASE45_REVIEW_REFERENCE_GATE_ONLY
 HOLD_PHASE46_REVIEW_CLOSURE_REFERENCE_ONLY
+HOLD_PHASE47_REFERENCE_CHAIN_SUMMARY_ONLY
 ```
 
 ## Repository target
