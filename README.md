@@ -1,4 +1,4 @@
-# Domeneshop MCP Implementation Plan — 01:30, 28.06.2026
+# Domeneshop MCP Implementation Plan — 01:42, 28.06.2026
 
 This repository is the system of record for the Domeneshop MCP bridge.
 
@@ -23,47 +23,9 @@ Runtime access values: outside repository
 | Phase 40 operator approval gate | Implemented |
 | Phase 41 staged gate | Implemented |
 | Phase 42 production use validation | Implemented |
+| External controlled validation handoff pack | Implemented |
 | Runtime access values | Not stored in repository |
 | Live changes | Still held in repository posture |
-
-## Phase 42 files
-
-```text
-docs/PHASE42_PRODUCTION_USE_VALIDATION.md
-scripts/phase42_production_use_validate.py
-```
-
-## Required final evidence references
-
-```text
-APPROVED_DOMAIN_REF
-PRODUCTION_VALIDATION_RUN_ID
-WRITE_SCOPE_REF
-CREDENTIAL_READINESS_REF
-RECOVERY_EVIDENCE_REF
-PREFLIGHT_REPORT_REF
-DRY_RUN_REPORT_REF
-OPERATOR_APPROVAL_REF
-STAGED_GATE_REF
-POST_CHANGE_VERIFICATION_REF
-AUDIT_LOG_REF
-FINAL_OPERATOR_SIGNOFF_REF
-```
-
-## Required final checks
-
-```text
-VERIFY_SCOPE_APPROVED
-VERIFY_CREDENTIAL_REFERENCES_EXTERNAL
-VERIFY_RECOVERY_EVIDENCE_LINKED
-VERIFY_PREFLIGHT_AND_DRY_RUN_LINKED
-VERIFY_OPERATOR_APPROVAL_LINKED
-VERIFY_STAGED_GATE_LINKED
-VERIFY_POST_CHANGE_VERIFICATION_DEFINED
-VERIFY_AUDIT_LOG_DEFINED
-VERIFY_FINAL_OPERATOR_SIGNOFF_REQUIRED
-VERIFY_NO_AUTONOMOUS_LIVE_CHANGE
-```
 
 ## Repository-side closure decision
 
@@ -73,6 +35,31 @@ READY_FOR_EXTERNAL_CONTROLLED_VALIDATION
 NO_AUTONOMOUS_LIVE_CHANGE
 RUNTIME_VALUES_OUTSIDE_REPOSITORY
 HOLD_LIVE_CHANGE_ACTIVATION
+```
+
+## External validation handoff files
+
+```text
+docs/EXTERNAL_CONTROLLED_VALIDATION_RUNBOOK.md
+docs/EXTERNAL_VALIDATION_EVIDENCE_TEMPLATE.md
+scripts/external_validation_pack_validate.py
+```
+
+## Operator handoff sequence
+
+```text
+1. Use the external controlled validation runbook.
+2. Complete the external validation evidence template outside the repository.
+3. Keep runtime values and private evidence outside the repository.
+4. Record only safe references in repository documents if needed.
+5. Require final operator signoff before controlled use.
+```
+
+## Phase 42 files
+
+```text
+docs/PHASE42_PRODUCTION_USE_VALIDATION.md
+scripts/phase42_production_use_validate.py
 ```
 
 ## Remaining planned phases
@@ -87,7 +74,7 @@ None. Phase 42 closes the planned Phase 35 through Phase 42 write-readiness sequ
 deployment-planning-reports
 ```
 
-Phase 13 through Phase 42 validation reports are included together with the read-only release manifest report.
+Phase 13 through Phase 42 validation reports, the external validation pack report, and the read-only release manifest report are included.
 
 ## Local validation
 
@@ -96,6 +83,7 @@ python -m pip install -e ".[test]"
 pytest -q
 python scripts/validate_repository_structure.py
 python scripts/phase42_production_use_validate.py --repo-root . --output phase42-production-use-validation-report.json
+python scripts/external_validation_pack_validate.py --repo-root . --output external-validation-pack-report.json
 python scripts/release_manifest_validate.py --manifest config/read-only-release-manifest.example.json --output read-only-release-manifest-validation-report.json
 ```
 
@@ -106,6 +94,7 @@ APPROVE_READ_ONLY_RUNTIME
 HOLD_LIVE_CHANGE_ACTIVATION
 WRITE_READINESS_SEQUENCE_COMPLETE
 READY_FOR_EXTERNAL_CONTROLLED_VALIDATION
+EXTERNAL_CONTROLLED_VALIDATION_HANDOFF_READY
 ```
 
 ## Repository target
