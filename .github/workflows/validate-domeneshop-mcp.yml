@@ -64,6 +64,7 @@ jobs:
           python scripts/phase40_operator_approval_validate.py --repo-root . --output artifacts/phase40-operator-approval-validation-report.json
           printf '{"summary":{"mode":"phase41_stage_gate","passed":true},"checks":[]}' > artifacts/phase41-stage-gate-validation-report.json
           python scripts/phase42_production_use_validate.py --repo-root . --output artifacts/phase42-production-use-validation-report.json
+          python scripts/external_validation_pack_validate.py --repo-root . --output artifacts/external-validation-pack-report.json
           python scripts/release_manifest_validate.py --manifest config/read-only-release-manifest.example.json --output artifacts/read-only-release-manifest-validation-report.json
 
       - name: Upload planning and control artifacts
