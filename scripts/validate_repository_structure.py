@@ -38,6 +38,7 @@ phase_docs = {
     44: "PHASE44_VALIDATION_" + "REFERENCE_INTAKE.md",
     45: "PHASE45_REVIEW_" + "REFERENCE_GATE.md",
     46: "PHASE46_REVIEW_" + "CLOSURE_REFERENCE.md",
+    47: "PHASE47_REFERENCE_CHAIN_SUMMARY.md",
 }
 phase_validators = {
     13: "phase13_disabled_default_validate.py",
@@ -73,6 +74,7 @@ phase_validators = {
     44: "phase44_validation_" + "reference_validate.py",
     45: "phase45_review_" + "reference_validate.py",
     46: "phase46_review_" + "closure_reference_validate.py",
+    47: "phase47_reference_chain_validate.py",
 }
 extra_docs = [
     "EXTERNAL_" + "CONTROLLED_" + "VALIDATION_RUNBOOK.md",
