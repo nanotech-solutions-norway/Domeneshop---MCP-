@@ -66,6 +66,7 @@ jobs:
           python scripts/phase42_production_use_validate.py --repo-root . --output artifacts/phase42-production-use-validation-report.json
           python scripts/external_validation_pack_validate.py --repo-root . --output artifacts/external-validation-pack-report.json
           python scripts/controlled_use_acceptance_validate.py --repo-root . --output artifacts/controlled-use-acceptance-report.json
+          python scripts/final_release_handoff_validate.py --repo-root . --output artifacts/final-release-handoff-report.json
           python scripts/release_manifest_validate.py --manifest config/read-only-release-manifest.example.json --output artifacts/read-only-release-manifest-validation-report.json
 
       - name: Upload planning and control artifacts
