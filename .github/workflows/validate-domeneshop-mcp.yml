@@ -60,6 +60,7 @@ jobs:
           python scripts/phase36_write_scope_validate.py --repo-root . --output artifacts/phase36-write-scope-validation-report.json
           python scripts/phase37_credential_readiness_validate.py --repo-root . --output artifacts/phase37-credential-readiness-validation-report.json
           python scripts/phase38_recovery_evidence_validate.py --repo-root . --output artifacts/phase38-recovery-evidence-validation-report.json
+          python scripts/phase39_write_preflight_validate.py --repo-root . --output artifacts/phase39-write-preflight-validation-report.json
           python scripts/release_manifest_validate.py --manifest config/read-only-release-manifest.example.json --output artifacts/read-only-release-manifest-validation-report.json
 
       - name: Upload planning and control artifacts
