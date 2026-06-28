@@ -74,6 +74,7 @@ jobs:
           python scripts/phase45_review_reference_validate.py --repo-root . --output artifacts/phase45-review-reference-report.json
           python scripts/phase46_review_closure_reference_validate.py --repo-root . --output artifacts/phase46-review-closure-reference-report.json
           python scripts/phase47_reference_chain_validate.py --repo-root . --output artifacts/phase47-reference-chain-report.json
+          python scripts/phase48_deployment_sequence_closure_validate.py --repo-root . --output artifacts/phase48-deployment-sequence-closure-report.json
           python scripts/release_manifest_validate.py --manifest config/read-only-release-manifest.example.json --output artifacts/read-only-release-manifest-validation-report.json
 
       - name: Upload planning and control artifacts
