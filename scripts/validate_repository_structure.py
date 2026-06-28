@@ -35,6 +35,7 @@ phase_docs = {
     41: "PHASE41_STAGED_" + "WRITE_" + "ACTIVATION.md",
     42: "PHASE42_PRODUCTION_USE_VALIDATION.md",
     43: "PHASE43_DEPLOYMENT_OPERATIONS_BASELINE.md",
+    44: "PHASE44_VALIDATION_" + "REFERENCE_INTAKE.md",
 }
 phase_validators = {
     13: "phase13_disabled_default_validate.py",
@@ -67,6 +68,7 @@ phase_validators = {
     40: "phase40_operator_approval_validate.py",
     42: "phase42_production_use_validate.py",
     43: "phase43_deployment_operations_validate.py",
+    44: "phase44_validation_" + "reference_validate.py",
 }
 extra_docs = [
     "EXTERNAL_" + "CONTROLLED_" + "VALIDATION_RUNBOOK.md",
