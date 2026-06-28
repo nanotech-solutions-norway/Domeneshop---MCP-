@@ -1,77 +1,57 @@
-# Domeneshop MCP Implementation Plan — 02:20, 28.06.2026
+# Domeneshop MCP Implementation Plan — 12:40, 28.06.2026
 
 This repository is the system of record for the Domeneshop MCP bridge.
 
 ## Current posture
 
 ```text
-Runtime posture: READ_ONLY_RUNTIME_PLUS_PLANNING_GUARDS
+Runtime posture: READ_ONLY_RUNTIME_PLUS_DEPLOYMENT_PLANNING
 Activation posture: HOLD_LIVE_CHANGE_ACTIVATION
 Runtime access values: outside repository
 ```
 
-## Current write-readiness state
+## Current deployment-readiness state
 
 | Area | Status |
 |---|---|
 | Phase 13 through Phase 34 control chain | Implemented |
-| Phase 35 release closure | Implemented |
-| Phase 36 write scope definition | Implemented |
-| Phase 37 credential readiness | Implemented |
-| Phase 38 recovery evidence | Implemented |
-| Phase 39 write preflight and dry run | Implemented |
-| Phase 40 operator approval gate | Implemented |
-| Phase 41 staged gate | Implemented |
-| Phase 42 production use validation | Implemented |
+| Phase 35 through Phase 42 write-readiness sequence | Complete |
 | External controlled validation handoff pack | Implemented |
 | Controlled use acceptance index | Implemented |
 | Final release handoff index | Implemented |
 | Final repository archive index | Implemented |
+| Phase 43 deployment operations baseline | Implemented |
 | Runtime access values | Not stored in repository |
 | Live changes | Still held in repository posture |
 
-## Final repository state
+## Deployment sequence state
 
 ```text
+PHASE_35_TO_42_COMPLETE
 REPOSITORY_ARCHIVE_BASELINE_READY
 FINAL_RELEASE_HANDOFF_INDEX_READY
-CONTROLLED_USE_ACCEPTANCE_INDEX_READY
-EXTERNAL_CONTROLLED_VALIDATION_HANDOFF_READY
-PHASE_35_TO_42_COMPLETE
-REPOSITORY_SIDE_READINESS_COMPLETE
 READY_FOR_EXTERNAL_CONTROLLED_VALIDATION
+PHASE43_DEPLOYMENT_OPERATIONS_BASELINE_READY
 NO_AUTONOMOUS_LIVE_CHANGE
 RUNTIME_VALUES_OUTSIDE_REPOSITORY
 HOLD_LIVE_CHANGE_ACTIVATION
 ```
 
-## Final archive files
+## Phase 43 files
 
 ```text
-docs/FINAL_REPOSITORY_ARCHIVE_INDEX.md
-scripts/final_repository_archive_validate.py
-docs/FINAL_RELEASE_HANDOFF_INDEX.md
-scripts/final_release_handoff_validate.py
-docs/CONTROLLED_USE_ACCEPTANCE_INDEX.md
-scripts/controlled_use_acceptance_validate.py
-docs/EXTERNAL_CONTROLLED_VALIDATION_RUNBOOK.md
-docs/EXTERNAL_VALIDATION_EVIDENCE_TEMPLATE.md
-scripts/external_validation_pack_validate.py
+docs/PHASE43_DEPLOYMENT_OPERATIONS_BASELINE.md
+scripts/phase43_deployment_operations_validate.py
 ```
 
-## Acceptance outcome
+## Deployment boundary
 
 ```text
-Repository-side readiness: complete
-External controlled validation: required
-Final operator signoff: required
-Autonomous live use: not approved
-```
-
-## Remaining planned phases
-
-```text
-None. Phase 42 closes the planned Phase 35 through Phase 42 write-readiness sequence.
+Repository prepares operator deployment evidence only.
+External runtime execution remains outside repository.
+Runtime values remain outside repository.
+Private validation evidence remains outside repository.
+Live activation remains held until explicit operator completion evidence exists.
 ```
 
 ## CI artifact package
@@ -80,7 +60,7 @@ None. Phase 42 closes the planned Phase 35 through Phase 42 write-readiness sequ
 deployment-planning-reports
 ```
 
-Phase 13 through Phase 42 validation reports, external validation pack report, controlled use acceptance report, final release handoff report, final repository archive report, and read-only release manifest report are included.
+Phase 13 through Phase 43 validation reports, external validation pack report, controlled use acceptance report, final release handoff report, final repository archive report, and read-only release manifest report are included.
 
 ## Local validation
 
@@ -88,6 +68,7 @@ Phase 13 through Phase 42 validation reports, external validation pack report, c
 python -m pip install -e ".[test]"
 pytest -q
 python scripts/validate_repository_structure.py
+python scripts/phase43_deployment_operations_validate.py --repo-root . --output phase43-deployment-operations-report.json
 python scripts/phase42_production_use_validate.py --repo-root . --output phase42-production-use-validation-report.json
 python scripts/external_validation_pack_validate.py --repo-root . --output external-validation-pack-report.json
 python scripts/controlled_use_acceptance_validate.py --repo-root . --output controlled-use-acceptance-report.json
@@ -107,6 +88,7 @@ EXTERNAL_CONTROLLED_VALIDATION_HANDOFF_READY
 CONTROLLED_USE_ACCEPTANCE_INDEX_READY
 FINAL_RELEASE_HANDOFF_INDEX_READY
 REPOSITORY_ARCHIVE_BASELINE_READY
+HOLD_PHASE43_DEPLOYMENT_OPERATIONS_BASELINE_ONLY
 ```
 
 ## Repository target
