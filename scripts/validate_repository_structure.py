@@ -31,6 +31,7 @@ phase_docs = {
     37: "PHASE37_CREDENTIAL_READINESS.md",
     38: "PHASE38_RECOVERY_EVIDENCE.md",
     39: "PHASE39_WRITE_PREFLIGHT_DRY_RUN.md",
+    40: "PHASE40_OPERATOR_APPROVAL_GATE.md",
 }
 phase_validators = {
     13: "phase13_disabled_default_validate.py",
@@ -60,6 +61,7 @@ phase_validators = {
     37: "phase37_credential_readiness_validate.py",
     38: "phase38_recovery_evidence_validate.py",
     39: "phase39_write_preflight_validate.py",
+    40: "phase40_operator_approval_validate.py",
 }
 required_files = [
     "README.md",
