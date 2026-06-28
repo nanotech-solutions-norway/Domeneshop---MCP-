@@ -69,6 +69,7 @@ jobs:
           python scripts/final_release_handoff_validate.py --repo-root . --output artifacts/final-release-handoff-report.json
           A=archive
           python scripts/final_repository_${A}_validate.py --repo-root . --output artifacts/final-repository-${A}-report.json
+          python scripts/phase43_deployment_operations_validate.py --repo-root . --output artifacts/phase43-deployment-operations-report.json
           python scripts/release_manifest_validate.py --manifest config/read-only-release-manifest.example.json --output artifacts/read-only-release-manifest-validation-report.json
 
       - name: Upload planning and control artifacts
