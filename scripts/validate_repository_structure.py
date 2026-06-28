@@ -69,6 +69,11 @@ phase_validators = {
 extra_docs = [
     "EXTERNAL_" + "CONTROLLED_" + "VALIDATION_RUNBOOK.md",
     "EXTERNAL_" + "VALIDATION_" + "EVIDENCE_TEMPLATE.md",
+    "CONTROLLED_" + "USE_" + "ACCEPTANCE_INDEX.md",
+]
+extra_scripts = [
+    "external_validation_pack_validate.py",
+    "controlled_" + "use_" + "acceptance_validate.py",
 ]
 required_files = [
     "README.md",
@@ -76,13 +81,13 @@ required_files = [
     "docs/SECURITY_AND_WRITE_CONTROL.md",
     "docs/TOOL_CATALOG.md",
     "docs/VALIDATION_CHECKLIST.md",
-    "scripts/external_validation_pack_validate.py",
     "config/domeneshop-mcp.env.example",
     ".github/workflows/validate-domeneshop-mcp.yml",
 ]
 required_files.extend(f"docs/{name}" for name in phase_docs.values())
 required_files.extend(f"scripts/{name}" for name in phase_validators.values())
 required_files.extend(f"docs/{name}" for name in extra_docs)
+required_files.extend(f"scripts/{name}" for name in extra_scripts)
 
 missing = [rel for rel in required_files if not (ROOT / rel).exists()]
 if missing:
