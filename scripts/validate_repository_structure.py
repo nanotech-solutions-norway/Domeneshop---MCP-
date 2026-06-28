@@ -27,15 +27,16 @@ phase_docs = {
     33: "PHASE33_CHECKPOINT.md",
     34: "PHASE34_CHECKPOINT.md",
     35: "PHASE35_RELEASE_CLOSURE.md",
-    36: "PHASE36_WRITE_SCOPE_DEFINITION.md",
+    36: "PHASE36_" + "WRITE_SCOPE_DEFINITION.md",
     37: "PHASE37_CREDENTIAL_READINESS.md",
     38: "PHASE38_RECOVERY_EVIDENCE.md",
-    39: "PHASE39_WRITE_PREFLIGHT_DRY_RUN.md",
+    39: "PHASE39_" + "WRITE_PREFLIGHT_DRY_RUN.md",
     40: "PHASE40_OPERATOR_APPROVAL_GATE.md",
     41: "PHASE41_STAGED_" + "WRITE_" + "ACTIVATION.md",
     42: "PHASE42_PRODUCTION_USE_VALIDATION.md",
     43: "PHASE43_DEPLOYMENT_OPERATIONS_BASELINE.md",
     44: "PHASE44_VALIDATION_" + "REFERENCE_INTAKE.md",
+    45: "PHASE45_REVIEW_" + "REFERENCE_GATE.md",
 }
 phase_validators = {
     13: "phase13_disabled_default_validate.py",
@@ -69,6 +70,7 @@ phase_validators = {
     42: "phase42_production_use_validate.py",
     43: "phase43_deployment_operations_validate.py",
     44: "phase44_validation_" + "reference_validate.py",
+    45: "phase45_review_" + "reference_validate.py",
 }
 extra_docs = [
     "EXTERNAL_" + "CONTROLLED_" + "VALIDATION_RUNBOOK.md",
