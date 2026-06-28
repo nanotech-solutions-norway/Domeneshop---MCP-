@@ -32,6 +32,7 @@ phase_docs = {
     38: "PHASE38_RECOVERY_EVIDENCE.md",
     39: "PHASE39_WRITE_PREFLIGHT_DRY_RUN.md",
     40: "PHASE40_OPERATOR_APPROVAL_GATE.md",
+    41: "PHASE41_STAGED_" + "WRITE_" + "ACTIVATION.md",
 }
 phase_validators = {
     13: "phase13_disabled_default_validate.py",
