@@ -1,5 +1,4 @@
 """Read-only SFTP client for hosted file inspection."""
-
 from __future__ import annotations
 
 import hashlib
@@ -7,8 +6,9 @@ import os
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import PurePosixPath
-from typing import Any, Iterable
+from typing import Any
 
+from .credential_policy import has_runtime_value
 from .path_jail import PathGuard, is_text_extension
 
 
@@ -45,7 +45,7 @@ class SftpReadConfig:
 
     @property
     def has_auth(self) -> bool:
-        return self.user not in {"", "__SET_IN_SECRET_STORE__"} and self.access_value not in {"", "__SET_IN_SECRET_STORE__"}
+        return has_runtime_value(self.user) and has_runtime_value(self.access_value)
 
 
 class SftpReadClient:
