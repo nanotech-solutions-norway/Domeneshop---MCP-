@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "domeneshop-mcp"
-version = "0.8.0"
-description = "Controlled read-first MCP bridge for Domeneshop API and deployment governance."
+version = "0.9.0"
+description = "Controlled read-first MCP bridge with an isolated approval-gated write foundation for Domeneshop API and deployment governance."
 requires-python = ">=3.11"
 dependencies = [
   "httpx>=0.27.0",
