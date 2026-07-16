@@ -34,6 +34,7 @@ jobs:
       - name: Generate checkpoint reports
         run: |
           mkdir -p artifacts
+          python scripts/validate_controlled_write_foundation.py artifacts/controlled-write-foundation-report.json
           python scripts/phase13_disabled_default_validate.py --repo-root . --output artifacts/phase13-disabled-default-validation-report.json
           python scripts/phase14_activation_readiness_validate.py --repo-root . --output artifacts/phase14-activation-readiness-validation-report.json
           python scripts/phase15_control_blueprint_validate.py --repo-root . --output artifacts/phase15-control-blueprint-validation-report.json
