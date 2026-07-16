@@ -1,13 +1,11 @@
 """Configuration helpers for the Domeneshop MCP bridge."""
-
 from __future__ import annotations
 
 import os
 from dataclasses import dataclass
 from typing import Mapping
 
-
-PLACEHOLDER_VALUES = {"", "__SET_IN_SECRET_STORE__", "CHANGE_ME", "changeme", "placeholder"}
+from .credential_policy import has_runtime_value
 
 
 @dataclass(frozen=True)
@@ -40,7 +38,7 @@ class DomeneshopConfig:
 
     @property
     def has_auth(self) -> bool:
-        return self.auth_user not in PLACEHOLDER_VALUES and self.auth_value not in PLACEHOLDER_VALUES
+        return has_runtime_value(self.auth_user) and has_runtime_value(self.auth_value)
 
     def require_auth(self) -> None:
         if not self.has_auth:
