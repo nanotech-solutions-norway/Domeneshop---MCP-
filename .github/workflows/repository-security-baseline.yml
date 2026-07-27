@@ -1,0 +1,54 @@
+name: Repository security baseline
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-security-baseline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Validate repository security controls
+        shell: python
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          from pathlib import Path
+          import os, re, subprocess, sys
+          required = ["SECURITY.md", ".github/CODEOWNERS", ".github/pull_request_template.md", ".github/dependabot.yml"]
+          violations = [f"missing required control: {p}" for p in required if not Path(p).is_file()]
+          base, head = os.getenv("BASE_SHA", "").strip(), os.getenv("HEAD_SHA", "").strip()
+          changed = subprocess.check_output(["git", "diff", "--name-only", base, head], text=True).splitlines() if base and head else subprocess.check_output(["git", "ls-files"], text=True).splitlines()
+          allowed_env = {".env.example", ".env.sample", ".env.template"}
+          blocked_suffixes = {".pem", ".key", ".pfx", ".p12", ".kdbx"}
+          blocked_names = {"id_rsa", "id_ed25519", "service-account.json"}
+          blocked_dirs = {"secrets", "credentials", "private"}
+          for raw in changed:
+              path, name = Path(raw), Path(raw).name.lower()
+              parts = {part.lower() for part in path.parts[:-1]}
+              if name.startswith(".env") and name not in allowed_env: violations.append(f"prohibited environment file: {raw}")
+              if path.suffix.lower() in blocked_suffixes or name in blocked_names: violations.append(f"prohibited credential/key file: {raw}")
+              if parts.intersection(blocked_dirs): violations.append(f"prohibited sensitive directory: {raw}")
+              if raw.startswith(".github/workflows/") and path.suffix.lower() in {".yml", ".yaml"} and path.is_file():
+                  text = path.read_text(encoding="utf-8")
+                  if not re.search(r"(?m)^permissions:\s*(?:$|\n)", text): violations.append(f"workflow lacks top-level permissions: {raw}")
+                  if re.search(r"(?m)^\s*pull_request_target\s*:", text): violations.append(f"pull_request_target prohibited: {raw}")
+                  if re.search(r"persist-credentials\s*:\s*true", text, re.I): violations.append(f"workflow persists checkout credentials: {raw}")
+                  for match in re.finditer(r"(?m)^\s*uses:\s*([^\s#]+)", text):
+                      target = match.group(1)
+                      if target.startswith("./") or target.startswith("docker://"): continue
+                      if "@" not in target or not re.fullmatch(r"[0-9a-fA-F]{40}", target.rsplit("@", 1)[1]): violations.append(f"external action is not pinned to a full SHA in {raw}: {target}")
+          if violations:
+              print("Repository security baseline failed:")
+              for item in sorted(set(violations)): print(f"- {item}")
+              sys.exit(1)
+          print("Repository security baseline passed.")
