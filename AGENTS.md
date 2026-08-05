@@ -9,7 +9,9 @@
 ## Process progress reporting
 
 - Follow `docs/PROCESS_PROGRESS_REPORTING_STANDARD.md` for every operator-facing process.
-- End each discrete process result with a percentage progress bar, stated completion target, result and next evidence gate.
+- Maintain evidence-weighted progress in canonical records, but do not automatically display a status bar after ordinary processes or responses.
+- Display the status bar and short completed/ongoing/remaining summary only when the user's complete trimmed message is exactly `Status`, case-insensitively, with no other text, punctuation, mention or context.
+- Messages such as `Status please`, `Project status`, `What's the status?`, or `Status @GitHub` do not trigger the special status block.
 - Calculate progress from verified weighted milestones only.
 - Failed or blocked processes do not increase the percentage.
 - Recalculate explicitly when scope changes.
