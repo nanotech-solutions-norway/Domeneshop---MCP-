@@ -2,9 +2,31 @@
 
 This repository adopts the NanoTech Solutions Norway cross-project MCP progress-reporting standard.
 
-## Mandatory rule
+## Exact trigger rule
 
-After every discrete process result, report a percentage status bar for the stated completion target. Apply the rule to successful, partial, blocked and failed processes.
+Display the Domeneshop MCP status bar and short process summary only when the user's complete message, after trimming surrounding whitespace, is exactly:
+
+```text
+Status
+```
+
+Treat the standalone command case-insensitively. Do not trigger the status block when the message contains any other words, punctuation, request, instruction, mention or context.
+
+Examples that do not trigger the special status block include `Status please`, `Project status`, `What's the status?`, `Status @GitHub`, and `Continue and show status`.
+
+Do not automatically show a progress bar after an ordinary successful, partial, blocked or failed process. Maintain progress in canonical records and show it in chat only after the exact standalone command.
+
+## Required status-command response
+
+The standalone `Status` response must contain:
+
+1. the applicable Domeneshop MCP completion target;
+2. the current evidence-weighted percentage and 20-character bar;
+3. a short description of completed processes;
+4. a short description of the ongoing process;
+5. a short description of remaining processes;
+6. the next evidence gate;
+7. the preserved safety state.
 
 ## Calculation
 
@@ -16,18 +38,17 @@ After every discrete process result, report a percentage status bar for the stat
 - Recalculate explicitly when the approved target or scope changes.
 - Never show 100 percent before closure evidence, rollback or recovery evidence, documentation and operator handoff are complete.
 
-## Display
+## Status-command display
 
 Use a 20-character bar. The numeric percentage is authoritative.
 
 ```text
-PROCESS PROGRESS
+STATUS — Domeneshop MCP
 Target: <completion target>
-Overall: [████████░░░░░░░░░░░░] 40%
-Verified weight: 40/100
-Process: <process name>
-Result: PASSED | PARTIAL | BLOCKED | FAILED
-Change: +<n>% | unchanged | recalculated
+Progress: [████████░░░░░░░░░░░░] 40%
+Completed: <short description>
+Ongoing: <short description>
+Remaining: <short description>
 Next gate: <next evidence gate>
 Safety: <preserved safety state>
 ```
@@ -50,4 +71,4 @@ Progress never grants deployment, provider-call, live-change or write-enablement
 
 ## Status and handoff records
 
-Every new rollout record, status update, transfer pack and continuation prompt must include the current target, percentage, current process and next gate.
+Every new rollout record, status update, transfer pack and continuation prompt must keep the current target, percentage, current process and next gate. The operator-facing status bar remains hidden unless the exact standalone `Status` command is received.
