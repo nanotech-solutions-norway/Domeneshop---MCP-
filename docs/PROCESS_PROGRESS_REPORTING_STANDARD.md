@@ -2,26 +2,28 @@
 
 This repository adopts the NanoTech Solutions Norway cross-project MCP progress-reporting standard.
 
-## Exact trigger rule
+## Mandatory per-process progress display
 
-Display the Domeneshop MCP status bar and short process summary only when the user's complete message, after trimming surrounding whitespace, is exactly:
+After every discrete process or major work step in a Domeneshop MCP workflow, display a compact cumulative evidence-weighted progress bar with a percentage and short status label.
+
+Default format:
 
 ```text
-Status
+Process status: [██████░░░░] 60% — <brief status>
 ```
 
-Treat the standalone command case-insensitively. Do not trigger the status block when the message contains any other words, punctuation, request, instruction, mention or context.
+A process is a coherent operator-facing work unit or major step, not every low-level tool call, file read, API request or internal substep.
 
-Examples that do not trigger the special status block include `Status please`, `Project status`, `What's the status?`, `Status @GitHub`, and `Continue and show status`.
+Show the compact bar after successful, partial, blocked and failed processes. Failed or blocked work does not increase the percentage unless it closes a previously incomplete verified evidence gate.
 
-Do not automatically show a progress bar after an ordinary successful, partial, blocked or failed process. Maintain progress in canonical records and show it in chat only after the exact standalone command.
+## Standalone Status command
 
-## Required status-command response
+The exact standalone `Status` command remains the trigger for the expanded Domeneshop MCP status block; it is no longer the exclusive trigger for displaying progress.
 
-The standalone `Status` response must contain:
+The expanded response must contain:
 
 1. the applicable Domeneshop MCP completion target;
-2. the current evidence-weighted percentage and 20-character bar;
+2. the current evidence-weighted percentage and expanded bar;
 3. a short description of completed processes;
 4. a short description of the ongoing process;
 5. a short description of remaining processes;
@@ -38,9 +40,7 @@ The standalone `Status` response must contain:
 - Recalculate explicitly when the approved target or scope changes.
 - Never show 100 percent before closure evidence, rollback or recovery evidence, documentation and operator handoff are complete.
 
-## Status-command display
-
-Use a 20-character bar. The numeric percentage is authoritative.
+## Expanded Status display
 
 ```text
 STATUS — Domeneshop MCP
@@ -71,4 +71,8 @@ Progress never grants deployment, provider-call, live-change or write-enablement
 
 ## Status and handoff records
 
-Every new rollout record, status update, transfer pack and continuation prompt must keep the current target, percentage, current process and next gate. The operator-facing status bar remains hidden unless the exact standalone `Status` command is received.
+Every new rollout record, status update, transfer pack and continuation prompt must keep the current target, percentage, current process and next gate. The compact operator-facing progress bar is mandatory after each discrete process or major work step.
+
+## Superseding governance revision — 08.08.2026
+
+This revision supersedes the 05.08.2026 trigger-only rule that hid progress during ordinary processes. The standalone `Status` command remains the expanded reporting command, while compact progress bars are now displayed by default after each discrete process or major work step.
