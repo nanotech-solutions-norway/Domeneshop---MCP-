@@ -1,0 +1,19 @@
+{
+  "release_id": "D-R2-FOUNDATION-20260716",
+  "environment": "test",
+  "decision": "APPROVE_CONTROLLED_WRITE_FOUNDATION",
+  "approved_tools": [
+    "domeneshop_create_dns_txt",
+    "domeneshop_update_dns_txt"
+  ],
+  "approved_target_prefixes": [
+    "domain:TEST_DOMAIN_ID:dns:_mcp-validation"
+  ],
+  "live_execution_enabled": false,
+  "controls": {
+    "require_approval_token": true,
+    "require_idempotency": true,
+    "require_audit": true,
+    "require_readback": true
+  }
+}
