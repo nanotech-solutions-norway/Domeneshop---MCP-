@@ -6,6 +6,7 @@ import json
 
 from domeneshop_mcp.client import DomeneshopReadClient
 from domeneshop_mcp.config import DomeneshopConfig
+from domeneshop_mcp.evidence_summary import summarize_collection_result
 from domeneshop_mcp.tools_read import list_domains
 
 
@@ -14,7 +15,8 @@ def main() -> int:
     client = DomeneshopReadClient(config)
     try:
         result = list_domains(client)
-        print(json.dumps(result, indent=2, ensure_ascii=False))
+        evidence = summarize_collection_result(result, evidence_type="domeneshop_domain_list")
+        print(json.dumps(evidence, indent=2, ensure_ascii=False))
         return 0 if result.get("success") else 1
     finally:
         client.close()

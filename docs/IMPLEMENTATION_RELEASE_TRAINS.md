@@ -16,6 +16,7 @@ Implemented in this branch:
 - CI tests for placeholder and runtime-value behavior;
 - explicit local MCP transport contract: `stdio` through `FastMCP.run(transport="stdio")`;
 - MCP SDK compatibility constrained to the supported 1.x line because MCP 2.x removes the imported `mcp.server.fastmcp` module.
+- provider and SFTP smoke evidence reduced to pass/fail metadata and aggregate counts, without provider payloads or remote paths.
 
 Transport boundary:
 
