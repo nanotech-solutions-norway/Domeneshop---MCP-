@@ -13,16 +13,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: '3.12'
 
       - name: Install and validate baseline
         run: |
-          python -m pip install -e ".[test]"
+          python -m pip install -e ".[server,test]"
           python scripts/validate_repository_structure.py
           grep -q '^WRITE_TOOLS_ENABLED=false$' config/domeneshop-mcp.env.example
           grep -q '^DRY_RUN_DEFAULT=true$' config/domeneshop-mcp.env.example
@@ -79,7 +79,7 @@ jobs:
           python scripts/release_manifest_validate.py --manifest config/read-only-release-manifest.example.json --output artifacts/read-only-release-manifest-validation-report.json
 
       - name: Upload planning and control artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: deployment-planning-reports
           path: |

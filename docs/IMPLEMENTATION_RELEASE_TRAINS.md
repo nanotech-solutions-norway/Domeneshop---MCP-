@@ -13,13 +13,21 @@ Implemented in this branch:
 - centralized credential placeholder detection;
 - rejection of sanitized operator markers before any provider call;
 - API and SFTP configuration use the same credential policy;
-- CI tests for placeholder and runtime-value behavior.
+- CI tests for placeholder and runtime-value behavior;
+- explicit local MCP transport contract: `stdio` through `FastMCP.run(transport="stdio")`;
+- MCP SDK compatibility constrained to the supported 1.x line because MCP 2.x removes the imported `mcp.server.fastmcp` module.
+
+Transport boundary:
+
+- `domeneshop-mcp-server` and `python -m domeneshop_mcp.server` are stdio MCP processes for an operator-controlled MCP client;
+- `https://ds.atlas-ai.no/` is the separate PHP health/configuration status surface, not an MCP transport endpoint;
+- no remote Streamable HTTP or SSE MCP endpoint is declared by this release train.
 
 Still requires operator/runtime evidence:
 
 - protected `ds.atlas-ai.no` status validation;
 - authenticated Domeneshop read smoke;
-- MCP initialize and tools-list validation using the selected transport;
+- MCP initialize and tools-list validation over stdio;
 - SFTP read smoke inside an approved non-sensitive root.
 
 ## D-R2 — Controlled-write foundation

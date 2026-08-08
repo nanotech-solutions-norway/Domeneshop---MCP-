@@ -109,6 +109,8 @@ class ControlledWriteExecutor:
             before = adapter.pre_read(request.target)
             result = adapter.execute(request.action, request.target, request.payload)
             after = adapter.read_back(request.target, result)
+            if self.release.require_readback and after is None:
+                raise ControlledWriteError("Required provider readback was unavailable")
             event = self.audit_store.append(
                 "controlled_write_completed",
                 request.operator,

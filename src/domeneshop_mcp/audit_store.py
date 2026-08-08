@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import threading
 from datetime import datetime, timezone
 from pathlib import Path
@@ -19,13 +20,28 @@ _SENSITIVE_KEYS = {
     "credential",
     "access_value",
     "auth_value",
+    "access_token",
+    "refresh_token",
+    "client_secret",
 }
+
+
+def _normalized_key(value: Any) -> str:
+    text = re.sub(r"(?<!^)(?=[A-Z])", "_", str(value))
+    return re.sub(r"[^a-z0-9]+", "_", text.lower()).strip("_")
+
+
+def _is_sensitive_key(value: Any) -> bool:
+    normalized = _normalized_key(value)
+    if normalized in _SENSITIVE_KEYS:
+        return True
+    return any(normalized.endswith(f"_{suffix}") for suffix in ("password", "secret", "token", "api_key", "private_key"))
 
 
 def redact(value: Any) -> Any:
     if isinstance(value, dict):
         return {
-            str(key): "[REDACTED]" if str(key).lower() in _SENSITIVE_KEYS else redact(item)
+            str(key): "[REDACTED]" if _is_sensitive_key(key) else redact(item)
             for key, item in value.items()
         }
     if isinstance(value, list):

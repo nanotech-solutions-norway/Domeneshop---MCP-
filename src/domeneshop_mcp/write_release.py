@@ -48,6 +48,19 @@ class ControlledWriteRelease:
         if not isinstance(controls, dict):
             raise ReleaseManifestError("controls must be an object")
 
+        control_names = {
+            "require_approval_token",
+            "require_idempotency",
+            "require_audit",
+            "require_readback",
+        }
+        missing_controls = sorted(control_names - set(controls))
+        if missing_controls:
+            raise ReleaseManifestError(f"Missing manifest controls: {', '.join(missing_controls)}")
+        invalid_controls = sorted(name for name in control_names if not isinstance(controls[name], bool))
+        if invalid_controls:
+            raise ReleaseManifestError(f"Manifest controls must be booleans: {', '.join(invalid_controls)}")
+
         approved_tools = frozenset(str(item).strip() for item in payload["approved_tools"] if str(item).strip())
         prefixes = tuple(str(item).strip() for item in payload["approved_target_prefixes"] if str(item).strip())
         if not approved_tools:
@@ -58,9 +71,13 @@ class ControlledWriteRelease:
             raise ReleaseManifestError("Broad or wildcard target prefixes are prohibited")
 
         decision = str(payload["decision"])
-        live_enabled = bool(payload["live_execution_enabled"])
+        if not isinstance(payload["live_execution_enabled"], bool):
+            raise ReleaseManifestError("live_execution_enabled must be a boolean")
+        live_enabled = payload["live_execution_enabled"]
         if live_enabled and decision != "APPROVE_CONTROLLED_WRITE_PILOT":
             raise ReleaseManifestError("Live execution requires APPROVE_CONTROLLED_WRITE_PILOT")
+        if live_enabled and not all(controls[name] for name in control_names):
+            raise ReleaseManifestError("Live execution requires every mandatory control")
 
         return cls(
             release_id=str(payload["release_id"]),
@@ -69,10 +86,10 @@ class ControlledWriteRelease:
             approved_tools=approved_tools,
             approved_target_prefixes=prefixes,
             live_execution_enabled=live_enabled,
-            require_approval_token=bool(controls.get("require_approval_token", True)),
-            require_idempotency=bool(controls.get("require_idempotency", True)),
-            require_audit=bool(controls.get("require_audit", True)),
-            require_readback=bool(controls.get("require_readback", True)),
+            require_approval_token=controls["require_approval_token"],
+            require_idempotency=controls["require_idempotency"],
+            require_audit=controls["require_audit"],
+            require_readback=controls["require_readback"],
         )
 
     @classmethod

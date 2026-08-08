@@ -10,6 +10,8 @@ from .health import HealthDiagnostics
 from .sftp_read import SftpReadClient, SftpReadConfig
 from . import tools_change_control, tools_dry_run, tools_health, tools_read, tools_recovery_plan, tools_sftp_read
 
+MCP_TRANSPORT = "stdio"
+
 mcp = FastMCP("domeneshop-mcp")
 api_client = DomeneshopReadClient(DomeneshopConfig.from_env())
 remote_client = SftpReadClient(SftpReadConfig.from_env())
@@ -100,7 +102,7 @@ def control_build_audit_event(event_type: str, actor: str, target: str, decision
     return tools_change_control.control_build_audit_event(event_type, actor, target, decision_summary)
 
 def main() -> None:
-    mcp.run()
+    mcp.run(transport=MCP_TRANSPORT)
 
 if __name__ == "__main__":
     main()

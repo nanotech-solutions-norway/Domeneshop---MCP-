@@ -76,6 +76,11 @@ class FakeAdapter:
         return {"status": "rolled_back"}
 
 
+class MissingReadbackAdapter(FakeAdapter):
+    def read_back(self, target, result):
+        return None
+
+
 def test_review_markers_are_rejected():
     values = [
         "__SET_IN_SECRET_STORE__",
@@ -117,6 +122,22 @@ def test_live_manifest_requires_pilot_decision():
     payload = _foundation_manifest()
     payload["live_execution_enabled"] = True
     with pytest.raises(ReleaseManifestError):
+        ControlledWriteRelease.from_dict(payload)
+
+
+def test_live_manifest_requires_every_control():
+    payload = _foundation_manifest()
+    payload["decision"] = "APPROVE_CONTROLLED_WRITE_PILOT"
+    payload["live_execution_enabled"] = True
+    payload["controls"]["require_approval_token"] = False
+    with pytest.raises(ReleaseManifestError, match="every mandatory control"):
+        ControlledWriteRelease.from_dict(payload)
+
+
+def test_manifest_rejects_string_boolean_values():
+    payload = _foundation_manifest()
+    payload["live_execution_enabled"] = "false"
+    with pytest.raises(ReleaseManifestError, match="must be a boolean"):
         ControlledWriteRelease.from_dict(payload)
 
 
@@ -203,6 +224,25 @@ def test_audit_store_redacts_and_verifies_chain(tmp_path):
     assert lines[1]["details"]["authorization"] == "[REDACTED]"
 
 
+def test_audit_store_redacts_common_key_variants(tmp_path):
+    store = AppendOnlyAuditStore(tmp_path / "audit.jsonl")
+    event = store.append(
+        "preflight",
+        "operator",
+        "target",
+        {
+            "apiKey": "sensitive",
+            "access_token": "sensitive",
+            "nested": {"clientSecret": "sensitive", "database_password": "sensitive", "safe": "value"},
+        },
+    )
+    assert event["details"] == {
+        "apiKey": "[REDACTED]",
+        "access_token": "[REDACTED]",
+        "nested": {"clientSecret": "[REDACTED]", "database_password": "[REDACTED]", "safe": "value"},
+    }
+
+
 def test_create_dns_txt_uses_post_and_location_header():
     def handler(request: httpx.Request) -> httpx.Response:
         assert request.method == "POST"
@@ -276,3 +316,31 @@ def test_live_pilot_executes_once_and_replays_result(tmp_path):
     assert first["replayed"] is False
     second = executor.execute(request, adapter)
     assert second["replayed"] is True
+
+
+def test_required_readback_failure_is_rolled_back_and_not_completed(tmp_path):
+    payload = _txt_record()
+    target = "domain:1:dns:_mcp-validation"
+    action = "domeneshop_create_dns_txt"
+    manager = ApprovalTokenManager("x" * 48, UsedNonceStore(tmp_path / "used"))
+    token = manager.issue(
+        approval_id="APP-2",
+        operator="operator",
+        action=action,
+        target=target,
+        payload_sha256=canonical_payload_sha256(payload),
+    )
+    idempotency = FileIdempotencyStore(tmp_path / "idem")
+    audit_path = tmp_path / "audit.jsonl"
+    executor = ControlledWriteExecutor(_release(True), manager, idempotency, AppendOnlyAuditStore(audit_path))
+    adapter = MissingReadbackAdapter()
+    request = ControlledWriteRequest(action, target, payload, "operator", token, "operation-2", preflight_reference="preflight-2")
+
+    with pytest.raises(ControlledWriteError, match="audit and rollback handling"):
+        executor.execute(request, adapter)
+
+    assert adapter.state is None
+    assert idempotency.get("operation-2").status == "reserved"
+    events = [json.loads(line) for line in audit_path.read_text(encoding="utf-8").splitlines()]
+    assert events[-1]["event_type"] == "controlled_write_failed"
+    assert events[-1]["details"]["rollback"] == {"status": "rolled_back"}
