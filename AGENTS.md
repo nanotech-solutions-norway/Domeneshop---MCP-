@@ -9,11 +9,11 @@
 ## Process progress reporting
 
 - Follow `docs/PROCESS_PROGRESS_REPORTING_STANDARD.md` for every operator-facing process.
-- Maintain evidence-weighted progress in canonical records, but do not automatically display a status bar after ordinary processes or responses.
-- Display the status bar and short completed/ongoing/remaining summary only when the user's complete trimmed message is exactly `Status`, case-insensitively, with no other text, punctuation, mention or context.
-- Messages such as `Status please`, `Project status`, `What's the status?`, or `Status @GitHub` do not trigger the special status block.
+- After each discrete process or major work step, display a compact cumulative evidence-weighted progress bar with a percentage and brief status label.
+- Use `Process status: [██████░░░░] 60% — <brief status>` as the default compact format; do not emit a bar for every low-level tool call or internal substep.
+- Display the compact bar after successful, partial, blocked and failed processes. Failed or blocked work does not increase the percentage unless it closes a verified weighted gate.
+- The exact standalone `Status` command remains the trigger for the expanded completed/ongoing/remaining status block; it is no longer the exclusive trigger for showing progress.
 - Calculate progress from verified weighted milestones only.
-- Failed or blocked processes do not increase the percentage.
 - Recalculate explicitly when scope changes.
 - Carry the current percentage into status records, transfer packs and continuation prompts.
 - A progress percentage never authorizes deployment, provider calls, live changes or write enablement.
