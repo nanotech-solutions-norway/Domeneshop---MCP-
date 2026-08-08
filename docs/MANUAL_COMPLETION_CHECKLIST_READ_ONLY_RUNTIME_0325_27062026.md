@@ -92,6 +92,10 @@ python scripts/remote_read_smoke.py
 python scripts/health_smoke.py
 ```
 
+The provider and SFTP smoke scripts emit evidence metadata and item counts only.
+They intentionally omit domain records, organization identifiers, remote paths,
+file metadata, file contents, access values, and provider response payloads.
+
 ## 8. Preserve evidence
 
 Preserve:
@@ -104,6 +108,9 @@ runtime deployment report
 release manifest validation report
 deployment-planning-reports artifact package
 ```
+
+Do not add private provider responses, runtime credentials, customer/domain data,
+or SFTP directory listings to repository artifacts.
 
 ## 9. Acceptance decision
 
