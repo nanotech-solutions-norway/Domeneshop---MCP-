@@ -103,6 +103,7 @@ required_files = [
     "config/controlled-write-release-manifest.example.json",
     "scripts/validate_controlled_write_foundation.py",
     "scripts/status_surface_smoke.py",
+    "scripts/dns_txt_pilot_preflight.py",
     "src/domeneshop_mcp/credential_policy.py",
     "src/domeneshop_mcp/approval_token.py",
     "src/domeneshop_mcp/idempotency.py",
@@ -111,9 +112,13 @@ required_files = [
     "src/domeneshop_mcp/controlled_write.py",
     "src/domeneshop_mcp/write_client.py",
     "src/domeneshop_mcp/status_validation.py",
+    "src/domeneshop_mcp/pilot_preflight.py",
     "tests/test_controlled_write_foundation.py",
     "tests/test_status_validation.py",
+    "tests/test_pilot_preflight.py",
     ".github/workflows/validate-domeneshop-mcp.yml",
+    ".github/workflows/prepare-dns-txt-pilot.yml",
+    "docs/DNS_TXT_PILOT_PREFLIGHT.md",
 ]
 required_files.extend(f"docs/{name}" for name in phase_docs.values())
 required_files.extend(f"scripts/{name}" for name in phase_validators.values())

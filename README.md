@@ -27,6 +27,7 @@ Public status-surface workflow validation: passed 10.08.2026
 | D-R2 controlled-write release manifest | Implemented; live execution disabled | `config/controlled-write-release-manifest.example.json` |
 | D-R2 shared controlled-write executor | Implemented; not registered in read server | `src/domeneshop_mcp/controlled_write.py` |
 | D-R3 DNS TXT provider mutation client | Implemented; live pilot not authorized | `src/domeneshop_mcp/write_client.py` |
+| D-R3 isolated TXT preflight | Implemented; protected GET-only run pending operator target | `docs/DNS_TXT_PILOT_PREFLIGHT.md` |
 | HTTP-forward mutation | Planned | Starts after DNS pilot acceptance |
 | SFTP upload/replace/restore | Planned | Separate D-R4 release |
 | SQL read/edit/write | Planned | Separate D-R5 release |
