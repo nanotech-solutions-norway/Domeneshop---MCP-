@@ -16,17 +16,18 @@ This registry replaces ambiguous phase-completion language with executable capab
 
 | Capability | Repository state | Runtime state | Release train | Notes |
 |---|---|---|---|---|
-| Domain listing and domain read | IMPLEMENTED | PENDING_REVIEW | D-R1 | Fresh authenticated read evidence required. |
+| Domain listing and domain read | IMPLEMENTED | VALIDATED | D-R1 | Protected run `31384070264` completed an authenticated GET with payload-free aggregate evidence. |
 | DNS listing and record read | IMPLEMENTED | PENDING_REVIEW | D-R1 | GET-only client implemented. |
 | HTTP forward listing and read | IMPLEMENTED | PENDING_REVIEW | D-R1 | GET-only client implemented. |
 | Sanitized invoice read | IMPLEMENTED | PENDING_REVIEW | D-R1 | Remains read-only. |
-| SFTP list, metadata, text read | IMPLEMENTED | PENDING_REVIEW | D-R1 | Approved roots and credentials require live validation. |
-| HTTP/TLS diagnostics | IMPLEMENTED | PENDING_REVIEW | D-R1 | Protected-status authentication must be revalidated. |
+| SFTP list, metadata, text read | IMPLEMENTED | PENDING_REVIEW | D-R1 | Allowed-root and directory-list reads passed in run `31384070264`; bounded text-file read was not exercised. |
+| Local MCP stdio transport and read-only discovery | IMPLEMENTED | VALIDATED | D-R1 | Protected run `31384070264` passed initialize/tools-list smoke validation; write tool absent. |
+| HTTP/TLS diagnostics | IMPLEMENTED | PENDING_REVIEW | D-R1 | GET-only protected-status validator prepared; distinct status credentials and approved run still required. |
 | Deployment dry-run and recovery preview | IMPLEMENTED | VALIDATED_AT_REPOSITORY_LEVEL | Baseline | Does not execute remote changes. |
-| Credential placeholder hardening | IMPLEMENTED | CI_VALIDATION_REQUIRED | D-R1 | Rejects sanitized/operator template values locally. |
-| Approval token issue/verify/consume | IMPLEMENTED | CI_VALIDATION_REQUIRED | D-R2 | One-time, HMAC-signed, payload-bound approvals. |
-| Idempotency ledger | IMPLEMENTED | CI_VALIDATION_REQUIRED | D-R2 | File-backed atomic reservation and completion. |
-| Append-only audit persistence | IMPLEMENTED | CI_VALIDATION_REQUIRED | D-R2 | Redaction and hash-chain verification. |
+| Credential placeholder hardening | IMPLEMENTED | VALIDATED | D-R1 | Repository validation and protected credential gates passed in run `31384070264`. |
+| Approval token issue/verify/consume | IMPLEMENTED | VALIDATED_AT_REPOSITORY_LEVEL | D-R2 | One-time, HMAC-signed, payload-bound approvals; no live token issued. |
+| Idempotency ledger | IMPLEMENTED | VALIDATED_AT_REPOSITORY_LEVEL | D-R2 | File-backed atomic reservation and completion; runtime storage not configured. |
+| Append-only audit persistence | IMPLEMENTED | VALIDATED_AT_REPOSITORY_LEVEL | D-R2 | Redaction and hash-chain validation passed; runtime storage not configured. |
 | Controlled-write release manifest | IMPLEMENTED | FOUNDATION_ONLY | D-R2 | Example manifest keeps live execution disabled. |
 | Shared controlled-write executor | IMPLEMENTED | FOUNDATION_ONLY | D-R2 | No live tool registration on read-only server. |
 | DNS TXT provider mutation adapter | IMPLEMENTED | LIVE_VALIDATION_NOT_AUTHORIZED | D-R3 | TXT-only by default; deletion disabled. |
@@ -44,4 +45,6 @@ WRITE_TOOLS_ENABLED=false
 CONTROLLED_WRITE_FOUNDATION_IMPLEMENTED
 LIVE_WRITE_NOT_REGISTERED
 DNS_TXT_PILOT_PENDING_OPERATOR_TARGET_AND_RUNTIME_EVIDENCE
+PROTECTED_READONLY_RUN_31384070264_ACCEPTED
+PROTECTED_STATUS_AUTHENTICATED_GET_PENDING
 ```

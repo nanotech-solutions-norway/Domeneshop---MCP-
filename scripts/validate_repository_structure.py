@@ -102,6 +102,7 @@ required_files = [
     "config/domeneshop-mcp.env.example",
     "config/controlled-write-release-manifest.example.json",
     "scripts/validate_controlled_write_foundation.py",
+    "scripts/protected_status_smoke.py",
     "src/domeneshop_mcp/credential_policy.py",
     "src/domeneshop_mcp/approval_token.py",
     "src/domeneshop_mcp/idempotency.py",
@@ -109,7 +110,9 @@ required_files = [
     "src/domeneshop_mcp/write_release.py",
     "src/domeneshop_mcp/controlled_write.py",
     "src/domeneshop_mcp/write_client.py",
+    "src/domeneshop_mcp/status_validation.py",
     "tests/test_controlled_write_foundation.py",
+    "tests/test_status_validation.py",
     ".github/workflows/validate-domeneshop-mcp.yml",
 ]
 required_files.extend(f"docs/{name}" for name in phase_docs.values())
