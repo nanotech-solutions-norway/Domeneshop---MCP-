@@ -8,6 +8,7 @@ from typing import Any
 from .client import DomeneshopReadClient
 from .config import DomeneshopConfig
 from .controlled_write import canonical_payload_sha256
+from .errors import DomeneshopApiError
 from .write_release import ControlledWriteRelease
 
 PILOT_ACTION = "domeneshop_create_dns_txt"
@@ -82,6 +83,8 @@ def validate_dns_txt_pilot_preflight(
     read_client = client or DomeneshopReadClient(config)
     try:
         records = read_client.list_dns_records(domain_id, host=host, record_type="TXT")
+    except DomeneshopApiError as exc:
+        raise PilotPreflightError(exc.error_class) from exc
     except Exception as exc:
         raise PilotPreflightError("provider_read_failed") from exc
     finally:

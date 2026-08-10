@@ -31,6 +31,7 @@ The workflow emits only:
 - explicit no-mutation and no-payload markers.
 
 It never prints the domain ID, host, proposed TXT value, provider response, authorization header, or credentials.
+Provider failures retain only the repository's bounded error class, such as `unauthorized` or `not_found`; provider messages and response bodies remain excluded.
 
 ## Preserved boundary
 
