@@ -11,7 +11,7 @@ Runtime access values: outside repository
 Read-only MCP server: unchanged
 Live write tools registered: false
 Protected API/SFTP/MCP read validation: passed 10.08.2026
-Public status-surface workflow validation: pending
+Public status-surface workflow validation: passed 10.08.2026
 ```
 
 ## Re-evaluated implementation state
@@ -20,7 +20,7 @@ Public status-surface workflow validation: pending
 |---|---|---|
 | D-R0 baseline freeze and capability registry | Implemented | `docs/CAPABILITY_REGISTRY.md` |
 | D-R1 credential placeholder hardening | Implemented; protected validation passed | `src/domeneshop_mcp/credential_policy.py` |
-| D-R1 API/SFTP/MCP read runtime | Authenticated protected validation passed; public status-surface workflow GET pending | `docs/PROTECTED_READONLY_VALIDATION_20260810.md` |
+| D-R1 API/SFTP/MCP read runtime | Protected API/SFTP/MCP and public status-surface workflow validation passed | `docs/PROTECTED_READONLY_VALIDATION_20260810.md` |
 | D-R2 approval-token control | Implemented; repository validation passed | `src/domeneshop_mcp/approval_token.py` |
 | D-R2 idempotency control | Implemented; repository validation passed; runtime storage pending | `src/domeneshop_mcp/idempotency.py` |
 | D-R2 persistent audit control | Implemented; repository validation passed; runtime storage pending | `src/domeneshop_mcp/audit_store.py` |
@@ -86,9 +86,9 @@ controlled-write-foundation-report.json
 APPROVE_READ_ONLY_RUNTIME
 PROCEED_WITH_TARGETED_IMPLEMENTATION
 CONTROLLED_WRITE_FOUNDATION_IMPLEMENTED
-DNS_TXT_PILOT_PENDING_RUNTIME_EVIDENCE
+DNS_TXT_PILOT_PENDING_OPERATOR_TARGET_AND_PROTECTED_STORAGE
 PROTECTED_READONLY_VALIDATION_PASSED
-STATUS_SURFACE_WORKFLOW_GET_PENDING
+STATUS_SURFACE_WORKFLOW_GET_VALIDATED
 NO_AUTONOMOUS_LIVE_CHANGE
 RUNTIME_VALUES_OUTSIDE_REPOSITORY
 HOLD_LIVE_CHANGE_ACTIVATION

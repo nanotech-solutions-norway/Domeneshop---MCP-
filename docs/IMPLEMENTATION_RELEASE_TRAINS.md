@@ -24,16 +24,15 @@ Transport boundary:
 - `https://ds.atlas-ai.no/` is the separate PHP health/configuration status surface, not an MCP transport endpoint;
 - no remote Streamable HTTP or SSE MCP endpoint is declared by this release train.
 
-Still requires operator/runtime evidence:
-
-- public `ds.atlas-ai.no` status-surface validation in the protected workflow;
-
 Accepted protected evidence on 10.08.2026:
 
 - authenticated Domeneshop domain-list GET;
 - MCP initialize and read-only tools-list validation over stdio;
 - SFTP allowed-root and directory-list reads inside the configured root;
+- bounded public status-surface GET with HTTP 200, no authentication, and no retained payload;
 - payload-free evidence and preserved controlled-write hold.
+
+Runs `31384070264` and `31403862923` provide the accepted D-R1 closure evidence. Additional read surfaces remain capability-specific and do not expand this closure into write authorization.
 
 See `docs/PROTECTED_READONLY_VALIDATION_20260810.md`.
 
