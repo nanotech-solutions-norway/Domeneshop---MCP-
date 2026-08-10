@@ -26,10 +26,16 @@ Transport boundary:
 
 Still requires operator/runtime evidence:
 
-- protected `ds.atlas-ai.no` status validation;
-- authenticated Domeneshop read smoke;
-- MCP initialize and tools-list validation over stdio;
-- SFTP read smoke inside an approved non-sensitive root.
+- public `ds.atlas-ai.no` status-surface validation in the protected workflow;
+
+Accepted protected evidence on 10.08.2026:
+
+- authenticated Domeneshop domain-list GET;
+- MCP initialize and read-only tools-list validation over stdio;
+- SFTP allowed-root and directory-list reads inside the configured root;
+- payload-free evidence and preserved controlled-write hold.
+
+See `docs/PROTECTED_READONLY_VALIDATION_20260810.md`.
 
 ## D-R2 — Controlled-write foundation
 

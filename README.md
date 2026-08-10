@@ -1,4 +1,4 @@
-# Domeneshop MCP Implementation Baseline — 16:07, 16.07.2026
+# Domeneshop MCP Implementation Baseline — updated 10.08.2026
 
 This repository is the system of record for the Domeneshop MCP bridge.
 
@@ -10,6 +10,8 @@ Activation posture: HOLD_LIVE_CHANGE_ACTIVATION
 Runtime access values: outside repository
 Read-only MCP server: unchanged
 Live write tools registered: false
+Protected API/SFTP/MCP read validation: passed 10.08.2026
+Public status-surface workflow validation: pending
 ```
 
 ## Re-evaluated implementation state
@@ -17,10 +19,11 @@ Live write tools registered: false
 | Release train | Status | Evidence |
 |---|---|---|
 | D-R0 baseline freeze and capability registry | Implemented | `docs/CAPABILITY_REGISTRY.md` |
-| D-R1 credential placeholder hardening | Implemented; runtime validation pending | `src/domeneshop_mcp/credential_policy.py` |
-| D-R2 approval-token control | Implemented; CI validation required | `src/domeneshop_mcp/approval_token.py` |
-| D-R2 idempotency control | Implemented; CI validation required | `src/domeneshop_mcp/idempotency.py` |
-| D-R2 persistent audit control | Implemented; CI validation required | `src/domeneshop_mcp/audit_store.py` |
+| D-R1 credential placeholder hardening | Implemented; protected validation passed | `src/domeneshop_mcp/credential_policy.py` |
+| D-R1 API/SFTP/MCP read runtime | Authenticated protected validation passed; public status-surface workflow GET pending | `docs/PROTECTED_READONLY_VALIDATION_20260810.md` |
+| D-R2 approval-token control | Implemented; repository validation passed | `src/domeneshop_mcp/approval_token.py` |
+| D-R2 idempotency control | Implemented; repository validation passed; runtime storage pending | `src/domeneshop_mcp/idempotency.py` |
+| D-R2 persistent audit control | Implemented; repository validation passed; runtime storage pending | `src/domeneshop_mcp/audit_store.py` |
 | D-R2 controlled-write release manifest | Implemented; live execution disabled | `config/controlled-write-release-manifest.example.json` |
 | D-R2 shared controlled-write executor | Implemented; not registered in read server | `src/domeneshop_mcp/controlled_write.py` |
 | D-R3 DNS TXT provider mutation client | Implemented; live pilot not authorized | `src/domeneshop_mcp/write_client.py` |
@@ -84,6 +87,8 @@ APPROVE_READ_ONLY_RUNTIME
 PROCEED_WITH_TARGETED_IMPLEMENTATION
 CONTROLLED_WRITE_FOUNDATION_IMPLEMENTED
 DNS_TXT_PILOT_PENDING_RUNTIME_EVIDENCE
+PROTECTED_READONLY_VALIDATION_PASSED
+STATUS_SURFACE_WORKFLOW_GET_PENDING
 NO_AUTONOMOUS_LIVE_CHANGE
 RUNTIME_VALUES_OUTSIDE_REPOSITORY
 HOLD_LIVE_CHANGE_ACTIVATION

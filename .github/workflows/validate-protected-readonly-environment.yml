@@ -20,6 +20,7 @@ jobs:
       DS_AUTH_VALUE: ${{ secrets.DS_AUTH_VALUE }}
       DS_SFTP_USER: ${{ secrets.DS_SFTP_USER }}
       DS_SFTP_VALUE: ${{ secrets.DS_SFTP_VALUE }}
+      DS_STATUS_URL: ${{ vars.DS_STATUS_URL }}
       WRITE_TOOLS_ENABLED: ${{ vars.WRITE_TOOLS_ENABLED }}
       DRY_RUN_DEFAULT: ${{ vars.DRY_RUN_DEFAULT }}
       REQUIRE_OPERATOR_APPROVAL: ${{ vars.REQUIRE_OPERATOR_APPROVAL }}
@@ -49,6 +50,7 @@ jobs:
             fi
           done
           [[ "$missing" -eq 0 ]]
+          [[ "$DS_STATUS_URL" == "https://ds.atlas-ai.no/" ]]
           [[ "$WRITE_TOOLS_ENABLED" == "false" ]]
           [[ "$DRY_RUN_DEFAULT" == "true" ]]
           [[ "$REQUIRE_OPERATOR_APPROVAL" == "true" ]]
@@ -68,6 +70,9 @@ jobs:
 
       - name: Validate authenticated Domeneshop API read
         run: python scripts/domeneshop_read_smoke.py
+
+      - name: Validate public status surface GET
+        run: python scripts/status_surface_smoke.py
 
       - name: Validate authenticated SFTP read
         run: python scripts/remote_read_smoke.py
