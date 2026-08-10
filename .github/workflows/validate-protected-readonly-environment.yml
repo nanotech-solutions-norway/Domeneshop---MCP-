@@ -21,8 +21,6 @@ jobs:
       DS_SFTP_USER: ${{ secrets.DS_SFTP_USER }}
       DS_SFTP_VALUE: ${{ secrets.DS_SFTP_VALUE }}
       DS_STATUS_URL: ${{ vars.DS_STATUS_URL }}
-      DS_STATUS_AUTH_USER: ${{ secrets.DS_STATUS_AUTH_USER }}
-      DS_STATUS_AUTH_VALUE: ${{ secrets.DS_STATUS_AUTH_VALUE }}
       WRITE_TOOLS_ENABLED: ${{ vars.WRITE_TOOLS_ENABLED }}
       DRY_RUN_DEFAULT: ${{ vars.DRY_RUN_DEFAULT }}
       REQUIRE_OPERATOR_APPROVAL: ${{ vars.REQUIRE_OPERATOR_APPROVAL }}
@@ -45,7 +43,7 @@ jobs:
         run: |
           set -euo pipefail
           missing=0
-          for name in DS_AUTH_USER DS_AUTH_VALUE DS_SFTP_USER DS_SFTP_VALUE DS_STATUS_AUTH_USER DS_STATUS_AUTH_VALUE; do
+          for name in DS_AUTH_USER DS_AUTH_VALUE DS_SFTP_USER DS_SFTP_VALUE; do
             if [[ -z "${!name:-}" ]]; then
               echo "::error title=Missing protected environment secret::$name is not configured."
               missing=1
@@ -73,8 +71,8 @@ jobs:
       - name: Validate authenticated Domeneshop API read
         run: python scripts/domeneshop_read_smoke.py
 
-      - name: Validate authenticated protected status GET
-        run: python scripts/protected_status_smoke.py
+      - name: Validate public status surface GET
+        run: python scripts/status_surface_smoke.py
 
       - name: Validate authenticated SFTP read
         run: python scripts/remote_read_smoke.py

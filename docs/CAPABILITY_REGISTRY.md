@@ -22,7 +22,7 @@ This registry replaces ambiguous phase-completion language with executable capab
 | Sanitized invoice read | IMPLEMENTED | PENDING_REVIEW | D-R1 | Remains read-only. |
 | SFTP list, metadata, text read | IMPLEMENTED | PENDING_REVIEW | D-R1 | Allowed-root and directory-list reads passed in run `31384070264`; bounded text-file read was not exercised. |
 | Local MCP stdio transport and read-only discovery | IMPLEMENTED | VALIDATED | D-R1 | Protected run `31384070264` passed initialize/tools-list smoke validation; write tool absent. |
-| HTTP/TLS diagnostics | IMPLEMENTED | PENDING_REVIEW | D-R1 | GET-only protected-status validator prepared; distinct status credentials and approved run still required. |
+| HTTP/TLS diagnostics | IMPLEMENTED | PENDING_REVIEW | D-R1 | Public status surface returned HTTP 200 JSON without an auth challenge; protected workflow confirmation remains pending. |
 | Deployment dry-run and recovery preview | IMPLEMENTED | VALIDATED_AT_REPOSITORY_LEVEL | Baseline | Does not execute remote changes. |
 | Credential placeholder hardening | IMPLEMENTED | VALIDATED | D-R1 | Repository validation and protected credential gates passed in run `31384070264`. |
 | Approval token issue/verify/consume | IMPLEMENTED | VALIDATED_AT_REPOSITORY_LEVEL | D-R2 | One-time, HMAC-signed, payload-bound approvals; no live token issued. |
@@ -46,5 +46,5 @@ CONTROLLED_WRITE_FOUNDATION_IMPLEMENTED
 LIVE_WRITE_NOT_REGISTERED
 DNS_TXT_PILOT_PENDING_OPERATOR_TARGET_AND_RUNTIME_EVIDENCE
 PROTECTED_READONLY_RUN_31384070264_ACCEPTED
-PROTECTED_STATUS_AUTHENTICATED_GET_PENDING
+STATUS_SURFACE_WORKFLOW_GET_PENDING
 ```

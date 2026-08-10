@@ -102,7 +102,7 @@ required_files = [
     "config/domeneshop-mcp.env.example",
     "config/controlled-write-release-manifest.example.json",
     "scripts/validate_controlled_write_foundation.py",
-    "scripts/protected_status_smoke.py",
+    "scripts/status_surface_smoke.py",
     "src/domeneshop_mcp/credential_policy.py",
     "src/domeneshop_mcp/approval_token.py",
     "src/domeneshop_mcp/idempotency.py",

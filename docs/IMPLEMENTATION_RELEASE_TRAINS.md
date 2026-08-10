@@ -26,7 +26,7 @@ Transport boundary:
 
 Still requires operator/runtime evidence:
 
-- protected `ds.atlas-ai.no` status validation;
+- public `ds.atlas-ai.no` status-surface validation in the protected workflow;
 
 Accepted protected evidence on 10.08.2026:
 

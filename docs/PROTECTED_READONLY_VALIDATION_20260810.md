@@ -7,7 +7,8 @@ PROTECTED_READONLY_VALIDATION_PASSED=true
 AUTHENTICATED_DOMENESHOP_API_READ_VALIDATED=true
 AUTHENTICATED_SFTP_READ_VALIDATED=true
 MCP_STDIO_READONLY_DISCOVERY_VALIDATED=true
-PROTECTED_STATUS_AUTHENTICATED_GET_VALIDATED=false
+PUBLIC_STATUS_SURFACE_GET_OBSERVED=true
+STATUS_SURFACE_WORKFLOW_VALIDATED=false
 PROVIDER_MUTATION_PERFORMED=false
 WRITE_TOOLS_ENABLED=false
 HOLD_LIVE_CHANGE_ACTIVATION
@@ -44,19 +45,28 @@ payload_included=false
 
 No provider payload, remote path, credential, authorization header, DNS value, or customer-specific identifier was included in the evidence.
 
-## Remaining D-R1 gap
+## Status-surface observation and remaining D-R1 gap
 
-The successful workflow did not authenticate to the separate PHP status surface at `https://ds.atlas-ai.no/`. That endpoint is not the MCP transport and its credentials are distinct from the Domeneshop API and SFTP credentials.
+The successful workflow did not include the separate PHP status surface at `https://ds.atlas-ai.no/`. That endpoint is not the MCP transport.
 
-The repository now prepares a bounded GET-only validation using:
+An unauthenticated GET from the Office PC on 10.08.2026 returned:
+
+```text
+http_status=200
+content_type=application/json; charset=utf-8
+www_authenticate_header=absent
+response_body_retained=false
+```
+
+This evidence supersedes the earlier assumption that separate Basic Auth credentials were required. No `DS_STATUS_AUTH_USER` or `DS_STATUS_AUTH_VALUE` exists or is required by the prepared workflow.
+
+The repository now prepares a bounded unauthenticated GET-only validation using:
 
 ```text
 DS_STATUS_URL=https://ds.atlas-ai.no/
-DS_STATUS_AUTH_USER=<protected environment secret>
-DS_STATUS_AUTH_VALUE=<protected environment secret>
 ```
 
-The validator allows only HTTPS to `ds.atlas-ai.no`, follows no redirects, bounds the response, requires a JSON object, and emits payload-free evidence. Secret values remain outside the repository and model context.
+The validator allows only HTTPS to `ds.atlas-ai.no`, sends no authentication, follows no redirects, bounds the response, requires a JSON object, and emits payload-free evidence.
 
 ## Progress continuity
 
@@ -65,8 +75,8 @@ completion_target=CONTROLLED_DNS_TXT_CHANGE_CAPABILITY
 operator_status_progress_carried_forward=82%
 progress_recalculated=false
 scope_changed=false
-current_process=PROTECTED_STATUS_VALIDATION_PREPARATION
-next_gate=CONFIGURE_PROTECTED_STATUS_SECRETS_AND_APPROVE_GET_ONLY_WORKFLOW
+current_process=STATUS_SURFACE_WORKFLOW_VALIDATION_PREPARATION
+next_gate=MERGE_PR_AND_APPROVE_GET_ONLY_WORKFLOW
 ```
 
 The carried percentage is not activation authority. It remains evidence-weighted by the existing project status and is not increased by this preparation-only change.
