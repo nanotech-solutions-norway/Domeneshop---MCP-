@@ -32,7 +32,7 @@ jobs:
         env:
           DS_AUTH_USER: ${{ secrets.DS_AUTH_USER }}
           DS_AUTH_VALUE: ${{ secrets.DS_AUTH_VALUE }}
-          DS_PILOT_DOMAIN_ID: ${{ secrets.DS_PILOT_DOMAIN_ID }}
+          DS_PILOT_DOMAIN_NAME: ${{ secrets.DS_PILOT_DOMAIN_NAME }}
           DS_PILOT_TXT_HOST: ${{ vars.DS_PILOT_TXT_HOST }}
           WRITE_TOOLS_ENABLED: ${{ vars.WRITE_TOOLS_ENABLED }}
           DRY_RUN_DEFAULT: ${{ vars.DRY_RUN_DEFAULT }}
@@ -41,7 +41,7 @@ jobs:
           set -euo pipefail
           [[ -n "${DS_AUTH_USER:-}" ]]
           [[ -n "${DS_AUTH_VALUE:-}" ]]
-          [[ -n "${DS_PILOT_DOMAIN_ID:-}" ]]
+          [[ -n "${DS_PILOT_DOMAIN_NAME:-}" ]]
           [[ "$DS_PILOT_TXT_HOST" == "_mcp-validation" ]]
           [[ "$WRITE_TOOLS_ENABLED" == "false" ]]
           [[ "$DRY_RUN_DEFAULT" == "true" ]]
@@ -59,7 +59,7 @@ jobs:
         env:
           DS_AUTH_USER: ${{ secrets.DS_AUTH_USER }}
           DS_AUTH_VALUE: ${{ secrets.DS_AUTH_VALUE }}
-          DS_PILOT_DOMAIN_ID: ${{ secrets.DS_PILOT_DOMAIN_ID }}
+          DS_PILOT_DOMAIN_NAME: ${{ secrets.DS_PILOT_DOMAIN_NAME }}
           DS_PILOT_TXT_HOST: ${{ vars.DS_PILOT_TXT_HOST }}
           WRITE_TOOLS_ENABLED: ${{ vars.WRITE_TOOLS_ENABLED }}
           DRY_RUN_DEFAULT: ${{ vars.DRY_RUN_DEFAULT }}

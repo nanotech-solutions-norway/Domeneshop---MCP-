@@ -4,7 +4,11 @@ import pytest
 
 from domeneshop_mcp.config import DomeneshopConfig
 from domeneshop_mcp.errors import DomeneshopApiError
-from domeneshop_mcp.pilot_preflight import PilotPreflightError, validate_dns_txt_pilot_preflight
+from domeneshop_mcp.pilot_preflight import (
+    PilotPreflightError,
+    validate_dns_txt_pilot_preflight,
+    validate_dns_txt_pilot_preflight_by_domain_name,
+)
 
 
 class FakeReadClient:
@@ -23,6 +27,19 @@ class FailingReadClient:
 
     def list_dns_records(self, domain_id, host=None, record_type=None):
         raise self.error
+
+
+class DomainResolvingReadClient(FakeReadClient):
+    def __init__(self, domains, records=None):
+        super().__init__([] if records is None else records)
+        self.domains = domains
+        self.domain_calls = []
+
+    def list_domains(self, domain=None):
+        self.domain_calls.append(domain)
+        if isinstance(self.domains, Exception):
+            raise self.domains
+        return self.domains
 
 
 def _safe_config():
@@ -46,6 +63,7 @@ def test_preflight_is_get_only_target_bound_and_payload_free():
     assert evidence["write_tools_enabled"] is False
     assert evidence["provider_mutation_performed"] is False
     assert evidence["domain_id_included"] is False
+    assert evidence["domain_name_included"] is False
     assert evidence["host_included"] is False
     assert evidence["payload_included"] is False
     assert "_mcp-validation" not in serialized
@@ -111,3 +129,71 @@ def test_preflight_preserves_only_sanitized_provider_error_class(error_class):
 def test_preflight_collapses_non_provider_exceptions():
     with pytest.raises(PilotPreflightError, match="provider_read_failed"):
         validate_dns_txt_pilot_preflight(_safe_config(), "123", client=FailingReadClient(RuntimeError("private")))
+
+
+def test_domain_name_resolver_selects_exact_dns_enabled_match_without_disclosure():
+    client = DomainResolvingReadClient(
+        [
+            {"id": 122, "domain": "other-example.no", "services": {"dns": True}},
+            {"id": 123, "domain": "pilot-example.no", "services": {"dns": True}},
+        ]
+    )
+    evidence = validate_dns_txt_pilot_preflight_by_domain_name(
+        _safe_config(),
+        "Pilot-Example.no.",
+        client=client,
+    )
+    serialized = json.dumps(evidence)
+
+    assert client.domain_calls == ["pilot-example.no"]
+    assert client.calls == [(123, "_mcp-validation", "TXT")]
+    assert evidence["success"] is True
+    assert evidence["domain_name_included"] is False
+    assert "pilot-example.no" not in serialized
+    assert "123" not in {str(value) for key, value in evidence.items() if not key.endswith("sha256")}
+
+
+def test_domain_name_resolver_rejects_no_exact_match():
+    client = DomainResolvingReadClient(
+        [{"id": 123, "domain": "not-pilot-example.no", "services": {"dns": True}}]
+    )
+    with pytest.raises(PilotPreflightError, match="target_not_found"):
+        validate_dns_txt_pilot_preflight_by_domain_name(_safe_config(), "pilot-example.no", client=client)
+    assert client.calls == []
+
+
+def test_domain_name_resolver_rejects_ambiguous_exact_match():
+    domains = [
+        {"id": 123, "domain": "pilot-example.no", "services": {"dns": True}},
+        {"id": 124, "domain": "pilot-example.no", "services": {"dns": True}},
+    ]
+    with pytest.raises(PilotPreflightError, match="ambiguous_target"):
+        validate_dns_txt_pilot_preflight_by_domain_name(
+            _safe_config(), "pilot-example.no", client=DomainResolvingReadClient(domains)
+        )
+
+
+def test_domain_name_resolver_requires_active_dns_service():
+    domains = [{"id": 123, "domain": "pilot-example.no", "services": {"dns": False}}]
+    with pytest.raises(PilotPreflightError, match="dns_service_inactive"):
+        validate_dns_txt_pilot_preflight_by_domain_name(
+            _safe_config(), "pilot-example.no", client=DomainResolvingReadClient(domains)
+        )
+
+
+@pytest.mark.parametrize("value", ["", "localhost", "https://example.no", "*.example.no", "-bad.example.no"])
+def test_domain_name_resolver_rejects_invalid_names_before_provider_read(value):
+    client = DomainResolvingReadClient([])
+    with pytest.raises(PilotPreflightError, match="invalid_target"):
+        validate_dns_txt_pilot_preflight_by_domain_name(_safe_config(), value, client=client)
+    assert client.domain_calls == []
+
+
+def test_domain_name_resolver_preserves_sanitized_list_error():
+    provider_error = DomeneshopApiError("unauthorized", "private detail", status_code=403)
+    with pytest.raises(PilotPreflightError, match="unauthorized"):
+        validate_dns_txt_pilot_preflight_by_domain_name(
+            _safe_config(),
+            "pilot-example.no",
+            client=DomainResolvingReadClient(provider_error),
+        )
