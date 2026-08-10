@@ -3,6 +3,7 @@ import json
 import pytest
 
 from domeneshop_mcp.config import DomeneshopConfig
+from domeneshop_mcp.errors import DomeneshopApiError
 from domeneshop_mcp.pilot_preflight import PilotPreflightError, validate_dns_txt_pilot_preflight
 
 
@@ -14,6 +15,14 @@ class FakeReadClient:
     def list_dns_records(self, domain_id, host=None, record_type=None):
         self.calls.append((domain_id, host, record_type))
         return self.records
+
+
+class FailingReadClient:
+    def __init__(self, error):
+        self.error = error
+
+    def list_dns_records(self, domain_id, host=None, record_type=None):
+        raise self.error
 
 
 def _safe_config():
@@ -88,3 +97,17 @@ def test_preflight_target_hash_is_bound_without_disclosing_target():
     second = validate_dns_txt_pilot_preflight(_safe_config(), "124", client=FakeReadClient([]))
     assert first["target_sha256"] != second["target_sha256"]
     assert len(first["target_sha256"]) == 64
+
+
+@pytest.mark.parametrize("error_class", ["unauthorized", "not_found", "validation_failed", "provider_error"])
+def test_preflight_preserves_only_sanitized_provider_error_class(error_class):
+    provider_error = DomeneshopApiError(error_class, "provider detail must not be surfaced", status_code=404)
+    with pytest.raises(PilotPreflightError) as exc:
+        validate_dns_txt_pilot_preflight(_safe_config(), "123", client=FailingReadClient(provider_error))
+    assert exc.value.error_class == error_class
+    assert str(exc.value) == error_class
+
+
+def test_preflight_collapses_non_provider_exceptions():
+    with pytest.raises(PilotPreflightError, match="provider_read_failed"):
+        validate_dns_txt_pilot_preflight(_safe_config(), "123", client=FailingReadClient(RuntimeError("private")))
