@@ -8,7 +8,7 @@ AUTHENTICATED_DOMENESHOP_API_READ_VALIDATED=true
 AUTHENTICATED_SFTP_READ_VALIDATED=true
 MCP_STDIO_READONLY_DISCOVERY_VALIDATED=true
 PUBLIC_STATUS_SURFACE_GET_OBSERVED=true
-STATUS_SURFACE_WORKFLOW_VALIDATED=false
+STATUS_SURFACE_WORKFLOW_VALIDATED=true
 PROVIDER_MUTATION_PERFORMED=false
 WRITE_TOOLS_ENABLED=false
 HOLD_LIVE_CHANGE_ACTIVATION
@@ -45,7 +45,7 @@ payload_included=false
 
 No provider payload, remote path, credential, authorization header, DNS value, or customer-specific identifier was included in the evidence.
 
-## Status-surface observation and remaining D-R1 gap
+## Status-surface observation and workflow closure
 
 The successful workflow did not include the separate PHP status surface at `https://ds.atlas-ai.no/`. That endpoint is not the MCP transport.
 
@@ -68,6 +68,32 @@ DS_STATUS_URL=https://ds.atlas-ai.no/
 
 The validator allows only HTTPS to `ds.atlas-ai.no`, sends no authentication, follows no redirects, bounds the response, requires a JSON object, and emits payload-free evidence.
 
+## Accepted status-surface workflow evidence
+
+The manually approved protected workflow subsequently completed successfully against merged `main` commit:
+
+```text
+commit=8ea925cc00dccd0177832077ef6b0c2e02d7d9b5
+run_id=31403862923
+run_url=https://github.com/nanotech-solutions-norway/Domeneshop---MCP-/actions/runs/31403862923
+completed_utc=2026-08-10T15:46:35Z
+```
+
+The run repeated the credential and fail-closed configuration gates, repository and controlled-write validation, MCP read-only discovery, authenticated Domeneshop API read, and authenticated SFTP reads. It also produced the following sanitized status evidence:
+
+```text
+evidence_type=status_surface_get
+success=true
+mode=read_only_http_get
+http_status=200
+authentication_sent=false
+json_object=true
+json_key_count=5
+payload_included=false
+```
+
+The controlled-write foundation reported `live_execution_enabled=false`. No response payload, credential, authorization header, provider record, remote path, DNS value, or customer-specific identifier was retained.
+
 ## Progress continuity
 
 ```text
@@ -75,8 +101,8 @@ completion_target=CONTROLLED_DNS_TXT_CHANGE_CAPABILITY
 operator_status_progress_carried_forward=82%
 progress_recalculated=false
 scope_changed=false
-current_process=STATUS_SURFACE_WORKFLOW_VALIDATION_PREPARATION
-next_gate=MERGE_PR_AND_APPROVE_GET_ONLY_WORKFLOW
+current_process=D_R3_ISOLATED_PILOT_TARGET_AND_RUNTIME_PREPARATION
+next_gate=APPROVE_ISOLATED_DOMAIN_TXT_HOST_AND_PROTECTED_STORAGE
 ```
 
 The carried percentage is not activation authority. It remains evidence-weighted by the existing project status and is not increased by this preparation-only change.
@@ -93,4 +119,4 @@ NO AUTONOMOUS LIVE CHANGE
 HOLD_LIVE_CHANGE_ACTIVATION
 ```
 
-After protected-status validation passes, D-R3 still requires an explicitly approved isolated domain ID and TXT host, protected signing/audit/idempotency runtime storage, deterministic dry-run evidence, and a separate operator authorization before any mutation.
+D-R3 still requires an explicitly approved isolated domain ID and TXT host, protected signing/audit/idempotency runtime storage, deterministic dry-run evidence, and a separate operator authorization before any mutation.
