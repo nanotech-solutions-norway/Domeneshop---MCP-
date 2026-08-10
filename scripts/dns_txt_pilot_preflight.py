@@ -6,14 +6,18 @@ import json
 import os
 
 from domeneshop_mcp.config import DomeneshopConfig
-from domeneshop_mcp.pilot_preflight import PILOT_HOST, PilotPreflightError, validate_dns_txt_pilot_preflight
+from domeneshop_mcp.pilot_preflight import (
+    PILOT_HOST,
+    PilotPreflightError,
+    validate_dns_txt_pilot_preflight_by_domain_name,
+)
 
 
 def main() -> int:
     try:
-        evidence = validate_dns_txt_pilot_preflight(
+        evidence = validate_dns_txt_pilot_preflight_by_domain_name(
             DomeneshopConfig.from_env(),
-            os.environ.get("DS_PILOT_DOMAIN_ID", ""),
+            os.environ.get("DS_PILOT_DOMAIN_NAME", ""),
             host=os.environ.get("DS_PILOT_TXT_HOST", PILOT_HOST),
         )
         print(json.dumps(evidence, indent=2, ensure_ascii=False))
@@ -29,6 +33,7 @@ def main() -> int:
                     "error_class": exc.error_class,
                     "provider_mutation_performed": False,
                     "domain_id_included": False,
+                    "domain_name_included": False,
                     "host_included": False,
                     "payload_included": False,
                 },

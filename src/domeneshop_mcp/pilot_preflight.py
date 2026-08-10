@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import re
 from typing import Any
 
 from .client import DomeneshopReadClient
@@ -30,6 +31,23 @@ def _target(domain_id: int, host: str) -> str:
 
 def _sha256(value: str) -> str:
     return hashlib.sha256(value.encode("utf-8")).hexdigest()
+
+
+def _normalize_domain_name(value: str) -> str:
+    domain_name = str(value).strip().lower().rstrip(".")
+    labels = domain_name.split(".")
+    if not domain_name or len(domain_name) > 253 or len(labels) < 2:
+        raise PilotPreflightError("invalid_target")
+    if any(
+        not label
+        or len(label) > 63
+        or label.startswith("-")
+        or label.endswith("-")
+        or re.fullmatch(r"[a-z0-9-]+", label) is None
+        for label in labels
+    ):
+        raise PilotPreflightError("invalid_target")
+    return domain_name
 
 
 def validate_dns_txt_pilot_preflight(
@@ -110,6 +128,64 @@ def validate_dns_txt_pilot_preflight(
         "write_tools_enabled": config.write_tools_enabled,
         "provider_mutation_performed": False,
         "domain_id_included": False,
+        "domain_name_included": False,
         "host_included": False,
         "payload_included": False,
     }
+
+
+def validate_dns_txt_pilot_preflight_by_domain_name(
+    config: DomeneshopConfig,
+    domain_name_value: str,
+    *,
+    host: str = PILOT_HOST,
+    client: DomeneshopReadClient | None = None,
+) -> dict[str, Any]:
+    """Resolve one exact protected domain name, then run the ID-bound preflight."""
+
+    domain_name = _normalize_domain_name(domain_name_value)
+    if config.write_tools_enabled or not config.dry_run_default:
+        raise PilotPreflightError("unsafe_runtime_configuration")
+    try:
+        config.require_auth()
+    except ValueError as exc:
+        raise PilotPreflightError("credential_missing") from exc
+
+    owned_client = client is None
+    read_client = client or DomeneshopReadClient(config)
+    try:
+        try:
+            domains = read_client.list_domains(domain=domain_name)
+        except DomeneshopApiError as exc:
+            raise PilotPreflightError(exc.error_class) from exc
+        except Exception as exc:
+            raise PilotPreflightError("provider_read_failed") from exc
+
+        if not isinstance(domains, list):
+            raise PilotPreflightError("unexpected_shape")
+        matches = [
+            item
+            for item in domains
+            if isinstance(item, dict)
+            and str(item.get("domain", "")).strip().lower().rstrip(".") == domain_name
+        ]
+        if not matches:
+            raise PilotPreflightError("target_not_found")
+        if len(matches) != 1:
+            raise PilotPreflightError("ambiguous_target")
+
+        selected = matches[0]
+        try:
+            domain_id = int(selected["id"])
+        except (KeyError, TypeError, ValueError) as exc:
+            raise PilotPreflightError("unexpected_shape") from exc
+        services = selected.get("services")
+        if not isinstance(services, dict):
+            raise PilotPreflightError("unexpected_shape")
+        if services.get("dns") is not True:
+            raise PilotPreflightError("dns_service_inactive")
+
+        return validate_dns_txt_pilot_preflight(config, str(domain_id), host=host, client=read_client)
+    finally:
+        if owned_client:
+            read_client.close()
