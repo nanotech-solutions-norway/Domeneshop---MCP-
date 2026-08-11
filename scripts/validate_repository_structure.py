@@ -100,6 +100,7 @@ required_files = [
     "docs/CAPABILITY_REGISTRY.md",
     "docs/IMPLEMENTATION_RELEASE_TRAINS.md",
     "config/domeneshop-mcp.env.example",
+    "config/dns-txt-pilot.runtime.env.example",
     "config/controlled-write-release-manifest.example.json",
     "scripts/validate_controlled_write_foundation.py",
     "scripts/status_surface_smoke.py",
@@ -119,6 +120,7 @@ required_files = [
     ".github/workflows/validate-domeneshop-mcp.yml",
     ".github/workflows/prepare-dns-txt-pilot.yml",
     "docs/DNS_TXT_PILOT_PREFLIGHT.md",
+    "docs/DNS_TXT_PILOT_SERVER_CONFIGURATION.md",
 ]
 required_files.extend(f"docs/{name}" for name in phase_docs.values())
 required_files.extend(f"scripts/{name}" for name in phase_validators.values())

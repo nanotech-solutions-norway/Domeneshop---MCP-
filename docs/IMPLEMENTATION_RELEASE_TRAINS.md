@@ -58,12 +58,14 @@ NO_PROVIDER_MUTATION_AUTHORIZED
 
 ## D-R3 — DNS pilot acceptance
 
-Current blocker:
+Current provisioning state:
 
-- on 11.08.2026 the operator confirmed that no isolated non-production domain is available;
+- on 11.08.2026 the operator requested creation of an isolated non-production domain;
+- an isolated candidate was confirmed available through the Domeneshop registration search, with its name kept outside the repository;
+- purchase, account registration, DNS activation, authenticated API discovery, and target acceptance remain pending;
 - attempted GET-only target resolution failed closed without mutation;
 - unapproved pilot selector secrets were removed from the protected environment;
-- D-R3 remains held until an isolated domain is provisioned or explicitly approved.
+- D-R3 remains held until the candidate is registered, discovered through the API, and explicitly approved.
 
 Required before activation:
 
@@ -79,6 +81,6 @@ Required before activation:
 MX, NS, general deletion, and broad target prefixes remain blocked.
 
 ```text
-HOLD_NO_ISOLATED_TARGET
+HOLD_PENDING_DOMAIN_REGISTRATION
 NO_PROVIDER_MUTATION_AUTHORIZED
 ```

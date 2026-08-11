@@ -133,3 +133,20 @@ HOLD_LIVE_CHANGE_ACTIVATION
 ```
 
 D-R3 still requires an explicitly approved isolated domain ID and TXT host, protected signing/audit/idempotency runtime storage, deterministic dry-run evidence, and a separate operator authorization before any mutation.
+
+## D-R3 isolated-domain provisioning preparation — 11.08.2026
+
+The operator subsequently requested creation of an isolated non-production domain. A candidate was confirmed available through Domeneshop's public registration search. Its name is intentionally retained outside the repository and protected evidence. Purchase and registration have not yet been submitted.
+
+```text
+ISOLATED_DOMAIN_CANDIDATE_AVAILABLE=true
+ISOLATED_DOMAIN_REGISTERED=false
+AUTHENTICATED_API_DISCOVERY_PENDING=true
+DS_PILOT_DOMAIN_NAME_CONFIGURED=false
+PROVIDER_MUTATION_PERFORMED=false
+WRITE_TOOLS_ENABLED=false
+HOLD_PENDING_DOMAIN_REGISTRATION
+HOLD_LIVE_CHANGE_ACTIVATION
+```
+
+The next gate is paid registration confirmation, followed by authenticated GET-only discovery and the protected TXT preflight. Progress remains carried at 82%; availability and documentation preparation do not close a runtime evidence gate.
