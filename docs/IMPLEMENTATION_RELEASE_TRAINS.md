@@ -61,11 +61,11 @@ NO_PROVIDER_MUTATION_AUTHORIZED
 Current provisioning state:
 
 - on 11.08.2026 the operator requested creation of an isolated non-production domain;
-- an isolated candidate was confirmed available through the Domeneshop registration search, with its name kept outside the repository;
-- purchase, account registration, DNS activation, authenticated API discovery, and target acceptance remain pending;
+- the isolated domain was confirmed active in the authenticated Domeneshop control panel, with its name kept outside the repository;
+- purchase and account registration are complete; authenticated API discovery, DNS activation validation, and target acceptance remain pending;
 - attempted GET-only target resolution failed closed without mutation;
 - unapproved pilot selector secrets were removed from the protected environment;
-- D-R3 remains held until the candidate is registered, discovered through the API, and explicitly approved.
+- D-R3 remains held until the domain is discovered through the API, validated as isolated, and explicitly approved.
 
 Required before activation:
 
@@ -81,6 +81,6 @@ Required before activation:
 MX, NS, general deletion, and broad target prefixes remain blocked.
 
 ```text
-HOLD_PENDING_DOMAIN_REGISTRATION
+HOLD_PENDING_AUTHENTICATED_API_DISCOVERY
 NO_PROVIDER_MUTATION_AUTHORIZED
 ```

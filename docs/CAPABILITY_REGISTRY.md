@@ -30,7 +30,7 @@ This registry replaces ambiguous phase-completion language with executable capab
 | Append-only audit persistence | IMPLEMENTED | VALIDATED_AT_REPOSITORY_LEVEL | D-R2 | Redaction and hash-chain validation passed; runtime storage not configured. |
 | Controlled-write release manifest | IMPLEMENTED | FOUNDATION_ONLY | D-R2 | Example manifest keeps live execution disabled. |
 | Shared controlled-write executor | IMPLEMENTED | FOUNDATION_ONLY | D-R2 | No live tool registration on read-only server. |
-| DNS TXT provider mutation adapter | IMPLEMENTED | BLOCKED | D-R3 | TXT-only by default; deletion disabled. Isolated candidate availability verified on 11.08.2026; purchase, registration, API discovery, and operator acceptance remain pending. |
+| DNS TXT provider mutation adapter | IMPLEMENTED | BLOCKED | D-R3 | TXT-only by default; deletion disabled. Isolated domain registration verified on 11.08.2026; authenticated API discovery, isolation validation, and operator acceptance remain pending. |
 | HTTP forward mutation adapter | PLANNED | BLOCKED | D-R3 | Starts only after DNS pilot acceptance. |
 | SFTP upload/replace/restore | PLANNED | BLOCKED | D-R4 | Requires atomic upload, backup, readback, and restore proof. |
 | SQL read/edit/write | PLANNED | BLOCKED | D-R5 | Separate adapter and least-privilege credentials required. |

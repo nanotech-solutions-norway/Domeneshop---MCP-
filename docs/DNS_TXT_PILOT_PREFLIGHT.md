@@ -6,11 +6,11 @@ This manual protected workflow prepares, but does not authorize or perform, the 
 
 ## Provisioning gate
 
-On 11.08.2026 an isolated non-production candidate was confirmed available through Domeneshop's public registration search. The candidate name is intentionally kept outside the repository. Registration is still pending explicit purchase confirmation and successful account checkout.
+On 11.08.2026 the isolated non-production domain was confirmed as active in the authenticated Domeneshop control panel. The domain name is intentionally kept outside the repository. Authenticated API discovery and DNS-service validation remain pending.
 
-Do not add `DS_PILOT_DOMAIN_NAME` until all of the following are true:
+Do not run the protected preflight until all of the following are true:
 
-1. the candidate has been registered in the intended Domeneshop account;
+1. the domain has been registered in the intended Domeneshop account;
 2. DNS service is active and the domain appears in the authenticated API domain list;
 3. the domain has no production mail, web, forwarding, nameserver, or customer-data dependency;
 4. the operator has approved it exclusively for the D-R3 TXT pilot.
