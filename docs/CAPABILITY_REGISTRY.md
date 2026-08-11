@@ -30,7 +30,7 @@ This registry replaces ambiguous phase-completion language with executable capab
 | Append-only audit persistence | IMPLEMENTED | VALIDATED_AT_REPOSITORY_LEVEL | D-R2 | Redaction and hash-chain validation passed; runtime storage not configured. |
 | Controlled-write release manifest | IMPLEMENTED | FOUNDATION_ONLY | D-R2 | Example manifest keeps live execution disabled. |
 | Shared controlled-write executor | IMPLEMENTED | FOUNDATION_ONLY | D-R2 | No live tool registration on read-only server. |
-| DNS TXT provider mutation adapter | IMPLEMENTED | LIVE_VALIDATION_NOT_AUTHORIZED | D-R3 | TXT-only by default; deletion disabled. |
+| DNS TXT provider mutation adapter | IMPLEMENTED | BLOCKED | D-R3 | TXT-only by default; deletion disabled. Operator confirmed no isolated non-production target is available on 11.08.2026. |
 | HTTP forward mutation adapter | PLANNED | BLOCKED | D-R3 | Starts only after DNS pilot acceptance. |
 | SFTP upload/replace/restore | PLANNED | BLOCKED | D-R4 | Requires atomic upload, backup, readback, and restore proof. |
 | SQL read/edit/write | PLANNED | BLOCKED | D-R5 | Separate adapter and least-privilege credentials required. |
@@ -44,7 +44,8 @@ READ_ONLY_SERVER_UNCHANGED
 WRITE_TOOLS_ENABLED=false
 CONTROLLED_WRITE_FOUNDATION_IMPLEMENTED
 LIVE_WRITE_NOT_REGISTERED
-DNS_TXT_PILOT_PENDING_OPERATOR_TARGET_AND_RUNTIME_EVIDENCE
+DNS_TXT_PILOT_BLOCKED_NO_ISOLATED_TARGET
 PROTECTED_READONLY_RUNS_31384070264_AND_31403862923_ACCEPTED
 STATUS_SURFACE_WORKFLOW_GET_VALIDATED
+HOLD_NO_ISOLATED_TARGET
 ```
