@@ -4,6 +4,19 @@
 
 This manual protected workflow prepares, but does not authorize or perform, the first DNS TXT pilot. It resolves an operator-selected domain name to its Domeneshop API ID, verifies active DNS service, then performs an authenticated GET for the exact `_mcp-validation` TXT host. It fails if the domain cannot be resolved exactly or if that host already contains a TXT record.
 
+## Provisioning gate
+
+On 11.08.2026 an isolated non-production candidate was confirmed available through Domeneshop's public registration search. The candidate name is intentionally kept outside the repository. Registration is still pending explicit purchase confirmation and successful account checkout.
+
+Do not add `DS_PILOT_DOMAIN_NAME` until all of the following are true:
+
+1. the candidate has been registered in the intended Domeneshop account;
+2. DNS service is active and the domain appears in the authenticated API domain list;
+3. the domain has no production mail, web, forwarding, nameserver, or customer-data dependency;
+4. the operator has approved it exclusively for the D-R3 TXT pilot.
+
+Server-side file placement and configuration are defined in `docs/DNS_TXT_PILOT_SERVER_CONFIGURATION.md`.
+
 ## Protected configuration
 
 The existing `domeneshop-readonly-validation` environment supplies:

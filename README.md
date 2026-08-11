@@ -12,7 +12,7 @@ Read-only MCP server: unchanged
 Live write tools registered: false
 Protected API/SFTP/MCP read validation: passed 10.08.2026
 Public status-surface workflow validation: passed 10.08.2026
-D-R3 isolated DNS TXT pilot: blocked; no isolated non-production domain available
+D-R3 isolated DNS TXT pilot: provisioning prepared; candidate purchase and registration pending
 ```
 
 ## Re-evaluated implementation state
@@ -28,7 +28,7 @@ D-R3 isolated DNS TXT pilot: blocked; no isolated non-production domain availabl
 | D-R2 controlled-write release manifest | Implemented; live execution disabled | `config/controlled-write-release-manifest.example.json` |
 | D-R2 shared controlled-write executor | Implemented; not registered in read server | `src/domeneshop_mcp/controlled_write.py` |
 | D-R3 DNS TXT provider mutation client | Implemented; live pilot not authorized | `src/domeneshop_mcp/write_client.py` |
-| D-R3 isolated TXT preflight | Implemented; blocked because no isolated non-production domain is available | `docs/DNS_TXT_PILOT_PREFLIGHT.md` |
+| D-R3 isolated TXT preflight | Implemented; isolated candidate availability verified, registration pending | `docs/DNS_TXT_PILOT_PREFLIGHT.md` |
 | HTTP-forward mutation | Planned | Starts after DNS pilot acceptance |
 | SFTP upload/replace/restore | Planned | Separate D-R4 release |
 | SQL read/edit/write | Planned | Separate D-R5 release |
@@ -88,13 +88,13 @@ controlled-write-foundation-report.json
 APPROVE_READ_ONLY_RUNTIME
 PROCEED_WITH_TARGETED_IMPLEMENTATION
 CONTROLLED_WRITE_FOUNDATION_IMPLEMENTED
-DNS_TXT_PILOT_BLOCKED_NO_ISOLATED_TARGET
+DNS_TXT_PILOT_TARGET_PROVISIONING_PREPARED
 PROTECTED_READONLY_VALIDATION_PASSED
 STATUS_SURFACE_WORKFLOW_GET_VALIDATED
 NO_AUTONOMOUS_LIVE_CHANGE
 RUNTIME_VALUES_OUTSIDE_REPOSITORY
 HOLD_LIVE_CHANGE_ACTIVATION
-HOLD_NO_ISOLATED_TARGET
+HOLD_PENDING_DOMAIN_REGISTRATION
 ```
 
 ## Repository target
