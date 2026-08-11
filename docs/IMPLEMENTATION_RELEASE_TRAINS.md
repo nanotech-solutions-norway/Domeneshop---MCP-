@@ -58,6 +58,13 @@ NO_PROVIDER_MUTATION_AUTHORIZED
 
 ## D-R3 — DNS pilot acceptance
 
+Current blocker:
+
+- on 11.08.2026 the operator confirmed that no isolated non-production domain is available;
+- attempted GET-only target resolution failed closed without mutation;
+- unapproved pilot selector secrets were removed from the protected environment;
+- D-R3 remains held until an isolated domain is provisioned or explicitly approved.
+
 Required before activation:
 
 1. approved test domain ID and isolated TXT host;
@@ -70,3 +77,8 @@ Required before activation:
 8. final operator sign-off.
 
 MX, NS, general deletion, and broad target prefixes remain blocked.
+
+```text
+HOLD_NO_ISOLATED_TARGET
+NO_PROVIDER_MUTATION_AUTHORIZED
+```

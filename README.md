@@ -1,4 +1,4 @@
-# Domeneshop MCP Implementation Baseline — updated 10.08.2026
+# Domeneshop MCP Implementation Baseline — updated 11.08.2026
 
 This repository is the system of record for the Domeneshop MCP bridge.
 
@@ -12,6 +12,7 @@ Read-only MCP server: unchanged
 Live write tools registered: false
 Protected API/SFTP/MCP read validation: passed 10.08.2026
 Public status-surface workflow validation: passed 10.08.2026
+D-R3 isolated DNS TXT pilot: blocked; no isolated non-production domain available
 ```
 
 ## Re-evaluated implementation state
@@ -27,7 +28,7 @@ Public status-surface workflow validation: passed 10.08.2026
 | D-R2 controlled-write release manifest | Implemented; live execution disabled | `config/controlled-write-release-manifest.example.json` |
 | D-R2 shared controlled-write executor | Implemented; not registered in read server | `src/domeneshop_mcp/controlled_write.py` |
 | D-R3 DNS TXT provider mutation client | Implemented; live pilot not authorized | `src/domeneshop_mcp/write_client.py` |
-| D-R3 isolated TXT preflight | Implemented; protected GET-only run pending operator target | `docs/DNS_TXT_PILOT_PREFLIGHT.md` |
+| D-R3 isolated TXT preflight | Implemented; blocked because no isolated non-production domain is available | `docs/DNS_TXT_PILOT_PREFLIGHT.md` |
 | HTTP-forward mutation | Planned | Starts after DNS pilot acceptance |
 | SFTP upload/replace/restore | Planned | Separate D-R4 release |
 | SQL read/edit/write | Planned | Separate D-R5 release |
@@ -87,12 +88,13 @@ controlled-write-foundation-report.json
 APPROVE_READ_ONLY_RUNTIME
 PROCEED_WITH_TARGETED_IMPLEMENTATION
 CONTROLLED_WRITE_FOUNDATION_IMPLEMENTED
-DNS_TXT_PILOT_PENDING_OPERATOR_TARGET_AND_PROTECTED_STORAGE
+DNS_TXT_PILOT_BLOCKED_NO_ISOLATED_TARGET
 PROTECTED_READONLY_VALIDATION_PASSED
 STATUS_SURFACE_WORKFLOW_GET_VALIDATED
 NO_AUTONOMOUS_LIVE_CHANGE
 RUNTIME_VALUES_OUTSIDE_REPOSITORY
 HOLD_LIVE_CHANGE_ACTIVATION
+HOLD_NO_ISOLATED_TARGET
 ```
 
 ## Repository target

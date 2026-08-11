@@ -94,6 +94,19 @@ payload_included=false
 
 The controlled-write foundation reported `live_execution_enabled=false`. No response payload, credential, authorization header, provider record, remote path, DNS value, or customer-specific identifier was retained.
 
+## D-R3 isolated-target hold — 11.08.2026
+
+The operator confirmed that no isolated non-production Domeneshop domain is available for the TXT pilot. Protected GET-only preparation runs failed closed during target selection and performed no provider mutation. The temporary `DS_PILOT_DOMAIN_ID` and `DS_PILOT_DOMAIN_NAME` selector secrets were removed from the protected environment after this decision; validated API and SFTP read credentials remain unchanged.
+
+```text
+ISOLATED_NON_PRODUCTION_DOMAIN_AVAILABLE=false
+DNS_TXT_PILOT_PREFLIGHT_ACCEPTED=false
+PROVIDER_MUTATION_PERFORMED=false
+WRITE_TOOLS_ENABLED=false
+HOLD_NO_ISOLATED_TARGET
+HOLD_LIVE_CHANGE_ACTIVATION
+```
+
 ## Progress continuity
 
 ```text
@@ -101,8 +114,8 @@ completion_target=CONTROLLED_DNS_TXT_CHANGE_CAPABILITY
 operator_status_progress_carried_forward=82%
 progress_recalculated=false
 scope_changed=false
-current_process=D_R3_ISOLATED_PILOT_TARGET_AND_RUNTIME_PREPARATION
-next_gate=APPROVE_ISOLATED_DOMAIN_TXT_HOST_AND_PROTECTED_STORAGE
+current_process=D_R3_BLOCKED_NO_ISOLATED_TARGET
+next_gate=PROVISION_OR_APPROVE_ISOLATED_NON_PRODUCTION_DOMAIN
 ```
 
 The carried percentage is not activation authority. It remains evidence-weighted by the existing project status and is not increased by this preparation-only change.
