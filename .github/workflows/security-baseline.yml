@@ -1,0 +1,38 @@
+name: Security baseline
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: security-baseline-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  security-baseline:
+    name: security-baseline
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+      - name: Reject tracked secret files
+        shell: bash
+        run: |
+          set -euo pipefail
+          bad="$(git ls-files | grep -E '(^|/)\.env($|\.)|(^|/)(id_rsa|id_dsa|id_ecdsa|id_ed25519)$|\.(pem|p12|pfx|key|jks|keystore)$' | grep -Ev '\.(example|sample|template)$' || true)"
+          if [ -n "$bad" ]; then printf '%s\n' "$bad"; exit 1; fi
+      - name: Reject embedded private keys and high-confidence tokens
+        shell: bash
+        run: |
+          set -euo pipefail
+          pattern='-----BEGIN ([A-Z0-9 ]+ )?PRIVATE KEY-----|github_pat_[A-Za-z0-9_]{20,}|gh[pousr]_[A-Za-z0-9]{30,}|AKIA[0-9A-Z]{16}'
+          if git grep -nE -- "$pattern"; then exit 1; fi
