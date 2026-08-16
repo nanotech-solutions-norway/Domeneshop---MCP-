@@ -171,3 +171,23 @@ HOLD_LIVE_CHANGE_ACTIVATION
 ```
 
 Progress remains carried at 82% because the approved rollout plan does not assign a separate weight to this substep. The current process is protected approval-signing, audit, and idempotency runtime-storage preparation; the next evidence gate is a deterministic controlled-write dry-run. A DNS mutation still requires separate operator authorization.
+
+## D-R3 controlled-write dry-run preparation — 16.08.2026
+
+An exact-target protected dry-run workflow and sanitized evidence contract were implemented. The workflow revalidates the active target and empty fixed TXT host, validates the protected signing secret and state-directory initialization, and builds a disabled-live controlled-write preview. It explicitly creates no approval token, idempotency reservation, audit event, or provider mutation.
+
+The Office PC inert state root is prepared outside the repository with access restricted to the current operator, `SYSTEM`, and local administrators. No Domeneshop service identity is installed on that host, so this is preparation evidence only and must not be represented as production runtime storage.
+
+```text
+CONTROLLED_WRITE_DRY_RUN_WORKFLOW_IMPLEMENTED=true
+PROTECTED_DRY_RUN_EXECUTION_PENDING=true
+APPROVAL_TOKEN_ISSUED=false
+IDEMPOTENCY_RESERVATION_CREATED=false
+AUDIT_EVENT_CREATED=false
+PROVIDER_MUTATION_PERFORMED=false
+WRITE_TOOLS_ENABLED=false
+HOLD_PENDING_PROTECTED_DRY_RUN
+HOLD_LIVE_CHANGE_ACTIVATION
+```
+
+Progress remains carried at 82% pending protected execution evidence. The next operator-only input is the unique `APPROVAL_SIGNING_SECRET` value in the protected GitHub environment.

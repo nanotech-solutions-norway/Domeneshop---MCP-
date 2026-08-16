@@ -105,6 +105,7 @@ required_files = [
     "scripts/validate_controlled_write_foundation.py",
     "scripts/status_surface_smoke.py",
     "scripts/dns_txt_pilot_preflight.py",
+    "scripts/dns_txt_pilot_dry_run.py",
     "src/domeneshop_mcp/credential_policy.py",
     "src/domeneshop_mcp/approval_token.py",
     "src/domeneshop_mcp/idempotency.py",
@@ -119,7 +120,9 @@ required_files = [
     "tests/test_pilot_preflight.py",
     ".github/workflows/validate-domeneshop-mcp.yml",
     ".github/workflows/prepare-dns-txt-pilot.yml",
+    ".github/workflows/validate-dns-txt-pilot-dry-run.yml",
     "docs/DNS_TXT_PILOT_PREFLIGHT.md",
+    "docs/DNS_TXT_PILOT_DRY_RUN.md",
     "docs/DNS_TXT_PILOT_SERVER_CONFIGURATION.md",
 ]
 required_files.extend(f"docs/{name}" for name in phase_docs.values())

@@ -29,6 +29,7 @@ D-R3 isolated DNS TXT pilot: protected GET-only target preflight passed; live pi
 | D-R2 shared controlled-write executor | Implemented; not registered in read server | `src/domeneshop_mcp/controlled_write.py` |
 | D-R3 DNS TXT provider mutation client | Implemented; live pilot not authorized | `src/domeneshop_mcp/write_client.py` |
 | D-R3 isolated TXT preflight | Protected GET-only run `31966109707` passed; zero collision; no mutation | `docs/DNS_TXT_PILOT_PREFLIGHT.md` |
+| D-R3 controlled-write dry run | Protected exact-target workflow implemented; execution pending protected signing secret | `docs/DNS_TXT_PILOT_DRY_RUN.md` |
 | HTTP-forward mutation | Planned | Starts after DNS pilot acceptance |
 | SFTP upload/replace/restore | Planned | Separate D-R4 release |
 | SQL read/edit/write | Planned | Separate D-R5 release |

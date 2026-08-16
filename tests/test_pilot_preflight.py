@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 import pytest
 
@@ -6,6 +7,7 @@ from domeneshop_mcp.config import DomeneshopConfig
 from domeneshop_mcp.errors import DomeneshopApiError
 from domeneshop_mcp.pilot_preflight import (
     PilotPreflightError,
+    validate_dns_txt_pilot_controlled_write_dry_run,
     validate_dns_txt_pilot_preflight,
     validate_dns_txt_pilot_preflight_by_domain_name,
 )
@@ -196,4 +198,76 @@ def test_domain_name_resolver_preserves_sanitized_list_error():
             _safe_config(),
             "pilot-example.no",
             client=DomainResolvingReadClient(provider_error),
+        )
+
+
+def test_controlled_write_dry_run_is_exact_target_bound_and_creates_no_authorization_artifacts(tmp_path):
+    client = DomainResolvingReadClient(
+        [{"id": 123, "domain": "pilot-example.no", "services": {"dns": True}}]
+    )
+    evidence = validate_dns_txt_pilot_controlled_write_dry_run(
+        _safe_config(),
+        "pilot-example.no",
+        "x" * 48,
+        tmp_path / "state",
+        client=client,
+    )
+    serialized = json.dumps(evidence)
+
+    assert client.domain_calls == ["pilot-example.no"]
+    assert client.calls == [(123, "_mcp-validation", "TXT")]
+    assert evidence["mode"] == "controlled_write_preview"
+    assert evidence["allowed_by_manifest"] is True
+    assert evidence["live_execution_enabled"] is False
+    assert evidence["approval_signing_secret_validated"] is True
+    assert evidence["approval_token_issued"] is False
+    assert evidence["idempotency_reservation_created"] is False
+    assert evidence["audit_event_created"] is False
+    assert evidence["provider_mutation_performed"] is False
+    assert evidence["mandatory_controls"] == {
+        "approval_token": True,
+        "idempotency": True,
+        "audit": True,
+        "readback": True,
+    }
+    assert list((tmp_path / "state" / "approval-nonces").iterdir()) == []
+    assert list((tmp_path / "state" / "idempotency").iterdir()) == []
+    assert not (tmp_path / "state" / "audit" / "controlled-write.jsonl").exists()
+    assert "pilot-example.no" not in serialized
+    assert "_mcp-validation" not in serialized
+
+
+def test_controlled_write_dry_run_rejects_invalid_signing_secret(tmp_path):
+    client = DomainResolvingReadClient(
+        [{"id": 123, "domain": "pilot-example.no", "services": {"dns": True}}]
+    )
+    with pytest.raises(PilotPreflightError, match="approval_secret_invalid"):
+        validate_dns_txt_pilot_controlled_write_dry_run(
+            _safe_config(),
+            "pilot-example.no",
+            "too-short",
+            tmp_path / "state",
+            client=client,
+        )
+
+
+def test_controlled_write_dry_run_requires_absolute_state_root():
+    with pytest.raises(PilotPreflightError, match="invalid_state_root"):
+        validate_dns_txt_pilot_controlled_write_dry_run(
+            _safe_config(),
+            "pilot-example.no",
+            "x" * 48,
+            "relative-state",
+            client=DomainResolvingReadClient([]),
+        )
+
+
+def test_controlled_write_dry_run_rejects_repository_state_root():
+    with pytest.raises(PilotPreflightError, match="invalid_state_root"):
+        validate_dns_txt_pilot_controlled_write_dry_run(
+            _safe_config(),
+            "pilot-example.no",
+            "x" * 48,
+            Path.cwd() / "runtime-state",
+            client=DomainResolvingReadClient([]),
         )

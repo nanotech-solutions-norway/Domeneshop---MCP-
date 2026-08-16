@@ -65,6 +65,8 @@ New-Item -ItemType Directory -Force -Path (Join-Path $PilotStateRoot 'audit') | 
 
 Apply Windows ACLs so only the MCP service identity and the designated administrator can read or write the directory. Do not use a broadly writable user profile, webroot, shared folder, or repository directory.
 
+If the Office PC is the designated pilot host but no service identity is installed, an inert preparation root may be created under `%LOCALAPPDATA%\NanoTech\DomeneshopMcp\pilot-state` only when inheritance is removed and access is limited to the current operator, `SYSTEM`, and local administrators. This is preparation evidence, not a production service deployment. Move the state root to the final service-owned location before any live pilot authorization.
+
 For the GET-only preflight, configure the protected GitHub environment `domeneshop-readonly-validation`:
 
 - secret `DS_PILOT_DOMAIN_NAME` = registered isolated domain;
@@ -89,7 +91,9 @@ Mount the state root as a dedicated persistent volume at `/var/lib/domeneshop-mc
 4. Add `DS_PILOT_DOMAIN_NAME` to the protected GitHub environment.
 5. Dispatch `prepare-dns-txt-pilot.yml` from accepted `main`.
 6. Accept only sanitized GET-only evidence with `WRITE_TOOLS_ENABLED=false` and `PROVIDER_MUTATION_PERFORMED=false`.
-7. Stop for a separate operator authorization before generating a live manifest or approval token.
+7. Add the unique `APPROVAL_SIGNING_SECRET` manually to the protected environment.
+8. Dispatch `validate-dns-txt-pilot-dry-run.yml` from accepted `main` and accept only the no-token, no-reservation, no-audit-event, no-mutation evidence defined in `docs/DNS_TXT_PILOT_DRY_RUN.md`.
+9. Stop for a separate operator authorization before generating a live manifest or approval token.
 
 ## Fail-closed checks
 
