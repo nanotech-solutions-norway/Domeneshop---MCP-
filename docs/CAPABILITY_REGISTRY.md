@@ -31,6 +31,7 @@ This registry replaces ambiguous phase-completion language with executable capab
 | Controlled-write release manifest | IMPLEMENTED | FOUNDATION_ONLY | D-R2 | Example manifest keeps live execution disabled. |
 | Shared controlled-write executor | IMPLEMENTED | FOUNDATION_ONLY | D-R2 | No live tool registration on read-only server. |
 | Isolated DNS TXT target preflight | IMPLEMENTED | VALIDATED | D-R3 | Protected run `31966109707` resolved one exact active API target, found zero existing TXT records at the fixed host, and retained no provider payload. |
+| Isolated DNS TXT controlled-write dry run | IMPLEMENTED | PENDING_REVIEW | D-R3 | Protected exact-target preview workflow is implemented; accepted execution evidence and signing-secret readiness remain pending. |
 | DNS TXT provider mutation adapter | IMPLEMENTED | BLOCKED | D-R3 | TXT-only by default; deletion disabled. GET-only target preflight passed; runtime storage, deterministic controlled-write dry-run, and operator authorization remain pending. |
 | HTTP forward mutation adapter | PLANNED | BLOCKED | D-R3 | Starts only after DNS pilot acceptance. |
 | SFTP upload/replace/restore | PLANNED | BLOCKED | D-R4 | Requires atomic upload, backup, readback, and restore proof. |

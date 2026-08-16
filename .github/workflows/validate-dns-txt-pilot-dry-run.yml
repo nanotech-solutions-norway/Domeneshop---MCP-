@@ -1,0 +1,87 @@
+name: Validate isolated Domeneshop DNS TXT dry run
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: domeneshop-dns-txt-pilot-dry-run
+  cancel-in-progress: false
+
+jobs:
+  dry-run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: domeneshop-readonly-validation
+
+    steps:
+      - name: Checkout accepted main
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+
+      - name: Enforce protected no-mutation gates
+        shell: bash
+        env:
+          DS_AUTH_USER: ${{ secrets.DS_AUTH_USER }}
+          DS_AUTH_VALUE: ${{ secrets.DS_AUTH_VALUE }}
+          DS_PILOT_DOMAIN_NAME: ${{ secrets.DS_PILOT_DOMAIN_NAME }}
+          APPROVAL_SIGNING_SECRET: ${{ secrets.APPROVAL_SIGNING_SECRET }}
+          DS_PILOT_TXT_HOST: ${{ vars.DS_PILOT_TXT_HOST }}
+          WRITE_TOOLS_ENABLED: ${{ vars.WRITE_TOOLS_ENABLED }}
+          DRY_RUN_DEFAULT: ${{ vars.DRY_RUN_DEFAULT }}
+          REQUIRE_OPERATOR_APPROVAL: ${{ vars.REQUIRE_OPERATOR_APPROVAL }}
+        run: |
+          set -euo pipefail
+          [[ -n "${DS_AUTH_USER:-}" ]]
+          [[ -n "${DS_AUTH_VALUE:-}" ]]
+          [[ -n "${DS_PILOT_DOMAIN_NAME:-}" ]]
+          [[ -n "${APPROVAL_SIGNING_SECRET:-}" ]]
+          [[ "$DS_PILOT_TXT_HOST" == "_mcp-validation" ]]
+          [[ "$WRITE_TOOLS_ENABLED" == "false" ]]
+          [[ "$DRY_RUN_DEFAULT" == "true" ]]
+          [[ "$REQUIRE_OPERATOR_APPROVAL" == "true" ]]
+
+      - name: Install read-only runtime
+        run: python -m pip install -e ".[test]"
+
+      - name: Verify repository and controlled-write hold
+        run: |
+          python scripts/validate_repository_structure.py
+          python scripts/validate_controlled_write_foundation.py
+
+      - name: Run exact-target controlled-write preview
+        shell: bash
+        env:
+          DS_AUTH_USER: ${{ secrets.DS_AUTH_USER }}
+          DS_AUTH_VALUE: ${{ secrets.DS_AUTH_VALUE }}
+          DS_PILOT_DOMAIN_NAME: ${{ secrets.DS_PILOT_DOMAIN_NAME }}
+          APPROVAL_SIGNING_SECRET: ${{ secrets.APPROVAL_SIGNING_SECRET }}
+          DS_PILOT_TXT_HOST: ${{ vars.DS_PILOT_TXT_HOST }}
+          WRITE_TOOLS_ENABLED: ${{ vars.WRITE_TOOLS_ENABLED }}
+          DRY_RUN_DEFAULT: ${{ vars.DRY_RUN_DEFAULT }}
+          PILOT_STATE_ROOT: ${{ runner.temp }}/domeneshop-dns-txt-pilot-state
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts
+          python scripts/dns_txt_pilot_dry_run.py | tee artifacts/dns-txt-pilot-dry-run.json
+          test -d "$PILOT_STATE_ROOT/approval-nonces"
+          test -d "$PILOT_STATE_ROOT/idempotency"
+          test -d "$PILOT_STATE_ROOT/audit"
+          test -z "$(find "$PILOT_STATE_ROOT/approval-nonces" -mindepth 1 -maxdepth 1 -print -quit)"
+          test -z "$(find "$PILOT_STATE_ROOT/idempotency" -mindepth 1 -maxdepth 1 -print -quit)"
+          test ! -s "$PILOT_STATE_ROOT/audit/controlled-write.jsonl"
+
+      - name: Upload sanitized dry-run evidence
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: dns-txt-pilot-dry-run-evidence
+          path: artifacts/dns-txt-pilot-dry-run.json
+          if-no-files-found: error

@@ -64,9 +64,10 @@ Current provisioning state:
 - the isolated domain was confirmed active in the authenticated Domeneshop control panel, with its name kept outside the repository;
 - purchase and account registration are complete;
 - protected GET-only run `31966109707` resolved one exact active API target and found zero TXT records at the fixed validation host;
+- the protected controlled-write preview workflow is implemented and remains pending execution with the separately stored signing secret;
 - earlier pre-registration GET-only target-resolution attempts failed closed without mutation;
 - unapproved pilot selector secrets were removed at the earlier hold; the registered selector was later reintroduced only in the protected environment for successful run `31966109707`;
-- D-R3 remains held until protected runtime storage is configured, a deterministic controlled-write dry-run is accepted, and a separate mutation authorization is issued.
+- D-R3 remains held until protected runtime-storage readiness and the deterministic controlled-write dry run are accepted, followed by a separate mutation authorization.
 
 Required before activation:
 
