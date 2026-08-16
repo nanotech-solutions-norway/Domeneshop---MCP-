@@ -6,7 +6,7 @@ This manual protected workflow prepares, but does not authorize or perform, the 
 
 ## Provisioning gate
 
-On 11.08.2026 the isolated non-production domain was confirmed as active in the authenticated Domeneshop control panel. The domain name is intentionally kept outside the repository. Authenticated API discovery and DNS-service validation remain pending.
+On 11.08.2026 the isolated non-production domain was confirmed as active in the authenticated Domeneshop control panel. On 16.08.2026 protected run `31966109707` independently resolved one exact active target through the authenticated API and completed the fixed-host GET-only preflight. The domain name remains intentionally outside the repository.
 
 Do not run the protected preflight until all of the following are true:
 
@@ -45,6 +45,23 @@ The workflow emits only:
 
 It never prints the domain name, resolved domain ID, host, proposed TXT value, provider response, authorization header, or credentials.
 Provider failures retain only the repository's bounded error class, such as `unauthorized` or `not_found`; provider messages and response bodies remain excluded.
+
+## Accepted protected run — 16.08.2026
+
+Protected workflow run `31966109707`, on accepted `main` commit `8248e7f8577f10e9a8afa5c4fd1e756ece71bb8b`, passed with the following sanitized evidence:
+
+```text
+exact_active_target_resolved=true
+existing_txt_record_count=0
+collision_detected=false
+allowed_by_manifest=true
+live_execution_enabled=false
+write_tools_enabled=false
+provider_mutation_performed=false
+payload_included=false
+```
+
+The result validates only target discovery and collision-free GET-only preparation. It does not issue an approval token, reserve an idempotency key, create a live audit release, enable a write tool, or authorize a DNS change.
 
 ## Preserved boundary
 

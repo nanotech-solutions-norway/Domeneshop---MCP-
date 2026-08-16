@@ -1,4 +1,4 @@
-# Domeneshop MCP Implementation Baseline — updated 11.08.2026
+# Domeneshop MCP Implementation Baseline — updated 16.08.2026
 
 This repository is the system of record for the Domeneshop MCP bridge.
 
@@ -12,7 +12,7 @@ Read-only MCP server: unchanged
 Live write tools registered: false
 Protected API/SFTP/MCP read validation: passed 10.08.2026
 Public status-surface workflow validation: passed 10.08.2026
-D-R3 isolated DNS TXT pilot: isolated domain registered; authenticated API discovery pending
+D-R3 isolated DNS TXT pilot: protected GET-only target preflight passed; live pilot not authorized
 ```
 
 ## Re-evaluated implementation state
@@ -28,7 +28,7 @@ D-R3 isolated DNS TXT pilot: isolated domain registered; authenticated API disco
 | D-R2 controlled-write release manifest | Implemented; live execution disabled | `config/controlled-write-release-manifest.example.json` |
 | D-R2 shared controlled-write executor | Implemented; not registered in read server | `src/domeneshop_mcp/controlled_write.py` |
 | D-R3 DNS TXT provider mutation client | Implemented; live pilot not authorized | `src/domeneshop_mcp/write_client.py` |
-| D-R3 isolated TXT preflight | Implemented; isolated domain registration verified, authenticated API discovery pending | `docs/DNS_TXT_PILOT_PREFLIGHT.md` |
+| D-R3 isolated TXT preflight | Protected GET-only run `31966109707` passed; zero collision; no mutation | `docs/DNS_TXT_PILOT_PREFLIGHT.md` |
 | HTTP-forward mutation | Planned | Starts after DNS pilot acceptance |
 | SFTP upload/replace/restore | Planned | Separate D-R4 release |
 | SQL read/edit/write | Planned | Separate D-R5 release |
@@ -89,12 +89,13 @@ APPROVE_READ_ONLY_RUNTIME
 PROCEED_WITH_TARGETED_IMPLEMENTATION
 CONTROLLED_WRITE_FOUNDATION_IMPLEMENTED
 DNS_TXT_PILOT_TARGET_PROVISIONING_PREPARED
+DNS_TXT_PILOT_GET_ONLY_PREFLIGHT_PASSED
 PROTECTED_READONLY_VALIDATION_PASSED
 STATUS_SURFACE_WORKFLOW_GET_VALIDATED
 NO_AUTONOMOUS_LIVE_CHANGE
 RUNTIME_VALUES_OUTSIDE_REPOSITORY
 HOLD_LIVE_CHANGE_ACTIVATION
-HOLD_PENDING_DOMAIN_REGISTRATION
+HOLD_PENDING_RUNTIME_STORAGE_AND_DRY_RUN
 ```
 
 ## Repository target

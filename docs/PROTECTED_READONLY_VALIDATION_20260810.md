@@ -150,3 +150,24 @@ HOLD_LIVE_CHANGE_ACTIVATION
 ```
 
 The next gate is manual protected configuration of `DS_PILOT_DOMAIN_NAME`, followed by authenticated GET-only discovery and the protected TXT preflight. Progress remains carried at 82%; control-panel registration evidence alone does not close a runtime evidence gate.
+
+## D-R3 protected isolated-target preflight — 16.08.2026
+
+The operator configured `DS_PILOT_DOMAIN_NAME` in the protected `domeneshop-readonly-validation` environment. Protected workflow run `31966109707` executed from accepted `main` commit `8248e7f8577f10e9a8afa5c4fd1e756ece71bb8b` and completed successfully. Sanitized evidence confirmed one exact active API target, zero existing TXT records at the fixed validation host, no collision, manifest allowlisting, disabled live execution, disabled write tools, no provider mutation, and no retained payload.
+
+```text
+DS_PILOT_DOMAIN_NAME_CONFIGURED=true
+AUTHENTICATED_API_DISCOVERY_PENDING=false
+PROTECTED_GET_ONLY_PREFLIGHT_PASSED=true
+EXISTING_TXT_RECORD_COUNT=0
+COLLISION_DETECTED=false
+ALLOWED_BY_MANIFEST=true
+LIVE_EXECUTION_ENABLED=false
+WRITE_TOOLS_ENABLED=false
+PROVIDER_MUTATION_PERFORMED=false
+PAYLOAD_INCLUDED=false
+HOLD_PENDING_RUNTIME_STORAGE_AND_DRY_RUN
+HOLD_LIVE_CHANGE_ACTIVATION
+```
+
+Progress remains carried at 82% because the approved rollout plan does not assign a separate weight to this substep. The current process is protected approval-signing, audit, and idempotency runtime-storage preparation; the next evidence gate is a deterministic controlled-write dry-run. A DNS mutation still requires separate operator authorization.

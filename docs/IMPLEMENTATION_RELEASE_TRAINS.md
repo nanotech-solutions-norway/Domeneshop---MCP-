@@ -62,10 +62,11 @@ Current provisioning state:
 
 - on 11.08.2026 the operator requested creation of an isolated non-production domain;
 - the isolated domain was confirmed active in the authenticated Domeneshop control panel, with its name kept outside the repository;
-- purchase and account registration are complete; authenticated API discovery, DNS activation validation, and target acceptance remain pending;
-- attempted GET-only target resolution failed closed without mutation;
-- unapproved pilot selector secrets were removed from the protected environment;
-- D-R3 remains held until the domain is discovered through the API, validated as isolated, and explicitly approved.
+- purchase and account registration are complete;
+- protected GET-only run `31966109707` resolved one exact active API target and found zero TXT records at the fixed validation host;
+- earlier pre-registration GET-only target-resolution attempts failed closed without mutation;
+- unapproved pilot selector secrets were removed at the earlier hold; the registered selector was later reintroduced only in the protected environment for successful run `31966109707`;
+- D-R3 remains held until protected runtime storage is configured, a deterministic controlled-write dry-run is accepted, and a separate mutation authorization is issued.
 
 Required before activation:
 
@@ -81,6 +82,6 @@ Required before activation:
 MX, NS, general deletion, and broad target prefixes remain blocked.
 
 ```text
-HOLD_PENDING_AUTHENTICATED_API_DISCOVERY
+HOLD_PENDING_RUNTIME_STORAGE_AND_DRY_RUN
 NO_PROVIDER_MUTATION_AUTHORIZED
 ```

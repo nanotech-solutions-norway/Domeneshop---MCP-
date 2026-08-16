@@ -30,7 +30,8 @@ This registry replaces ambiguous phase-completion language with executable capab
 | Append-only audit persistence | IMPLEMENTED | VALIDATED_AT_REPOSITORY_LEVEL | D-R2 | Redaction and hash-chain validation passed; runtime storage not configured. |
 | Controlled-write release manifest | IMPLEMENTED | FOUNDATION_ONLY | D-R2 | Example manifest keeps live execution disabled. |
 | Shared controlled-write executor | IMPLEMENTED | FOUNDATION_ONLY | D-R2 | No live tool registration on read-only server. |
-| DNS TXT provider mutation adapter | IMPLEMENTED | BLOCKED | D-R3 | TXT-only by default; deletion disabled. Isolated domain registration verified on 11.08.2026; authenticated API discovery, isolation validation, and operator acceptance remain pending. |
+| Isolated DNS TXT target preflight | IMPLEMENTED | VALIDATED | D-R3 | Protected run `31966109707` resolved one exact active API target, found zero existing TXT records at the fixed host, and retained no provider payload. |
+| DNS TXT provider mutation adapter | IMPLEMENTED | BLOCKED | D-R3 | TXT-only by default; deletion disabled. GET-only target preflight passed; runtime storage, deterministic controlled-write dry-run, and operator authorization remain pending. |
 | HTTP forward mutation adapter | PLANNED | BLOCKED | D-R3 | Starts only after DNS pilot acceptance. |
 | SFTP upload/replace/restore | PLANNED | BLOCKED | D-R4 | Requires atomic upload, backup, readback, and restore proof. |
 | SQL read/edit/write | PLANNED | BLOCKED | D-R5 | Separate adapter and least-privilege credentials required. |
@@ -45,7 +46,8 @@ WRITE_TOOLS_ENABLED=false
 CONTROLLED_WRITE_FOUNDATION_IMPLEMENTED
 LIVE_WRITE_NOT_REGISTERED
 DNS_TXT_PILOT_TARGET_PROVISIONING_PREPARED
+DNS_TXT_PILOT_GET_ONLY_PREFLIGHT_RUN_31966109707_ACCEPTED
 PROTECTED_READONLY_RUNS_31384070264_AND_31403862923_ACCEPTED
 STATUS_SURFACE_WORKFLOW_GET_VALIDATED
-HOLD_PENDING_DOMAIN_REGISTRATION
+HOLD_PENDING_RUNTIME_STORAGE_AND_DRY_RUN
 ```
