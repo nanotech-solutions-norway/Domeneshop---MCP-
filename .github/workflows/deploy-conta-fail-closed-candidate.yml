@@ -68,7 +68,7 @@ jobs:
           echo "PRODUCTION_WRITE_AUTHORIZED=false"
 
       - name: Install SFTP runtime
-        run: python -m pip install "paramiko==5.0.0"
+        run: python -m pip install "paramiko==5.0.0" "certifi==2026.7.22"
 
       - name: Back up, deploy, and verify exact candidate
         shell: bash

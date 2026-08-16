@@ -14,6 +14,7 @@ import hashlib
 import json
 import os
 import posixpath
+import ssl
 import stat
 import sys
 import urllib.error
@@ -22,6 +23,7 @@ from pathlib import Path, PurePosixPath
 from typing import Any
 
 import paramiko
+import certifi
 
 
 SOURCE_COMMIT = "7d97a6330e4aff5a6e251ad19d717d7408cf3825"
@@ -122,8 +124,9 @@ def http_request(path: str, *, method: str = "GET", body: bytes | None = None) -
         method=method,
         headers={"Content-Type": "application/json"} if body is not None else {},
     )
+    context = ssl.create_default_context(cafile=certifi.where())
     try:
-        with urllib.request.urlopen(request, timeout=20) as response:
+        with urllib.request.urlopen(request, timeout=20, context=context) as response:
             return response.status, response.read(262_145)
     except urllib.error.HTTPError as exc:
         return exc.code, exc.read(262_145)
