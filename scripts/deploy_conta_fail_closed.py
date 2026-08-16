@@ -26,7 +26,7 @@ import paramiko
 import certifi
 
 
-SOURCE_COMMIT = "7d97a6330e4aff5a6e251ad19d717d7408cf3825"
+SOURCE_COMMIT = "b34e6bc44de297541c49922218b3c2411f64b071"
 REMOTE_RUNTIME_ROOT = "/Custom Models/conta-mcp"
 REMOTE_BACKUP_ROOT = "/Custom Models/conta-mcp-backups"
 PUBLIC_BASE_URL = "https://mcp.atlas-ai.no"
@@ -35,7 +35,7 @@ EXPECTED_HASHES = {
     "app/ApprovalEnvelopeVerifier.php": "15be802a1fcdf5608d58ac187d0c783f36b70ba7ef764a69f23da8e5e1ebcd51",
     "app/AuditLogger.php": "7be47f4d66b9e0bea5a94a436dbbb343ca9bf394705db17a16750f40da4c12fb",
     "app/Config.php": "01def2a0254d4c1f7e2a83159aa37ad2d49172de5870022d583a51ff13701bea",
-    "app/ContaClient.php": "c9b4633749409af2a6b76145593839cd72e9f6ffc6d15feef13e2c503fb1bbe1",
+    "app/ContaClient.php": "b4e1b5d1f5766c085c764cf7f5edddaa3111a4645dac3eb79ddd133bce084ab3",
     "app/ContaTools.php": "5626cc5b4374e510cdc989df59b11c4fd3fe04d54fac3735a6e5464619f7cd18",
     "app/HttpClient.php": "e088dcb506d6b670a6103828f3cf2344dcbfb56b2b8f9dbf85e96509cdac0dd9",
     "app/InvoiceDraftPreview.php": "d976b54b1ddc55a5399367ce35b35144d687d462cbf1217a7d5d469572c54fc8",
