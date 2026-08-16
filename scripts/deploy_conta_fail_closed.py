@@ -321,9 +321,17 @@ def deploy(candidate_root: Path, run_token: str) -> dict[str, Any]:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--candidate-root", required=True, type=Path)
-    parser.add_argument("--run-token", required=True)
+    parser.add_argument("--run-token")
+    parser.add_argument("--validate-only", action="store_true")
     args = parser.parse_args()
     try:
+        local_candidate(args.candidate_root)
+        validate_public_contract()
+        print("IMMUTABLE_CANDIDATE_AND_PUBLIC_CONTRACT_VALIDATED=true")
+        if args.validate_only:
+            return 0
+        if not args.run_token:
+            raise RuntimeError("run_token_required")
         deploy(args.candidate_root, args.run_token)
         return 0
     except Exception as exc:
