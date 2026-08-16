@@ -136,17 +136,38 @@ D-R3 still requires an explicitly approved isolated domain ID and TXT host, prot
 
 ## D-R3 isolated-domain provisioning preparation — 11.08.2026
 
-The operator subsequently requested creation of an isolated non-production domain. A candidate was confirmed available through Domeneshop's public registration search. Its name is intentionally retained outside the repository and protected evidence. Purchase and registration have not yet been submitted.
+The operator subsequently requested creation of an isolated non-production domain. On 11.08.2026 the domain was confirmed active in the authenticated Domeneshop control panel. Its name is intentionally retained outside the repository and protected evidence. Authenticated API discovery and DNS-service validation have not yet been completed.
 
 ```text
 ISOLATED_DOMAIN_CANDIDATE_AVAILABLE=true
-ISOLATED_DOMAIN_REGISTERED=false
+ISOLATED_DOMAIN_REGISTERED=true
 AUTHENTICATED_API_DISCOVERY_PENDING=true
 DS_PILOT_DOMAIN_NAME_CONFIGURED=false
 PROVIDER_MUTATION_PERFORMED=false
 WRITE_TOOLS_ENABLED=false
-HOLD_PENDING_DOMAIN_REGISTRATION
+HOLD_PENDING_AUTHENTICATED_API_DISCOVERY
 HOLD_LIVE_CHANGE_ACTIVATION
 ```
 
-The next gate is paid registration confirmation, followed by authenticated GET-only discovery and the protected TXT preflight. Progress remains carried at 82%; availability and documentation preparation do not close a runtime evidence gate.
+The next gate is manual protected configuration of `DS_PILOT_DOMAIN_NAME`, followed by authenticated GET-only discovery and the protected TXT preflight. Progress remains carried at 82%; control-panel registration evidence alone does not close a runtime evidence gate.
+
+## D-R3 protected isolated-target preflight — 16.08.2026
+
+The operator configured `DS_PILOT_DOMAIN_NAME` in the protected `domeneshop-readonly-validation` environment. Protected workflow run `31966109707` executed from accepted `main` commit `8248e7f8577f10e9a8afa5c4fd1e756ece71bb8b` and completed successfully. Sanitized evidence confirmed one exact active API target, zero existing TXT records at the fixed validation host, no collision, manifest allowlisting, disabled live execution, disabled write tools, no provider mutation, and no retained payload.
+
+```text
+DS_PILOT_DOMAIN_NAME_CONFIGURED=true
+AUTHENTICATED_API_DISCOVERY_PENDING=false
+PROTECTED_GET_ONLY_PREFLIGHT_PASSED=true
+EXISTING_TXT_RECORD_COUNT=0
+COLLISION_DETECTED=false
+ALLOWED_BY_MANIFEST=true
+LIVE_EXECUTION_ENABLED=false
+WRITE_TOOLS_ENABLED=false
+PROVIDER_MUTATION_PERFORMED=false
+PAYLOAD_INCLUDED=false
+HOLD_PENDING_RUNTIME_STORAGE_AND_DRY_RUN
+HOLD_LIVE_CHANGE_ACTIVATION
+```
+
+Progress remains carried at 82% because the approved rollout plan does not assign a separate weight to this substep. The current process is protected approval-signing, audit, and idempotency runtime-storage preparation; the next evidence gate is a deterministic controlled-write dry-run. A DNS mutation still requires separate operator authorization.
