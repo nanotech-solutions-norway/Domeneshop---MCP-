@@ -34,7 +34,7 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           repository: nanotech-solutions-norway/Conta-MCP
-          ref: 7d97a6330e4aff5a6e251ad19d717d7408cf3825
+          ref: b34e6bc44de297541c49922218b3c2411f64b071
           path: candidate
           persist-credentials: false
 
@@ -79,7 +79,7 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           repository: nanotech-solutions-norway/Conta-MCP
-          ref: 7d97a6330e4aff5a6e251ad19d717d7408cf3825
+          ref: b34e6bc44de297541c49922218b3c2411f64b071
           path: candidate
           persist-credentials: false
 
