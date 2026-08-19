@@ -4,7 +4,7 @@ Set-StrictMode -Version Latest
 $Repo = 'nanotech-solutions-norway/Domeneshop---MCP-'
 $Environment = 'domeneshop-readonly-validation'
 $ExpectedBranch = 'main'
-$StateRoot = Join-Path $env:LOCALAPPDATA 'NanoTech\DomeneshopMcp\pilot-state'
+$StateRoot = 'C:\ProgramData\NanoTech\DomeneshopMcp\pilot-state'
 $SecretFile = Join-Path $StateRoot 'approval-signing-secret.txt'
 $ResultFile = Join-Path $StateRoot 'audit\d-r3-txt-create-result.json'
 
