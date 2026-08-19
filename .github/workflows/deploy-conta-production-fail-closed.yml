@@ -1,0 +1,129 @@
+name: Deploy authorized Conta production fail-closed runtime
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/deploy-conta-production-fail-closed.yml'
+      - 'scripts/deploy_conta_production_fail_closed.py'
+  workflow_dispatch:
+    inputs:
+      authorization:
+        description: Type AUTHORIZE_CONTA_PRODUCTION_FAIL_CLOSED_04B3D828
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: conta-production-fail-closed-deployment
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate immutable production candidate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout deployment control
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - name: Checkout exact authorized Conta implementation
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          repository: nanotech-solutions-norway/Conta-MCP
+          ref: 19d8b9fd3e7aec7fec7405df2ffec0e72839c9ac
+          path: candidate
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+
+      - name: Install validation runtime
+        run: python -m pip install 'paramiko==5.0.0' 'certifi==2026.7.22'
+
+      - name: Verify controller cannot call Conta provider
+        shell: bash
+        run: |
+          set -euo pipefail
+          ! grep -Eq 'api\.gateway\.conta(-sandbox)?\.no' scripts/deploy_conta_production_fail_closed.py
+          ! grep -Eq -- '--request[[:space:]]+(POST|PUT|PATCH|DELETE)' scripts/deploy_conta_production_fail_closed.py
+          echo 'CONTA_PROVIDER_CALL_PATH_PRESENT=false'
+
+      - name: Validate exact candidate and current public contract
+        run: >-
+          python scripts/deploy_conta_production_fail_closed.py
+          --candidate-root candidate
+          --validate-only
+
+  deploy:
+    name: Back up, provision, and deploy fail-closed production runtime
+    if: github.event_name == 'workflow_dispatch'
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: domeneshop-readonly-validation
+    env:
+      DEPLOYMENT_AUTHORIZATION: ${{ inputs.authorization }}
+      DS_SFTP_USER: ${{ secrets.DS_SFTP_USER }}
+      DS_SFTP_VALUE: ${{ secrets.DS_SFTP_VALUE }}
+      CONTA_PROD_API_KEY: ${{ secrets.CONTA_PROD_API_KEY }}
+      CONTA_PROD_ORG_ID: ${{ secrets.CONTA_PROD_ORG_ID }}
+      WRITE_TOOLS_ENABLED: ${{ vars.WRITE_TOOLS_ENABLED }}
+      DRY_RUN_DEFAULT: ${{ vars.DRY_RUN_DEFAULT }}
+      REQUIRE_OPERATOR_APPROVAL: ${{ vars.REQUIRE_OPERATOR_APPROVAL }}
+      REQUIRE_BACKUP_EVIDENCE: ${{ vars.REQUIRE_BACKUP_EVIDENCE }}
+      REQUIRE_PREFLIGHT_REPORT: ${{ vars.REQUIRE_PREFLIGHT_REPORT }}
+
+    steps:
+      - name: Checkout deployment control
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - name: Checkout exact authorized Conta implementation
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          repository: nanotech-solutions-norway/Conta-MCP
+          ref: 19d8b9fd3e7aec7fec7405df2ffec0e72839c9ac
+          path: candidate
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+
+      - name: Enforce authorization and fail-closed deployment gates
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$DEPLOYMENT_AUTHORIZATION" == 'AUTHORIZE_CONTA_PRODUCTION_FAIL_CLOSED_04B3D828' ]]
+          [[ "$GITHUB_REF_NAME" == 'main' ]]
+          [[ -n "${DS_SFTP_USER:-}" ]]
+          [[ -n "${DS_SFTP_VALUE:-}" ]]
+          [[ -n "${CONTA_PROD_API_KEY:-}" ]]
+          [[ -n "${CONTA_PROD_ORG_ID:-}" ]]
+          [[ "$WRITE_TOOLS_ENABLED" == 'false' ]]
+          [[ "$DRY_RUN_DEFAULT" == 'true' ]]
+          [[ "$REQUIRE_OPERATOR_APPROVAL" == 'true' ]]
+          [[ "$REQUIRE_BACKUP_EVIDENCE" == 'true' ]]
+          [[ "$REQUIRE_PREFLIGHT_REPORT" == 'true' ]]
+          echo 'DEPLOYMENT_AUTHORIZATION_BOUND=true'
+          echo 'FAIL_CLOSED_GATES_CONFIRMED=true'
+          echo 'CONTA_PROVIDER_MUTATION_AUTHORIZED=false'
+          echo 'PRODUCTION_WRITE_AUTHORIZED=false'
+
+      - name: Install SFTP deployment runtime
+        run: python -m pip install 'paramiko==5.0.0' 'certifi==2026.7.22'
+
+      - name: Back up, provision, deploy, and verify exact runtime
+        shell: bash
+        run: >-
+          python scripts/deploy_conta_production_fail_closed.py
+          --candidate-root candidate
+          --run-token "${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
