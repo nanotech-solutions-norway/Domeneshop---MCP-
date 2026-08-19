@@ -27,7 +27,8 @@ if ($LASTEXITCODE -ne 0 -or $Remote -notmatch 'Domeneshop---MCP-') {
 Write-Host ''
 Write-Host '=== 1. Synchronize accepted main ==='
 git status --short
-if ((git status --porcelain).Length -ne 0) {
+$WorkingTreeStatus = @(git status --porcelain)
+if ($WorkingTreeStatus.Count -ne 0) {
     throw 'Repository working tree is not clean. Stop before live execution.'
 }
 git fetch origin main
