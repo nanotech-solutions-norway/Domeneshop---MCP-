@@ -35,8 +35,8 @@ Write-Host '=== 3. Refresh isolated Python runtime ==='
 $Venv=Join-Path(Get-Location)'.venv-d-r4-sftp-preflight'
 if(-not(Test-Path $Venv)){python -m venv $Venv}
 $Python=Join-Path $Venv 'Scripts\python.exe'
-& $Python -m pip install --disable-pip-version-check -e '.'|Out-Host
-if($LASTEXITCODE-ne 0){throw 'Failed to install accepted package.'}
+& $Python -m pip install --disable-pip-version-check -e '.[sftp]'|Out-Host
+if($LASTEXITCODE-ne 0){throw 'Failed to install accepted package with SFTP runtime dependencies.'}
 
 Write-Host ''
 Write-Host '=== 4. Execute GET-only exact-target preflight ==='
