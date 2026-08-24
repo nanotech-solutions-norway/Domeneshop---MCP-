@@ -5,6 +5,8 @@ on:
     paths:
       - '.github/workflows/execute-conta-first-production-invoice-draft.yml'
       - 'scripts/execute_conta_first_production_invoice_draft.py'
+      - 'scripts/conta_invoice_draft_duplicate_guard.py'
+      - 'tests/test_conta_invoice_draft_duplicate_guard.py'
   workflow_dispatch:
     inputs:
       authorization:
@@ -54,9 +56,10 @@ jobs:
           grep -Fq '19d8b9fd3e7aec7fec7405df2ffec0e72839c9ac' scripts/execute_conta_first_production_invoice_draft.py
           grep -Fq 'EXECUTE_CONTA_FIRST_PRODUCTION_A6B94702' scripts/execute_conta_first_production_invoice_draft.py
           grep -Fq 'workflow_rerun_not_authorized' scripts/execute_conta_first_production_invoice_draft.py
-          grep -Fq 'DUPLICATE_STOP_RULE=ZERO_EXISTING_DRAFTS' scripts/execute_conta_first_production_invoice_draft.py
+          grep -Fq 'DUPLICATE_STOP_RULE=NO_MATCHING_OR_AMBIGUOUS_DRAFTS' scripts/execute_conta_first_production_invoice_draft.py
           grep -Fq 'KILL_SWITCH_RE_CLOSED=true' scripts/execute_conta_first_production_invoice_draft.py
           ! grep -Eq 'PROVIDER_BASE.*(POST|PUT|PATCH|DELETE)' scripts/execute_conta_first_production_invoice_draft.py
+          python -m unittest tests/test_conta_invoice_draft_duplicate_guard.py
           echo 'CONTROLLER_STATIC_SAFETY_CHECKS=true'
 
   execute:

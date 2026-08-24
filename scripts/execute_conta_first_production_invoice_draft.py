@@ -27,6 +27,13 @@ from typing import Any
 import certifi
 import paramiko
 
+from conta_invoice_draft_duplicate_guard import (
+    DuplicateGuardError,
+    detail_contains_line_description,
+    extract_draft_entries,
+    extract_draft_identifier,
+)
+
 REQUEST_COMMIT = "a6b9470204775598c4f569ea2837c0bc712b0dc3"
 SOURCE_COMMIT = "19d8b9fd3e7aec7fec7405df2ffec0e72839c9ac"
 ORG_SHA256 = "9ee050155b0c35066a2ea426c72a65e5cdd2806f18a3cf9829fb132bd66634ab"
@@ -278,6 +285,39 @@ def safe_draft_list(api_key: str, org_id: str) -> tuple[int, Any]:
     return count_drafts(body), body
 
 
+def assert_no_matching_existing_drafts(
+    api_key: str,
+    org_id: str,
+    body: Any,
+    count: int,
+    readback_route: str,
+) -> None:
+    try:
+        entries = extract_draft_entries(body, count)
+        matching = 0
+        encoded_org = urllib.parse.quote(org_id, safe="")
+        for entry in entries:
+            draft_id = extract_draft_identifier(entry)
+            encoded_draft = urllib.parse.quote(draft_id, safe="")
+            path = readback_route
+            for placeholder in ("{orgId}", "{opContextOrgId}"):
+                path = path.replace(placeholder, encoded_org)
+            for placeholder in ("{id}", "{invoiceDraftId}"):
+                path = path.replace(placeholder, encoded_draft)
+            status, detail = http_json(
+                PROVIDER_BASE + "/" + path.lstrip("/"),
+                headers={"apiKey": api_key},
+            )
+            if status != 200 or not isinstance(detail, (dict, list)):
+                raise DuplicateGuardError(f"invoice_draft_detail_get_failed_http_{status}")
+            if detail_contains_line_description(detail, LINE_DESCRIPTION):
+                matching += 1
+        if matching:
+            raise Stop(f"matching_invoice_draft_prestate_count_{matching}")
+    except DuplicateGuardError as exc:
+        raise Stop(f"invoice_draft_duplicate_precheck_ambiguous:{exc}") from None
+
+
 def build_manifest(sftp: paramiko.SFTPClient, config: dict[str, str]) -> dict[str, Any]:
     runtime_files: dict[str, str] = {}
     for relative in RUNTIME_PATHS:
@@ -423,13 +463,20 @@ def run(args: argparse.Namespace) -> int:
         if "{id}" not in config_values["readback_invoice_draft_route"] and "{invoiceDraftId}" not in config_values["readback_invoice_draft_route"]:
             raise Stop("readback_route_mismatch")
 
-        # Deliberately stricter than the general duplicate rule: first production
-        # execution is allowed only when the organization has zero existing drafts.
-        prestate_count, _ = safe_draft_list(api_key, org_id)
-        if prestate_count != 0:
-            raise Stop(f"invoice_draft_prestate_not_empty_count_{prestate_count}")
-        print("PRESTATE_INVOICE_DRAFT_COUNT=0")
-        print("DUPLICATE_STOP_RULE=ZERO_EXISTING_DRAFTS")
+        # Existing drafts are never modified. Every existing draft must expose a
+        # stable ID and complete GET detail proving the unique validation marker
+        # is absent. Missing or ambiguous evidence stops before gate opening.
+        prestate_count, prestate_body = safe_draft_list(api_key, org_id)
+        assert_no_matching_existing_drafts(
+            api_key,
+            org_id,
+            prestate_body,
+            prestate_count,
+            config_values["readback_invoice_draft_route"],
+        )
+        print(f"PRESTATE_INVOICE_DRAFT_COUNT={prestate_count}")
+        print("PRESTATE_MATCHING_VALIDATION_DRAFT_COUNT=0")
+        print("DUPLICATE_STOP_RULE=NO_MATCHING_OR_AMBIGUOUS_DRAFTS")
 
         customer_url = (
             f"{PROVIDER_BASE}/invoice/organizations/{urllib.parse.quote(org_id, safe='')}"
@@ -559,7 +606,7 @@ def run(args: argparse.Namespace) -> int:
 
         # GET-only reconciliation is mandatory after the single execution call.
         reconciliation_count, _ = safe_draft_list(api_key, org_id)
-        if reconciliation_count not in (0, 1):
+        if reconciliation_count not in (prestate_count, prestate_count + 1):
             provider_outcome = "RECONCILIATION_UNEXPECTED_DRAFT_COUNT"
         print(f"RECONCILIATION_DRAFT_COUNT={reconciliation_count}")
         print("RECONCILIATION_GET_PERFORMED=true")
@@ -604,7 +651,7 @@ def run(args: argparse.Namespace) -> int:
     if health_status != 200 or any(final_config.get(key) != value for key, value in expected_closed.items()):
         raise Stop("post_attempt_fail_closed_health_verification_failed")
 
-    provider_mutation_count = 1 if reconciliation_count == 1 else 0
+    provider_mutation_count = 1 if reconciliation_count == prestate_count + 1 else 0
     print(f"ACTION={ACTION}")
     print(f"DEPLOYED_IMPLEMENTATION_COMMIT={SOURCE_COMMIT}")
     print(f"PRODUCTION_ORGANIZATION_REFERENCE_SHA256={ORG_SHA256}")
@@ -629,8 +676,8 @@ def run(args: argparse.Namespace) -> int:
 
     if provider_outcome != "CREATED_AND_READBACK_VERIFIED":
         raise Stop("first_production_execution_not_verified")
-    if reconciliation_count != 1:
-        raise Stop("first_production_reconciliation_count_not_one")
+    if reconciliation_count != prestate_count + 1:
+        raise Stop("first_production_reconciliation_count_not_incremented_once")
     return 0
 
 
