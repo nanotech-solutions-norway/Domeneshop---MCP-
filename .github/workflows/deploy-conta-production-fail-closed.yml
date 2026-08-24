@@ -5,6 +5,7 @@ on:
     paths:
       - '.github/workflows/deploy-conta-production-fail-closed.yml'
       - 'scripts/deploy_conta_production_fail_closed.py'
+      - 'scripts/bootstrap_conta_production_kill_switch.py'
   workflow_dispatch:
     inputs:
       authorization:
@@ -46,13 +47,18 @@ jobs:
       - name: Install validation runtime
         run: python -m pip install 'paramiko==5.0.0' 'certifi==2026.7.22'
 
-      - name: Verify controller cannot call Conta provider
+      - name: Verify controllers cannot call Conta provider
         shell: bash
         run: |
           set -euo pipefail
           ! grep -Eq 'api\.gateway\.conta(-sandbox)?\.no' scripts/deploy_conta_production_fail_closed.py
           ! grep -Eq -- '--request[[:space:]]+(POST|PUT|PATCH|DELETE)' scripts/deploy_conta_production_fail_closed.py
+          ! grep -Eq 'api\.gateway\.conta(-sandbox)?\.no' scripts/bootstrap_conta_production_kill_switch.py
+          ! grep -Eq -- '--request[[:space:]]+(POST|PUT|PATCH|DELETE)' scripts/bootstrap_conta_production_kill_switch.py
           echo 'CONTA_PROVIDER_CALL_PATH_PRESENT=false'
+
+      - name: Validate kill-switch bootstrap logic
+        run: python scripts/bootstrap_conta_production_kill_switch.py --self-test
 
       - name: Validate exact candidate and current public contract
         run: >-
@@ -120,6 +126,10 @@ jobs:
 
       - name: Install SFTP deployment runtime
         run: python -m pip install 'paramiko==5.0.0' 'certifi==2026.7.22'
+
+      - name: Bootstrap or validate globally blocked kill switch
+        shell: bash
+        run: python scripts/bootstrap_conta_production_kill_switch.py
 
       - name: Back up, provision, deploy, and verify exact runtime
         shell: bash
