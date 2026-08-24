@@ -109,7 +109,6 @@ def assert_controlled_fields(draft: dict[str, Any], customer_ref: str, vat_code:
         raise Stop("readback_line_shape_mismatch")
     line = lines[0]
     expected_scalars = {
-        "registrationSource": "CONTA",
         "type": "NORMAL",
         "invoiceLanguage": "NO",
         "invoiceCurrency": "NOK",
@@ -117,6 +116,10 @@ def assert_controlled_fields(draft: dict[str, Any], customer_ref: str, vat_code:
     for key, expected in expected_scalars.items():
         if str(draft.get(key, "")) != expected:
             raise Stop(f"readback_{key}_mismatch")
+    # The provider response model does not require registrationSource and live
+    # readback may omit it. If returned, it must still match the create intent.
+    if "registrationSource" in draft and str(draft["registrationSource"]) != "CONTA":
+        raise Stop("readback_registrationSource_mismatch")
     if str(draft.get("customerId", "")) != customer_ref:
         raise Stop("readback_customer_mismatch")
     if str(line.get("description", "")) != LINE_DESCRIPTION:

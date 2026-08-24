@@ -53,6 +53,26 @@ class ReconciliationTests(unittest.TestCase):
         with self.assertRaisesRegex(MODULE.Stop, "readback_price_mismatch"):
             MODULE.assert_controlled_fields(draft, "123", "high")
 
+    def test_omitted_registration_source_is_allowed_but_wrong_value_is_not(self):
+        draft = {
+            "type": "NORMAL",
+            "invoiceLanguage": "NO",
+            "invoiceCurrency": "NOK",
+            "customerId": 123,
+            "invoiceDraftLines": [{
+                "description": MODULE.LINE_DESCRIPTION,
+                "price": 1,
+                "quantity": 1,
+                "discount": 0,
+                "vatCode": "high",
+                "lineNo": 1,
+            }],
+        }
+        MODULE.assert_controlled_fields(draft, "123", "high")
+        draft["registrationSource"] = "TIMERABBIT"
+        with self.assertRaisesRegex(MODULE.Stop, "readback_registrationSource_mismatch"):
+            MODULE.assert_controlled_fields(draft, "123", "high")
+
     def test_controlled_draft_requires_one_candidate(self):
         with self.assertRaisesRegex(MODULE.Stop, "candidate_count_0"):
             MODULE.controlled_draft({"id": 1})
