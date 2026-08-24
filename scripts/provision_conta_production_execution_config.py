@@ -9,9 +9,6 @@ import re
 import stat
 from pathlib import PurePosixPath
 
-import paramiko
-
-
 ROOT = "/Custom Models/conta-mcp"
 BACKUP_ROOT = "/Custom Models/conta-mcp-backups"
 CONFIG = f"{ROOT}/config/conta_config.local.php"
@@ -161,6 +158,8 @@ def assert_closed_and_ready(text: str, *, metadata_required: bool) -> None:
 
 
 def main() -> int:
+    import paramiko
+
     if os.environ.get("GITHUB_REF_NAME") != "main":
         raise Stop("must_run_from_main")
     if os.environ.get("GITHUB_RUN_ATTEMPT", "1") != "1":
