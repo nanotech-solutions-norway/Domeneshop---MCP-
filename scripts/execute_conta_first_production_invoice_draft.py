@@ -18,6 +18,7 @@ import posixpath
 import re
 import ssl
 import stat
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -622,6 +623,10 @@ def run(args: argparse.Namespace) -> int:
             close_errors.append("kill_switch_reclose_failed")
         try:
             if config_before is not None:
+                # Keep the already-closed kill switch authoritative while making
+                # the restored PHP config mtime distinct from the temporary open
+                # config. This avoids same-second OPcache timestamp aliasing.
+                time.sleep(2.1)
                 publish(sftp, CONFIG_PATH, config_before, config_mode)
         except Exception:
             close_errors.append("config_restore_failed")
@@ -641,14 +646,20 @@ def run(args: argparse.Namespace) -> int:
             print("EXECUTION_GATE_RE_CLOSED=false")
             raise Stop(",".join(close_errors))
 
-    health_status, final_health = http_json("https://mcp.atlas-ai.no/health")
-    final_config = final_health.get("config", {}) if health_status == 200 and isinstance(final_health, dict) else {}
     expected_closed = {
         "write_tools_enabled": False, "runtime_write_blocked": True,
         "execution_allowed": False, "production_write_approved": False,
         "allowed_write_action_count": 0, "allowed_write_organization_count": 0,
     }
-    if health_status != 200 or any(final_config.get(key) != value for key, value in expected_closed.items()):
+    closed_verified = False
+    for _ in range(15):
+        health_status, final_health = http_json("https://mcp.atlas-ai.no/health")
+        final_config = final_health.get("config", {}) if health_status == 200 and isinstance(final_health, dict) else {}
+        if health_status == 200 and all(final_config.get(key) == value for key, value in expected_closed.items()):
+            closed_verified = True
+            break
+        time.sleep(2)
+    if not closed_verified:
         raise Stop("post_attempt_fail_closed_health_verification_failed")
 
     provider_mutation_count = 1 if reconciliation_count == prestate_count + 1 else 0
