@@ -1,0 +1,98 @@
+name: D-R4B HTTP-forward live UPDATE
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_id:
+        description: Exact authorized release ID
+        required: true
+        type: string
+      target_sha256:
+        description: Exact authorized target SHA256
+        required: true
+        type: string
+      required_before_payload_sha256:
+        description: Exact required-before CREATE-state payload SHA256
+        required: true
+        type: string
+      update_payload_sha256:
+        description: Exact authorized UPDATE payload SHA256
+        required: true
+        type: string
+      confirm_exact_update:
+        description: Confirm this exact UPDATE only
+        required: true
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: d-r4b-http-forward-live-update
+  cancel-in-progress: false
+
+jobs:
+  live-update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: domeneshop-readonly-validation
+
+    steps:
+      - name: Checkout accepted main
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+
+      - name: Enforce exact UPDATE authorization binding
+        shell: bash
+        env:
+          INPUT_RELEASE_ID: ${{ inputs.release_id }}
+          INPUT_TARGET_SHA256: ${{ inputs.target_sha256 }}
+          INPUT_REQUIRED_BEFORE_PAYLOAD_SHA256: ${{ inputs.required_before_payload_sha256 }}
+          INPUT_UPDATE_PAYLOAD_SHA256: ${{ inputs.update_payload_sha256 }}
+          INPUT_CONFIRM_EXACT_UPDATE: ${{ inputs.confirm_exact_update }}
+          WRITE_TOOLS_ENABLED: ${{ vars.WRITE_TOOLS_ENABLED }}
+          DRY_RUN_DEFAULT: ${{ vars.DRY_RUN_DEFAULT }}
+        run: |
+          set -euo pipefail
+          [[ "$INPUT_RELEASE_ID" == "D-R4B-HTTP-FORWARD-UPDATE-20260826-001" ]]
+          [[ "$INPUT_TARGET_SHA256" == "23cc343ce4a03fb910e58a371604ff85a7c49c16c062e15ba8238ec662fea831" ]]
+          [[ "$INPUT_REQUIRED_BEFORE_PAYLOAD_SHA256" == "2fbfc99c2747d313ecdd0477aab0c9c67f8f9e66c19c7fa90920bb20ce57a926" ]]
+          [[ "$INPUT_UPDATE_PAYLOAD_SHA256" == "961fea82b0837c992c66f11aaacadf9642782b0cd263ce374d4d07b4d18c8ebb" ]]
+          [[ "$INPUT_CONFIRM_EXACT_UPDATE" == "true" ]]
+          [[ "$WRITE_TOOLS_ENABLED" == "false" ]]
+          [[ "$DRY_RUN_DEFAULT" == "true" ]]
+          [[ -n "${DS_AUTH_USER:-}" ]]
+          [[ -n "${DS_AUTH_VALUE:-}" ]]
+        env:
+          DS_AUTH_USER: ${{ secrets.DS_AUTH_USER }}
+          DS_AUTH_VALUE: ${{ secrets.DS_AUTH_VALUE }}
+
+      - name: Install runtime and validate exact UPDATE gate
+        run: |
+          python -m pip install -e ".[test]"
+          python -m pytest -q tests/test_http_forward_update_dry_run.py tests/test_http_forward_live_update.py
+
+      - name: Execute exact authorized UPDATE and bounded readback
+        env:
+          DS_AUTH_USER: ${{ secrets.DS_AUTH_USER }}
+          DS_AUTH_VALUE: ${{ secrets.DS_AUTH_VALUE }}
+          WRITE_TOOLS_ENABLED: "false"
+          DRY_RUN_DEFAULT: "true"
+          HTTP_FORWARD_D_R4B_CREATE_AUTHORIZED: "false"
+          HTTP_FORWARD_D_R4B_UPDATE_AUTHORIZED: "true"
+          HTTP_FORWARD_D_R4B_DELETE_AUTHORIZED: "false"
+          HTTP_FORWARD_D_R4B_BROADER_OVERWRITE_AUTHORIZED: "false"
+          HTTP_FORWARD_D_R4B_RELEASE_ID: D-R4B-HTTP-FORWARD-UPDATE-20260826-001
+          HTTP_FORWARD_D_R4B_TARGET_SHA256: 23cc343ce4a03fb910e58a371604ff85a7c49c16c062e15ba8238ec662fea831
+          HTTP_FORWARD_D_R4B_REQUIRED_BEFORE_PAYLOAD_SHA256: 2fbfc99c2747d313ecdd0477aab0c9c67f8f9e66c19c7fa90920bb20ce57a926
+          HTTP_FORWARD_D_R4B_UPDATE_PAYLOAD_SHA256: 961fea82b0837c992c66f11aaacadf9642782b0cd263ce374d4d07b4d18c8ebb
+          HTTP_FORWARD_D_R4B_DOMAIN_NAME: atlas-mcp-sandbox.no
+          HTTP_FORWARD_D_R4B_HOST: mcp-forward-validation
+        run: python scripts/http_forward_d_r4b_live_update.py
