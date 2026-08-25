@@ -1,0 +1,3 @@
+release=D-R4B-HTTP-FORWARD-PREFLIGHT-20260825
+purpose=trigger-protected-get-only-preflight
+provider_mutation_authorized=false
