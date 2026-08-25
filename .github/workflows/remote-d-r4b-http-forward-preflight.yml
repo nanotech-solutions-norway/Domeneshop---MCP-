@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - remote/d-r4b-http-forward-preflight-run
+      - main
     paths:
       - .github/remote-triggers/d-r4b-http-forward-preflight
 
