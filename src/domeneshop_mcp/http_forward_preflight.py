@@ -11,9 +11,9 @@ from .config import DomeneshopConfig
 from .controlled_write import canonical_payload_sha256
 from .errors import DomeneshopApiError
 
-PILOT_FORWARD_HOST = "_mcp-forward-validation"
-PILOT_FORWARD_URL = "https://www.example.com/"
-PILOT_RELEASE_ID = "D-R4B-HTTP-FORWARD-PREFLIGHT-20260824"
+PILOT_FORWARD_HOST = "mcp-forward-validation"
+PILOT_FORWARD_URL = "https://atlas-mcp-sandbox.no/"
+PILOT_RELEASE_ID = "D-R4B-HTTP-FORWARD-PREFLIGHT-20260825"
 BLOCKING_DNS_TYPES = frozenset({"A", "AAAA", "ANAME", "CNAME"})
 
 
