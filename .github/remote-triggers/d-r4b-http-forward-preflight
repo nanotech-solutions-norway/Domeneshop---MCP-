@@ -1,0 +1,3 @@
+release=D-R4B-HTTP-FORWARD-PREFLIGHT-20260825
+trigger=reviewed-main-merge
+provider_mutation_authorized=false
