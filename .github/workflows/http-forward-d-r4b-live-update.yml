@@ -59,6 +59,8 @@ jobs:
           INPUT_CONFIRM_EXACT_UPDATE: ${{ inputs.confirm_exact_update }}
           WRITE_TOOLS_ENABLED: ${{ vars.WRITE_TOOLS_ENABLED }}
           DRY_RUN_DEFAULT: ${{ vars.DRY_RUN_DEFAULT }}
+          DS_AUTH_USER: ${{ secrets.DS_AUTH_USER }}
+          DS_AUTH_VALUE: ${{ secrets.DS_AUTH_VALUE }}
         run: |
           set -euo pipefail
           [[ "$INPUT_RELEASE_ID" == "D-R4B-HTTP-FORWARD-UPDATE-20260826-001" ]]
@@ -70,9 +72,6 @@ jobs:
           [[ "$DRY_RUN_DEFAULT" == "true" ]]
           [[ -n "${DS_AUTH_USER:-}" ]]
           [[ -n "${DS_AUTH_VALUE:-}" ]]
-        env:
-          DS_AUTH_USER: ${{ secrets.DS_AUTH_USER }}
-          DS_AUTH_VALUE: ${{ secrets.DS_AUTH_VALUE }}
 
       - name: Install runtime and validate exact UPDATE gate
         run: |
@@ -91,7 +90,7 @@ jobs:
           HTTP_FORWARD_D_R4B_BROADER_OVERWRITE_AUTHORIZED: "false"
           HTTP_FORWARD_D_R4B_RELEASE_ID: D-R4B-HTTP-FORWARD-UPDATE-20260826-001
           HTTP_FORWARD_D_R4B_TARGET_SHA256: 23cc343ce4a03fb910e58a371604ff85a7c49c16c062e15ba8238ec662fea831
-          HTTP_FORWARD_D_R4B_REQUIRED_BEFORE_PAYLOAD_SHA256: 2fbfc99c2747d313ecdd0477aab0c9c67f8f9e66c19c7fa90920bb20ce57a926
+          HTTP_FORWARD_D_R4B_REQUIRED_BEFORE_PAYLOAD_SHA256: 2fbfc99c2747d313ecdd0477aab0c9c67f8f9e66c19c062e15ba8238ec662fea831
           HTTP_FORWARD_D_R4B_UPDATE_PAYLOAD_SHA256: 961fea82b0837c992c66f11aaacadf9642782b0cd263ce374d4d07b4d18c8ebb
           HTTP_FORWARD_D_R4B_DOMAIN_NAME: atlas-mcp-sandbox.no
           HTTP_FORWARD_D_R4B_HOST: mcp-forward-validation
