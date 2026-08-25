@@ -105,7 +105,7 @@ def test_exact_live_create_posts_once_and_independently_reads_back(monkeypatch):
     def handler(request: httpx.Request) -> httpx.Response:
         seen.append((request.method, request.url.path, json.loads(request.content.decode("utf-8"))))
         assert request.method == "POST"
-        assert request.url.path == "/domains/12345/forwards/"
+        assert request.url.path == "/v0/domains/12345/forwards/"
         return httpx.Response(204, request=request)
 
     evidence = live.execute_exact_http_forward_create(
