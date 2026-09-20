@@ -1,0 +1,8 @@
+D-R4B HTTP-forward host-addressing GET-only diagnostic trigger
+Date: 2026-09-20
+Mutation authorization: none
+CREATE=false
+UPDATE=false
+DELETE=false
+BROADER_OVERWRITE=false
+WRITE_TOOLS_ENABLED=false
