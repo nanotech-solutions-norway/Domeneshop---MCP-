@@ -1,8 +1,10 @@
-D-R4B HTTP-forward GET-only post-write recovery verification trigger
-Date: 2026-08-25
-Purpose: verify exact provider state after authorized CREATE reported provider_mutation_performed=true but immediate readback failed.
+D-R4B HTTP-forward GET-only post-write verification trigger
+Date: 2026-09-20
+Purpose: classify provider state after exact authorized UPDATE attempted one PUT and received HTTP 404 not_found with mutation outcome unknown.
+Expected verification in this run: exact accepted CREATE state only.
 Mutation authorization: none.
 CREATE=false
 UPDATE=false
 DELETE=false
 BROADER_OVERWRITE=false
+WRITE_TOOLS_ENABLED=false
