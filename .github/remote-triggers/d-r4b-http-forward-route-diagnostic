@@ -1,0 +1,9 @@
+D-R4B HTTP-forward GET-only single-host route diagnostic
+Date: 2026-09-20
+Purpose: isolate provider 404 on documented GET/PUT single-forward route after list-forwards verified the exact record exists.
+Mutation authorization: none.
+CREATE=false
+UPDATE=false
+DELETE=false
+BROADER_OVERWRITE=false
+WRITE_TOOLS_ENABLED=false
