@@ -1,12 +1,24 @@
 from __future__ import annotations
 
-import json
+import importlib.util
+from pathlib import Path
 
 import httpx
 import pytest
 
-import scripts.http_forward_route_diagnostic as diag
 from domeneshop_mcp.http_forward_create_dry_run import DOMAIN_NAME, FORWARD_HOST, candidate_payload
+
+
+def _load_diag_module():
+    path = Path(__file__).resolve().parents[1] / "scripts" / "http_forward_route_diagnostic.py"
+    spec = importlib.util.spec_from_file_location("http_forward_route_diagnostic", path)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+diag = _load_diag_module()
 
 
 class FakeConfig:
@@ -49,6 +61,7 @@ def test_diagnostic_uses_get_only_and_reports_variants(monkeypatch):
     monkeypatch.setattr(diag, "EXPECTED_TARGET_SHA256", hashlib.sha256(target.encode()).hexdigest())
 
     seen = []
+
     def handler(request: httpx.Request) -> httpx.Response:
         seen.append((request.method, request.url.path))
         assert request.method == "GET"
@@ -59,9 +72,11 @@ def test_diagnostic_uses_get_only_and_reports_variants(monkeypatch):
         return httpx.Response(404, json={"error": "not_found"}, request=request)
 
     real_client = httpx.Client
+
     def client_factory(*args, **kwargs):
         kwargs["transport"] = httpx.MockTransport(handler)
         return real_client(*args, **kwargs)
+
     monkeypatch.setattr(diag.httpx, "Client", client_factory)
 
     result = diag.run()
