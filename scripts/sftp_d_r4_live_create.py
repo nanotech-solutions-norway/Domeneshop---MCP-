@@ -60,8 +60,11 @@ def _exclusive_create(config: SftpReadConfig) -> None:
     try:
         transport.connect(username=config.user, password=config.access_value)
         sftp = paramiko.SFTPClient.from_transport(transport)
-        # 'x' maps to exclusive creation: fail if target already exists.
-        with sftp.open(TARGET, "x") as handle:
+        # Paramiko requires an explicit write flag in addition to 'x'.
+        # 'wx' therefore requests WRITE + CREATE + TRUNC + EXCL; EXCL makes the
+        # operation fail if the target already exists, so no existing file can
+        # be truncated or overwritten by this CREATE-only gate.
+        with sftp.open(TARGET, "wx") as handle:
             handle.write(PAYLOAD)
             handle.flush()
     finally:
