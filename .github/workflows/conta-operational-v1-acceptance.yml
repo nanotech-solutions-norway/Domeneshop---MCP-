@@ -1,0 +1,82 @@
+name: Conta MCP operational v1 acceptance
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/conta-operational-v1-acceptance.yml'
+      - 'scripts/validate_conta_operational_v1.py'
+      - '.github/remote-triggers/conta-operational-v1-acceptance'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/remote-triggers/conta-operational-v1-acceptance'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: conta-operational-v1-acceptance
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate read-only acceptance controller
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - run: python -m py_compile scripts/validate_conta_operational_v1.py
+      - shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fq 'PROVIDER_MUTATION_PERFORMED=false' scripts/validate_conta_operational_v1.py
+          grep -Fq 'CONTA_MCP_V1_ACCEPTANCE_PASSED=true' scripts/validate_conta_operational_v1.py
+          grep -Fq 'execution_tool_visible_while_closed' scripts/validate_conta_operational_v1.py
+          ! grep -Eq 'method="(PUT|PATCH|DELETE)"' scripts/validate_conta_operational_v1.py
+          ! grep -Eq "method='(PUT|PATCH|DELETE)'" scripts/validate_conta_operational_v1.py
+          echo 'READ_ONLY_ACCEPTANCE_STATIC_VALIDATION=true'
+
+  acceptance:
+    name: Verify deployed Conta MCP operational v1
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    environment: domeneshop-readonly-validation
+    env:
+      DS_SFTP_USER: ${{ secrets.DS_SFTP_USER }}
+      DS_SFTP_VALUE: ${{ secrets.DS_SFTP_VALUE }}
+      CONTA_PROD_CUSTOMER_REFERENCE: ${{ secrets.CONTA_PROD_CUSTOMER_REFERENCE }}
+      CONTA_PROD_VAT_CODE: ${{ vars.CONTA_PROD_VAT_CODE }}
+    steps:
+      - name: Checkout deployment-control repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Checkout exact deployed Conta source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: nanotech-solutions-norway/Conta-MCP
+          ref: 19d8b9fd3e7aec7fec7405df2ffec0e72839c9ac
+          path: candidate
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'paramiko==5.0.0' 'certifi==2026.7.22'
+      - shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$GITHUB_REF_NAME" == 'main' ]]
+          [[ -n "${DS_SFTP_USER:-}" ]]
+          [[ -n "${DS_SFTP_VALUE:-}" ]]
+          [[ -n "${CONTA_PROD_CUSTOMER_REFERENCE:-}" ]]
+          [[ -n "${CONTA_PROD_VAT_CODE:-}" ]]
+          python scripts/validate_conta_operational_v1.py --candidate-root candidate
