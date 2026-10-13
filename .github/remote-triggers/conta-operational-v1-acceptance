@@ -1,0 +1,5 @@
+Conta MCP operational-v1 acceptance trigger
+Date: 2026-10-13
+Purpose: run the protected non-mutating operational acceptance after merge.
+Provider mutation authorized: false
+Write-gate opening authorized: false
