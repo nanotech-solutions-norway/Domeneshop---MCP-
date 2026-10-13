@@ -1,18 +1,21 @@
-# Domeneshop MCP Implementation Baseline — updated 16.08.2026
+# Domeneshop MCP Implementation Baseline — updated 14.10.2026
 
 This repository is the system of record for the Domeneshop MCP bridge.
 
 ## Current posture
 
 ```text
-Runtime posture: READ_ONLY_RUNTIME_PLUS_CONTROLLED_WRITE_FOUNDATION
+Runtime posture: READ_ONLY_RUNTIME_PLUS_BOUNDED_CONTROLLED_WRITE_EVIDENCE
 Activation posture: HOLD_LIVE_CHANGE_ACTIVATION
 Runtime access values: outside repository
 Read-only MCP server: unchanged
 Live write tools registered: false
-Protected API/SFTP/MCP read validation: passed 10.08.2026
-Public status-surface workflow validation: passed 10.08.2026
-D-R3 isolated DNS TXT pilot: protected GET-only target preflight passed; live pilot not authorized
+Protected API/SFTP/MCP read validation: passed
+D-R3 isolated DNS TXT pilot: complete and operator accepted
+D-R4 isolated SFTP CREATE/UPDATE/RESTORE pilot: complete and operator accepted
+D-R4B HTTP-forward CREATE: accepted on isolated target
+D-R4B HTTP-forward UPDATE/DELETE on hyphenated host: BLOCKED_PROVIDER_DEFECT
+D-R5 SQL: blocked pending separate rollout
 ```
 
 ## Re-evaluated implementation state
@@ -27,20 +30,21 @@ D-R3 isolated DNS TXT pilot: protected GET-only target preflight passed; live pi
 | D-R2 persistent audit control | Implemented; repository validation passed; runtime storage pending | `src/domeneshop_mcp/audit_store.py` |
 | D-R2 controlled-write release manifest | Implemented; live execution disabled | `config/controlled-write-release-manifest.example.json` |
 | D-R2 shared controlled-write executor | Implemented; not registered in read server | `src/domeneshop_mcp/controlled_write.py` |
-| D-R3 DNS TXT provider mutation client | Implemented; live pilot not authorized | `src/domeneshop_mcp/write_client.py` |
-| D-R3 isolated TXT preflight | Protected GET-only run `31966109707` passed; zero collision; no mutation | `docs/DNS_TXT_PILOT_PREFLIGHT.md` |
-| D-R3 controlled-write dry run | Protected exact-target workflow implemented; execution pending protected signing secret | `docs/DNS_TXT_PILOT_DRY_RUN.md` |
-| HTTP-forward mutation | Planned | Starts after DNS pilot acceptance |
-| SFTP upload/replace/restore | Planned | Separate D-R4 release |
-| SQL read/edit/write | Planned | Separate D-R5 release |
+| D-R3 DNS TXT controlled-write pilot | Implemented; operator accepted | `docs/CAPABILITY_REGISTRY.md` |
+| D-R4 SFTP CREATE/UPDATE/RESTORE pilot | Implemented; operator accepted | `docs/CAPABILITY_REGISTRY.md` |
+| D-R4B HTTP-forward isolated CREATE | Implemented; exact CREATE state verified through list endpoint | `docs/HTTP_FORWARD_D_R4B_CURRENT_STATE_20261014.md` |
+| D-R4B HTTP-forward host-addressed UPDATE/DELETE | Blocked for hyphenated validation host due confirmed provider-side validation defect | `docs/HTTP_FORWARD_D_R4B_PROVIDER_API_INCONSISTENCY_20260922.md` |
+| SQL read/edit/write | Planned and blocked | Separate D-R5 release; no SQL write authorization |
 
 ## Mandatory boundary
 
 ```text
 WRITE_TOOLS_ENABLED=false
 LIVE_EXECUTION_MANIFEST=false
-NO_WRITE_TOOL_REGISTRATION
-NO_PROVIDER_MUTATION_AUTHORIZED
+NO_GENERAL_WRITE_TOOL_REGISTRATION
+NO_STANDING_PROVIDER_MUTATION_AUTHORITY
+HTTP_FORWARD_UPDATE_RETRY_AUTHORIZED=false
+HTTP_FORWARD_DELETE_AUTHORIZED=false
 ```
 
 The controlled-write foundation is code-complete for repository validation, but it is not a production-write release. Live activation requires an approved isolated test target, external runtime credentials, a pilot release manifest, one-time approval evidence, dry-run evidence, readback, rollback, audit, and final operator sign-off.
