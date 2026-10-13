@@ -125,6 +125,28 @@ https://github.com/domeneshop/python-domeneshop
 
 No matching open or closed public issue describing this 404 behavior was found in that repository as of 2026-09-22.
 
+
+## Domeneshop support confirmation — 2026-10-05
+
+Domeneshop support confirmed the provider-side validation defect. Their forwarding-request validator accepts literal `@` or word characters but does not accept a hyphen in the host element. As a result, forwarding operations involving a host such as `mcp-forward-validation` fail even though the forward remains visible through the list endpoint.
+
+Support also previously confirmed that HTTP responses in the 400 series represent unsuccessful operations and that HTTP 200 is the expected successful-operation status for this API path.
+
+Support ticket: `#36579969`.
+
+Current project classification:
+
+```text
+DOMENESHOP_FORWARDING_DEFECT=CONFIRMED_PROVIDER_SIDE
+HYPHENATED_FORWARD_SINGLE_HOST_OPERATIONS=BLOCKED_PENDING_PROVIDER_FIX
+HTTP_FORWARD_UPDATE_RETRY_AUTHORIZED=false
+HTTP_FORWARD_DELETE_AUTHORIZED=false
+CONTA_MCP_DEPENDENCY_ON_FORWARDING_DEFECT=false
+WAIT_FOR_PROVIDER_FIX_BEFORE_CONTA_COMPLETION=false
+```
+
+The Conta MCP production endpoint uses the existing webhotel/virtualhost document-root topology and does not require this HTTP-forward UPDATE path. Therefore this defect remains a Domeneshop MCP capability limitation, not a blocker for Conta MCP operational-v1 completion.
+
 ## Safety conclusion
 
 The MCP implementation must not retry the UPDATE while the provider lookup semantics are unresolved.
