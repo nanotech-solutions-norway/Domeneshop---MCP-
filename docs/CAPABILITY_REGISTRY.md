@@ -1,4 +1,4 @@
-# Domeneshop MCP Canonical Capability Registry — 24.08.2026
+# Domeneshop MCP Canonical Capability Registry — 14.10.2026
 
 This registry replaces ambiguous phase-completion language with executable capability states.
 
@@ -18,7 +18,7 @@ This registry replaces ambiguous phase-completion language with executable capab
 |---|---|---|---|---|
 | Domain listing and domain read | IMPLEMENTED | VALIDATED | D-R1 | Authenticated GET validation accepted. |
 | DNS listing and record read | IMPLEMENTED | OPERATOR_ACCEPTED | D-R1 / D-R3 | Exercised repeatedly during isolated DNS TXT preflight and independent readback. |
-| HTTP forward listing and read | IMPLEMENTED | PENDING_REVIEW | D-R1 / D-R4B | GET-only client exists. Exact isolated preflight validation is the next gate in Issue #56. |
+| HTTP forward listing and list-based readback | IMPLEMENTED | VALIDATED | D-R1 / D-R4B | List endpoint verified the exact isolated CREATE state. |
 | Sanitized invoice read | IMPLEMENTED | PENDING_REVIEW | D-R1 | Remains read-only. |
 | SFTP list, metadata, text read | IMPLEMENTED | OPERATOR_ACCEPTED | D-R1 / D-R4 | Exact isolated-file read/readback accepted during D-R4. |
 | Local MCP stdio transport and read-only discovery | IMPLEMENTED | VALIDATED | D-R1 | Protected initialize/tools-list smoke validation accepted; write tools remain absent by default. |
@@ -34,8 +34,12 @@ This registry replaces ambiguous phase-completion language with executable capab
 | Isolated DNS TXT controlled-write dry run | IMPLEMENTED | OPERATOR_ACCEPTED | D-R3 | Deterministic dry-run accepted. |
 | DNS TXT CREATE/UPDATE/RESTORE pilot | IMPLEMENTED | OPERATOR_ACCEPTED | D-R3 | Exact isolated sandbox sequence accepted; final state restored to accepted CREATE state. TXT DELETE remains unauthorized. |
 | General DNS mutation | IMPLEMENTED | BLOCKED | D-R3 | No MX, NS, general record mutation, general delete, or global write activation authorized. |
-| HTTP forward isolated target preflight | IMPLEMENTED | PENDING_REVIEW | D-R4B | GET-only collision preflight introduced under Issue #56; no POST/PUT/DELETE authorization. |
-| HTTP forward CREATE/UPDATE/RESTORE pilot | PLANNED | BLOCKED | D-R4B | Starts only after GET-only preflight and deterministic dry-run acceptance plus separate operator authorization for each mutation. DELETE separately gated. |
+| HTTP forward isolated target preflight | IMPLEMENTED | OPERATOR_ACCEPTED | D-R4B | Exact isolated target progressed through preflight and separately authorized CREATE. |
+| HTTP forward CREATE pilot | IMPLEMENTED | OPERATOR_ACCEPTED | D-R4B | Exact isolated CREATE succeeded and accepted state was independently verified through list-forwards GET. |
+| HTTP forward single-host GET on hyphenated target | IMPLEMENTED | BLOCKED | D-R4B | Provider returns 404 while list endpoint returns the record; Domeneshop support confirmed provider-side validator defect for hyphenated host elements. |
+| HTTP forward UPDATE on hyphenated target | IMPLEMENTED | BLOCKED | D-R4B | Separately authorized exact UPDATE returned 404; recovery verification proved no effective state change. Do not retry pending provider fix or a separately approved new non-hyphenated target. |
+| HTTP forward DELETE on hyphenated target | IMPLEMENTED | BLOCKED | D-R4B | No DELETE authorization. Provider defect affects the host-addressed path. |
+| General HTTP forward mutation | IMPLEMENTED | BLOCKED | D-R4B | No blanket CREATE/UPDATE/DELETE release. Action-specific one-use authorization remains mandatory. |
 | SFTP CREATE/UPDATE/RESTORE pilot | IMPLEMENTED | OPERATOR_ACCEPTED | D-R4 | Exact isolated file sequence accepted. Final provider state is accepted CREATE state. |
 | General SFTP write/delete/rename | PLANNED | BLOCKED | D-R4 | D-R4 acceptance does not authorize arbitrary upload, overwrite, delete, rename, or production file deployment. |
 | SQL read/edit/write | PLANNED | BLOCKED | D-R5 | Separate adapter, least-privilege credentials, isolated target, and controlled validation required. |
@@ -57,8 +61,10 @@ SINGLE_OPERATOR_COMPENSATING_CONTROLS_ACCEPTED=true
 ```text
 D_R3_DNS_COMPLETE=true
 D_R4_SFTP_COMPLETE=true
-D_R4B_HTTP_FORWARD_PREFLIGHT=IN_PROGRESS
-D_R5_SQL=BLOCKED_PENDING_PRIOR_GATE
+D_R4B_HTTP_FORWARD_CREATE=OPERATOR_ACCEPTED
+D_R4B_HTTP_FORWARD_HYPHENATED_UPDATE=BLOCKED_PROVIDER_DEFECT
+D_R4B_HTTP_FORWARD_HYPHENATED_DELETE=BLOCKED_PROVIDER_DEFECT
+D_R5_SQL=BLOCKED_PENDING_SEPARATE_ROLLOUT
 HOLD_LIVE_CHANGE_ACTIVATION
 NO_AUTONOMOUS_LIVE_CHANGE
 WRITE_TOOLS_ENABLED=false
