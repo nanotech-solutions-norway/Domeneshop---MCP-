@@ -1,0 +1,6 @@
+Atlas-AI database dependency audit trigger
+Date: 2026-10-15
+Purpose: identify live database consumers before any credential rotation.
+Database mutation authorized: false
+Remote file write authorized: false
+Provider mutation authorized: false
