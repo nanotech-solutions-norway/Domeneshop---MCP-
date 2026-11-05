@@ -42,3 +42,9 @@ Do not activate live changes, alter production DNS or hosting state, enable writ
 ## State reporting
 
 Report `DESIGNED`, `CONFIGURED`, `IMPLEMENTED`, `TESTED`, `VALIDATED`, `APPROVED`, `RELEASE_APPROVED` and `LIVE` separately. Security-policy adoption does not mean a secondary Git service, immutable backup, Credential Broker or production write path is live.
+
+## ChatGPT-first MCP creation — proposed greenfield route (05.11.2026)
+
+For **new, isolated, synthetic-data** MCP server designs, consult the central draft [ChatGPT-first MCP development playbook](https://github.com/nanotech-solutions-norway/ntsn-mcp-integrations/pull/97) derived from the 04.11.2026 Clean-Sheet Deep Research report. It evaluates **ChatGPT Work + Plugin Creator + ChatGPT Sites + durable D1** as the lowest-friction first prototype, conditional on actual feature availability, and **GitHub + Codex Cloud + Cloudflare Workers/D1** for source-controlled portable deployment. A new MCP App UI and centralized gateway remain optional.
+
+This is **documentation under review**, not proof of Sites access, a deployable code sample, a native ChatGPT command, production authorization, OAuth configuration, integration replacement or runtime activation. The source report's illustrative idempotency flow is not atomic and its SDK auth-context lookup is unverified; require implementation and negative/transaction tests before any deploy. Existing universal/2026-07-28 MCP security, actual provider permissions, local source-control authority and project-specific locks prevail. **Preserve HOLD_LIVE_CHANGE_ACTIVATION and existing DNS/SFTP/SQL/protected-provider write restrictions.**
