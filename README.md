@@ -108,3 +108,9 @@ HOLD_PENDING_RUNTIME_STORAGE_AND_DRY_RUN
 ```text
 nanotech-solutions-norway/Domeneshop---MCP-
 ```
+
+## ChatGPT-first MCP creation — proposed greenfield route (05.11.2026)
+
+For **new, synthetic-only MCP prototypes**, evaluate [central ChatGPT-first MCP playbook PR #97](https://github.com/nanotech-solutions-norway/ntsn-mcp-integrations/pull/97): ChatGPT Work + Plugin Creator + Sites/D1 when available, or GitHub + Codex Cloud + Cloudflare Workers/D1 for portable source-controlled deployments. Actual account feature eligibility, OAuth enforcement, persistent writes and deployment must be independently verified. The research example's non-atomic idempotency flow and unverified auth-context lookup must not be deployed unmodified.
+
+**Scope boundary:** This is a proposed design reference only. HOLD_LIVE_CHANGE_ACTIVATION remains in force for DNS, SFTP, SQL and all provider mutations. Current source, tools, hosting, credentials, universal MCP security, project-specific approvals and release controls are unchanged.
